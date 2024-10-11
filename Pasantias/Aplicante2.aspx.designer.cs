@@ -11,62 +11,17 @@ namespace Pasantias
 {
 
 
-    public partial class Aplicante
+    public partial class Aplicante2
     {
 
         /// <summary>
-        /// Control lbl_Nombre.
+        /// Control form1.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Nombre;
-
-        /// <summary>
-        /// Control txt_Nombre.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Nombre;
-
-        /// <summary>
-        /// Control lbl_Apellidos.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Apellidos;
-
-        /// <summary>
-        /// Control txt_Apellido.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Apellido;
-
-        /// <summary>
-        /// Control lbl_DNI.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_DNI;
-
-        /// <summary>
-        /// Control txt_DNI.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_DNI;
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
         /// Control lbl_Fecha.
@@ -85,24 +40,6 @@ namespace Pasantias
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txt_Fecha;
-
-        /// <summary>
-        /// Control lbl_Correo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Correo;
-
-        /// <summary>
-        /// Control txt_Correo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Correo;
 
         /// <summary>
         /// Control lbl_Telefono.
