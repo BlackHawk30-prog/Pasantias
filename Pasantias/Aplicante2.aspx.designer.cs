@@ -11,7 +11,7 @@ namespace Pasantias
 {
 
 
-    public partial class Aplicante1
+    public partial class Aplicante2
     {
 
         /// <summary>
@@ -24,112 +24,139 @@ namespace Pasantias
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// Control lbl_Nombre1.
+        /// Control lbl_Fecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Nombre1;
+        protected global::System.Web.UI.WebControls.Label lbl_Fecha;
 
         /// <summary>
-        /// Control txt_Nombre1.
+        /// Control txt_Fecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Nombre1;
+        protected global::System.Web.UI.WebControls.TextBox txt_Fecha;
 
         /// <summary>
-        /// Control lbl_Nombre2.
+        /// Control lbl_Telefono.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Nombre2;
+        protected global::System.Web.UI.WebControls.Label lbl_Telefono;
 
         /// <summary>
-        /// Control txt_Nombre2.
+        /// Control txt_Telefono.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Nombre2;
+        protected global::System.Web.UI.WebControls.TextBox txt_Telefono;
 
         /// <summary>
-        /// Control lbl_Apellido1.
+        /// Control lbl_Universidad.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Apellido1;
+        protected global::System.Web.UI.WebControls.Label lbl_Universidad;
 
         /// <summary>
-        /// Control txt_Apellido1.
+        /// Control txt_Universidad.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Apellido1;
+        protected global::System.Web.UI.WebControls.TextBox txt_Universidad;
 
         /// <summary>
-        /// Control lbl_Apellido2.
+        /// Control lbl_Direccion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Apellido2;
+        protected global::System.Web.UI.WebControls.Label lbl_Direccion;
 
         /// <summary>
-        /// Control txt_Apellido2.
+        /// Control txt_Direccion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Apellido2;
+        protected global::System.Web.UI.WebControls.TextBox txt_Direccion;
 
         /// <summary>
-        /// Control lbl_DNI.
+        /// Control lbl_Sexo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_DNI;
+        protected global::System.Web.UI.WebControls.Label lbl_Sexo;
 
         /// <summary>
-        /// Control txt_DNI.
+        /// Control txt_Hombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_DNI;
+        protected global::System.Web.UI.WebControls.RadioButton txt_Hombre;
 
         /// <summary>
-        /// Control lbl_Correo.
+        /// Control txt_Mujer.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Correo;
+        protected global::System.Web.UI.WebControls.RadioButton txt_Mujer;
 
         /// <summary>
-        /// Control txt_Correo.
+        /// Control lbl_Fotografia.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Correo;
+        protected global::System.Web.UI.WebControls.Label lbl_Fotografia;
+
+        /// <summary>
+        /// Control txt_Foto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload txt_Foto;
+
+        /// <summary>
+        /// Control lbl_Curriculum.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_Curriculum;
+
+        /// <summary>
+        /// Control txt_Curriculum.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload txt_Curriculum;
 
         /// <summary>
         /// Control Enviar.
