@@ -88,6 +88,7 @@
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -99,8 +100,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aplicante.cs" />
+    <Compile Include="Aplicante1.cs" />
+    <Compile Include="Aplicante2.cs" />
     <Compile Include="ConexionBD.cs" />
+    <Compile Include="HojaTiempo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
