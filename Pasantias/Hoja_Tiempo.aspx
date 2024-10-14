@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="HojaTiempo.aspx.cs" Inherits="Pasantias.HojaTiempo" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Hoja_Tiempo.aspx.cs" Inherits="Pasantias.Hoja_Tiempo" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -16,11 +17,11 @@
     <asp:TextBox ID="txt_Horas" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>
     <br />
 
-    <asp:Button ID="Btn_Agregar" runat="server" Text="Agregar" CssClass="btn btn-primary" />
+    <asp:Button ID="Btn_Agregar" runat="server" Text="Agregar" CssClass="btn btn-primary" OnClick="Btn_Agregar_Click" />
     <asp:Button ID="Btn_Actualizar" runat="server" Text="Actualizar" CssClass="btn btn-success" />
     <br />
 
-    <asp:GridView ID="GridVie1" runat="server" AutoGenerateColumns="False" DataKeyNames="IDhoja,IDpasante" CssClass="table-condensed">
+    <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHoja,IDUsuario" CssClass="table-condensed">
         <Columns>
             <asp:BoundField DataField="Fecha" HeaderText="Fecha"></asp:BoundField>
             <asp:BoundField DataField="Actividades" HeaderText="Actividades"></asp:BoundField>
