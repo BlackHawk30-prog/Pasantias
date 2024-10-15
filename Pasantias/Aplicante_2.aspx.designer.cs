@@ -11,7 +11,7 @@ namespace Pasantias
 {
 
 
-    public partial class Aplicante2
+    public partial class Aplicante_2
     {
 
         /// <summary>

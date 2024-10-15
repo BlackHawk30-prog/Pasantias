@@ -11,133 +11,97 @@ namespace Pasantias
 {
 
 
-    public partial class Aplicante1
+    public partial class Hoja_Tiempo
     {
 
         /// <summary>
-        /// Control form1.
+        /// Control lbl_Fecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Label lbl_Fecha;
 
         /// <summary>
-        /// Control lbl_Nombre1.
+        /// Control txt_Fecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Nombre1;
+        protected global::System.Web.UI.WebControls.TextBox txt_Fecha;
 
         /// <summary>
-        /// Control txt_Nombre1.
+        /// Control lbl_Actividades.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Nombre1;
+        protected global::System.Web.UI.WebControls.Label lbl_Actividades;
 
         /// <summary>
-        /// Control lbl_Nombre2.
+        /// Control txt_Actividades.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Nombre2;
+        protected global::System.Web.UI.WebControls.TextBox txt_Actividades;
 
         /// <summary>
-        /// Control txt_Nombre2.
+        /// Control lbl_Horas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Nombre2;
+        protected global::System.Web.UI.WebControls.Label lbl_Horas;
 
         /// <summary>
-        /// Control lbl_Apellido1.
+        /// Control txt_Horas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Apellido1;
+        protected global::System.Web.UI.WebControls.TextBox txt_Horas;
 
         /// <summary>
-        /// Control txt_Apellido1.
+        /// Control Btn_Agregar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Apellido1;
+        protected global::System.Web.UI.WebControls.Button Btn_Agregar;
 
         /// <summary>
-        /// Control lbl_Apellido2.
+        /// Control Btn_Actualizar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Apellido2;
+        protected global::System.Web.UI.WebControls.Button Btn_Actualizar;
 
         /// <summary>
-        /// Control txt_Apellido2.
+        /// Control lbl_Mensaje.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Apellido2;
+        protected global::System.Web.UI.WebControls.Label lbl_Mensaje;
 
         /// <summary>
-        /// Control lbl_DNI.
+        /// Control grid_hojas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_DNI;
-
-        /// <summary>
-        /// Control txt_DNI.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_DNI;
-
-        /// <summary>
-        /// Control lbl_Correo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Correo;
-
-        /// <summary>
-        /// Control txt_Correo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Correo;
-
-        /// <summary>
-        /// Control Enviar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Enviar;
+        protected global::System.Web.UI.WebControls.GridView grid_hojas;
     }
 }
