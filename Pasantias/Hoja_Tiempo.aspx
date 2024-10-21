@@ -25,6 +25,8 @@
             <div class="form-group text-center">
                 <asp:Button ID="Btn_Agregar" runat="server" Text="Agregar" CssClass="btn btn-primary" OnClick="Btn_Agregar_Click" />
                 <asp:Button ID="Btn_Actualizar" runat="server" Text="Actualizar" CssClass="btn btn-success" Visible="False" OnClick="Btn_Actualizar_Click" />
+                <asp:Button ID="Button1" runat="server" Text="Agregar otro" CssClass="btn btn-success" Visible="False" OnClick="Button1_Click" />
+                <asp:Button ID="Btn_Enviar" runat="server" Text="Enviar Hoja de Tiempo" CssClass="btn btn-success" Visible="True" OnClick="Button1_Click" />
             </div>
         </div>
 
