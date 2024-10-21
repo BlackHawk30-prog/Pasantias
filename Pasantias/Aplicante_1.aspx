@@ -6,26 +6,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Aplica Hoy!</title>
-    <!-- Incluye el estilo del archivo adjunto -->
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/feather.css" />
     <link rel="stylesheet" href="css/app-light.css" id="lightTheme" />
 </head>
 <body class="vertical light">
     <form runat="server">
-        <!-- Contenedor principal reducido en tamaño -->
         <div class="container mt-5">
             <div class="row">
-                <div class="col-md-6 mx-auto"> <!-- Reduce el ancho a la mitad y lo centra -->
-                    <!-- Logo en la parte superior -->
+                <div class="col-md-6 mx-auto">
                     <div class="text-center mb-4">
-                        <img alt="Logo USAID" src="Logos/logosoficiales.jpg" width="500" height="200" />
+                         <h1 class="card-title text-center">Aplica Hoy!</h1>
                     </div>
 
-                    <!-- Formulario dentro de una tarjeta -->
                     <div class="card shadow mb-4">
                         <div class="card-header">
-                            <h1 class="card-title text-center">Aplica Hoy!</h1>
+                            <img alt="Logo USAID" src="Logos/logosoficiales.jpg" width="500" height="200" />
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -53,9 +49,8 @@
                                 <asp:TextBox ID="txt_Correo" runat="server" placeholder="Escriba su Correo Electrónico" CssClass="form-control"></asp:TextBox>
                             </div>
 
-                            <!-- Botón de envío -->
                             <div class="form-group text-center">
-                                <asp:Button ID="Enviar" runat="server" Text="Enviar Datos" CssClass="btn btn-primary" />
+                                <asp:Button ID="Enviar" runat="server" Text="Enviar Datos" CssClass="btn btn-primary" OnClick="Enviar_Click" />
                             </div>
                         </div>
                     </div>
@@ -64,10 +59,36 @@
         </div>
     </form>
 
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensajeModalLabel">Mensaje</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <asp:Label ID="lbl_MensajeModal" runat="server" CssClass="form-label"></asp:Label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función para mostrar el modal con el mensaje
+        function mostrarMensaje(mensaje) {
+            document.getElementById('<%= lbl_MensajeModal.ClientID %>').innerText = mensaje;
+            $('#mensajeModal').modal('show');
+        }
+    </script>
 </body>
 </html>
-
 

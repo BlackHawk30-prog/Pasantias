@@ -18,12 +18,17 @@ namespace Modelo
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = "SELECT * FROM hoja_tiempo WHERE Eliminado = 0";
+            int mesActual = DateTime.Now.Month;
+            int anioActual = DateTime.Now.Year;
+
+            string consulta = $"SELECT * FROM hoja_tiempo WHERE Eliminado = 0 AND MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual}";
+
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
-            conectar.CerarConexion();
+            conectar.CerrarConexion();
             return tabla;
         }
+
 
         public void grid_hojas(GridView grid)
         {
@@ -38,6 +43,7 @@ namespace Modelo
             conectar.AbrirConexion();
 
             string consulta = "InsertarHojaTiempo";  // Nombre del procedimiento almacenado
+
 
             // Crear el comando y configurarlo como procedimiento almacenado
             using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
@@ -55,7 +61,7 @@ namespace Modelo
                 no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
             }
 
-            conectar.CerarConexion();
+            conectar.CerrarConexion();
             return no;  // Devolver el número de filas afectadas
         }
 
@@ -64,28 +70,52 @@ namespace Modelo
             int no = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = string.Format("UPDATE Hoja_Tiempo SET Fecha='{1}', Actividades='{2}', Horas={3}, IDUsuario={4} WHERE IDHoja={0};", IDHoja, Fecha, Actividades, Horas, IDUsuario);
-            MySqlCommand query = new MySqlCommand(consulta, conectar.conectar);
-            query.Connection = conectar.conectar;
-            no = query.ExecuteNonQuery();
 
-            conectar.CerarConexion();
-            return no;
+            string consulta = "ActualizarHojaTiempo";  // Nombre del procedimiento almacenado
 
+            // Crear el comando y configurarlo como procedimiento almacenado
+            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
+
+                // Agregar los parámetros al comando
+                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
+                cmd.Parameters.AddWithValue("p_Fecha", Fecha);
+                cmd.Parameters.AddWithValue("p_Actividades", Actividades);
+                cmd.Parameters.AddWithValue("p_Horas", Horas);
+                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+
+                // Ejecutar el procedimiento almacenado
+                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+            }
+
+            conectar.CerrarConexion();
+            return no;  // Devolver el número de filas afectadas
         }
+
         public int eliminar(int IDHoja)
         {
             int no = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = string.Format("UPDATE Hoja_Tiempo SET eliminado = 1 WHERE IDHoja = {0};", IDHoja);
-            MySqlCommand query = new MySqlCommand(consulta, conectar.conectar);
-            query.Connection = conectar.conectar;
-            no = query.ExecuteNonQuery();
 
-            conectar.CerarConexion();
-            return no;
+            string consulta = "EliminarHojaTiempo";  // Nombre del procedimiento almacenado
 
+            // Crear el comando y configurarlo como procedimiento almacenado
+            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
+
+                // Agregar el parámetro al comando
+                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
+
+                // Ejecutar el procedimiento almacenado
+                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+            }
+
+            conectar.CerrarConexion();
+            return no;  // Devolver el número de filas afectadas
         }
+
     }
 }
