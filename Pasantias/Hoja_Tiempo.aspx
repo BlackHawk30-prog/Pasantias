@@ -35,25 +35,26 @@
 
         <!-- Tabla de datos -->
         <div class="form-group">
-            <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHoja,IDUsuario" CssClass="table-condensed" OnSelectedIndexChanged="grid_hojas_SelectedIndexChanged">
-                <Columns>
-                    <asp:BoundField DataField="Fecha" HeaderText="Fecha" SortExpression="Fecha" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha" />
-                    <asp:BoundField DataField="Actividades" HeaderText="Actividades" SortExpression="Actividades" ItemStyle-CssClass="actividades" />
-                    <asp:BoundField DataField="Horas" HeaderText="Horas Trabajadas" SortExpression="Horas" ItemStyle-CssClass="horas" />
+<asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHoja" 
+    CssClass="table-condensed" OnSelectedIndexChanged="grid_hojas_SelectedIndexChanged" OnRowDeleting="grid_hojas_RowDeleting">
+    <Columns>
+        <asp:BoundField DataField="Fecha" HeaderText="Fecha" SortExpression="Fecha" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha" />
+        <asp:BoundField DataField="Actividades" HeaderText="Actividades" SortExpression="Actividades" ItemStyle-CssClass="actividades" />
+        <asp:BoundField DataField="Horas" HeaderText="Horas Trabajadas" SortExpression="Horas" ItemStyle-CssClass="horas" />
 
-                    <asp:TemplateField ShowHeader="True" HeaderText="Accion">
-                        <ItemTemplate>
-                            <asp:Button ID="Btn_Ver" runat="server" CausesValidation="False" CommandName="Select" Text="Ver" CssClass="btn btn-info" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+        <asp:TemplateField ShowHeader="True" HeaderText="Accion">
+            <ItemTemplate>
+                <asp:Button ID="Btn_Ver" runat="server" CausesValidation="False" CommandName="Select" Text="Ver" CssClass="btn btn-info" />
+            </ItemTemplate>
+        </asp:TemplateField>
 
-                    <asp:TemplateField ShowHeader="True" HeaderText="Accion">
-                        <ItemTemplate>
-                            <asp:Button ID="Btn_Eliminar" runat="server" CausesValidation="False" CommandName="Delete" Text="Eliminar" CssClass="btn btn-danger" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
+        <asp:TemplateField ShowHeader="True" HeaderText="Accion">
+            <ItemTemplate>
+                <asp:Button ID="Btn_Eliminar" runat="server" CausesValidation="False" CommandName="Delete" Text="Eliminar" CssClass="btn btn-danger"  />
+            </ItemTemplate>
+        </asp:TemplateField>
+    </Columns>
+</asp:GridView>
         </div>
     </div>
 
