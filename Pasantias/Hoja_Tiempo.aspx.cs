@@ -18,10 +18,11 @@ namespace Pasantias
             if (!IsPostBack)
             {
                 hojaTiempo = new HojaTiempo();
-                hojaTiempo.grid_hojas(grid_hojas);
-                
+                grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Asignar el DataTable al GridView
+                grid_hojas.DataBind(); // Asegúrate de llamar a DataBind para enlazar los datos
             }
         }
+
 
         protected void Btn_Agregar_Click(object sender, EventArgs e)
         {
@@ -119,6 +120,8 @@ namespace Pasantias
             txt_Horas.Text = grid_hojas.SelectedRow.Cells[2].Text;
             Btn_Actualizar.Visible = true;
             Btn_Agregar.Visible = false;
+            // Boton de agregar otro
+            Button1.Visible = true;
         }
 
         protected void Btn_Actualizar_Click(object sender, EventArgs e)
@@ -185,6 +188,7 @@ namespace Pasantias
                         txt_Actividades.Text = "";
                         Btn_Actualizar.Visible = false;
                         Btn_Agregar.Visible = true;
+                        Button1.Visible = false;
                     }
                     else
                     {
@@ -215,7 +219,13 @@ namespace Pasantias
             if (hojaTiempo.eliminar(IDHoja) > 0)
             {
                 lbl_Mensaje.Text = "Eliminado Exitosamente";
-                hojaTiempo.grid_hojas(grid_hojas);  // Refresca el GridView
+                hojaTiempo.grid_hojas(grid_hojas);  // Refresca el GridView\
+                txt_Fecha.Text = "";
+                txt_Horas.Text = "";
+                txt_Actividades.Text = "";
+                Button1.Visible = false;
+                Btn_Actualizar.Visible = false;
+                Btn_Agregar.Visible = true;
             }
             else
             {
@@ -245,6 +255,16 @@ namespace Pasantias
             return true; // Retorna verdadero si todas las validaciones son exitosas
         }
 
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            txt_Fecha.Text = "";
+            txt_Horas.Text = "";
+            txt_Actividades.Text = "";
+            Btn_Actualizar.Visible = false;
+            Btn_Agregar.Visible = true;
+            Button1.Visible = false;
+
+        }
     }
 
 }

@@ -1,39 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
-using MySql.Data.MySqlClient;
-using System.Linq.Expressions;
 
 namespace Modelo
 {
-    public class ConexionBD
+    public class ConexionBD : IDisposable
     {
         private string cadena = "server=localhost; database=pasantias; user=root; password=";
-        public MySqlConnection conectar = new MySqlConnection();
-       
+        public MySqlConnection conectar;
+
+        public ConexionBD()
+        {
+            conectar = new MySqlConnection(cadena);
+        }
+
         public void AbrirConexion()
         {
-
             try
             {
-                
-                conectar.ConnectionString = cadena;
-                conectar.Open();
-               // System.Diagnostics.Debug.WriteLine("Conexion Exitosa");
-
+                if (conectar.State == ConnectionState.Closed)
+                {
+                    conectar.Open();
+                    // System.Diagnostics.Debug.WriteLine("Conexion Exitosa");
+                }
             }
             catch (Exception ex)
             {
-               // System.Diagnostics.Debug.WriteLine(ex.Message);
-                 Console.WriteLine(ex.Message);
-
+                // System.Diagnostics.Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
             }
-
         }
-        public void CerarConexion()
+
+        public void CerrarConexion()
         {
             try
             {
@@ -42,10 +40,18 @@ namespace Modelo
                     conectar.Close();
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
             }
+        }
 
+        // Implementación de IDisposable
+        public void Dispose()
+        {
+            // Cierra la conexión si está abierta
+            CerrarConexion();
+            conectar.Dispose(); // Libera los recursos de la conexión
         }
     }
 }
