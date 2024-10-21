@@ -19,81 +19,6 @@
         <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
 
-    <style>
-        /* Modo nocturno */
-        body.dark {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        .dark .navbar-light {
-            background-color: #333;
-        }
-
-        .dark .navbar-light .nav-link {
-            color: #ffffff;
-        }
-
-        .dark .sidebar-left {
-            background-color: #212121;
-        }
-
-        .dark .sidebar-left .nav-link {
-            color: #ffffff;
-        }
-
-        .dark .table-condensed {
-            background-color: #333;
-            color: #ffffff;
-        }
-
-        .dark .table-condensed th {
-            background-color: #4CAF50;
-        }
-
-        /* Estilo para el cuadro blanco en la barra lateral */
-        .sidebar-left {
-            background-color: white;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Modo de luz */
-        body.light {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-
-        .light .navbar-light {
-            background-color: #ffffff;
-        }
-
-        .light .navbar-light .nav-link {
-            color: #212529;
-        }
-
-        .light .sidebar-left {
-            background-color: #ffffff;
-        }
-
-        .light .sidebar-left .nav-link {
-            color: #212529;
-        }
-
-        .light .table-condensed {
-            background-color: #ffffff;
-            color: #212529;
-        }
-
-        .light .table-condensed th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        /* Para el botón de cambio de tema */
-        .nav-item a#modeSwitcher {
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body class="vertical light"> <!-- Asegúrate de que la clase 'light' se aplique al principio -->
@@ -130,7 +55,7 @@
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href='<%= ResolveUrl("~/UsuarioPerfil.aspx") %>'>Perfil</a>
+                    <a class="dropdown-item" href='<%= ResolveUrl("~/Hoja_Tiempo.aspx") %>'>Perfil</a>
                     <a class="dropdown-item">Configuración</a>
                     <a class="dropdown-item" href="#">Actividades</a>
                 </div>
@@ -174,9 +99,9 @@
             </p>
             <ul class="navbar-nav flex-fill w-100 mb-2">
                 <li class="nav-item w-100">
-                    <a class="nav-link" href='<%= ResolveClientUrl("~/UserModulo.aspx") %>'>
+                    <a class="nav-link" href='<%= ResolveClientUrl("~/Hoja_Tiempo.aspx") %>'>
                         <i class="fe fe-users fe-16"></i>
-                        <span class="ml-3 item-text">Usuarios</span>
+                        <span class="ml-3 item-text">Hoja de Tiempo</span>
                     </a>
                 </li>
                 <li class="nav-item w-100">
