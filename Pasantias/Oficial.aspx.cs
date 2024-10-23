@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Modelo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,12 @@ namespace Pasantias
         protected void Page_Load(object sender, EventArgs e)
         {
 
+        }
+
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ConexionBD cn = new ConexionBD();
+            cn.AbrirConexion();
         }
     }
 }
