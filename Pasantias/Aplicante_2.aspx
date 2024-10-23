@@ -1,108 +1,85 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Aplicante_2.aspx.cs" Inherits="Pasantias.Aplicante_2" %>
 
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Aplica Hoy!</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/feather.css" />
+    <link rel="stylesheet" href="css/app-light.css" id="lightTheme" />
 </head>
-<body>
-    <form id="form1" runat="server">
-       <div>
-            <style>
-    /* Centrar el formulario */
-    .form-container {
-        margin-bottom: 100px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; /* Altura total de la ventana */
-    }
+<body class="vertical light">
+    <!-- Aquí agregamos el enctype para poder subir archivos -->
+    <form id="form1" runat="server" enctype="multipart/form-data">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="text-center mb-4">
+                        <h1 class="card-title text-center">Aplica Hoy!</h1>
+                    </div>
 
-    .form-group {
-        margin-bottom: 10px;
-    }
+                    <div class="card shadow mb-4">
+                        <div class="card-header text-center">
+                            <img alt="Logos Oficiales" src="Logos/logosoficiales.jpg" width="500" height="200" />
+                        </div>
 
-    .form-wrapper {
-        width: 100%;
-        max-width: 400px;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+                        <div class="card-body">
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Fecha" runat="server" Text="Fecha de Nacimiento:" CssClass="form-label"></asp:Label>
+                                <asp:TextBox ID="txt_Fecha" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                            </div>
 
-    label, input, select, .form-control {
-        display: block;
-        width: 100%;
-        max-width: 400px;
-    }
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Telefono" runat="server" Text="Número de Teléfono:" CssClass="form-label"></asp:Label>
+                                <asp:TextBox ID="txt_Telefono" runat="server" placeholder="Escriba su Número de Teléfono" CssClass="form-control"></asp:TextBox>
+                            </div>
 
-    input, .form-control {
-        padding: 5px;
-    }
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Universidad" runat="server" Text="Último Grado Académico Alcanzado:" CssClass="form-label"></asp:Label>
+                                <asp:TextBox ID="txt_Universidad" runat="server" placeholder="Escriba su Universidad" CssClass="form-control"></asp:TextBox>
+                            </div>
 
-    .radio-group {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* Espacio entre el radio button y la etiqueta */
-    }
-</style>
-           <div class="logo-container" >
-        <img alt="Logo USAID" src="Logos/usaid.png"  width="500" height="200"/>
-        <img alt="Logo Institución" src="Logos/logo.jpg"  width="500" height="200"/>
-        <img alt="Logo Creando" src="Logos/creando.jpg"  width="100" height="100" />
-   </div>
-<div class="form-container">
-    <div class="form-wrapper">
-        <h1>Aplica Hoy!</h1>
-        <div class="form-group">
-            <asp:Label ID="lbl_Fecha" runat="server" Text="Fecha de Nacimiento:"></asp:Label>
-            <asp:TextBox ID="txt_Fecha" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
-        </div>
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección (Especificar Departamento):" CssClass="form-label"></asp:Label>
+                                <asp:TextBox ID="txt_Direccion" runat="server" placeholder="Escriba su Dirección Exacta" CssClass="form-control"></asp:TextBox>
+                            </div>
 
+                         <div class="form-group">
+                                <asp:Label ID="lbl_Sexo" runat="server" Text="Sexo:" CssClass="form-label"></asp:Label>
+                                <div class="form-check form-check-inline">
+                                    <asp:RadioButton ID="txt_Hombre" runat="server" GroupName="Sexo" Text="" CssClass="form-check-input" />
+                                    <asp:Label runat="server" AssociatedControlID="txt_Hombre" CssClass="form-check-label">Hombre</asp:Label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <asp:RadioButton ID="txt_Mujer" runat="server" GroupName="Sexo" Text="" CssClass="form-check-input" />
+                                    <asp:Label runat="server" AssociatedControlID="txt_Mujer" CssClass="form-check-label">Mujer</asp:Label>
+                                </div>
+                            </div>
 
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal:" CssClass="form-label"></asp:Label>
+                                <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
+                            </div>
 
-        <div class="form-group">
-            <asp:Label ID="lbl_Telefono" runat="server" Text="Número de Teléfono:"></asp:Label>
-            <asp:TextBox ID="txt_Telefono" runat="server" placeholder="Escriba su Número de Teléfono"></asp:TextBox>
-        </div>
+                            <div class="form-group">
+                                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:" CssClass="form-label"></asp:Label>
+                                <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
+                            </div>
 
-        <div class="form-group">
-            <asp:Label ID="lbl_Universidad" runat="server" Text="Ultimo Grado Academico Alcanzado:"></asp:Label>
-            <asp:TextBox ID="txt_Universidad" runat="server" placeholder="Escriba su Universidad"></asp:TextBox>
-        </div>
-
-        <div class="form-group">
-            <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección (Especificar Departamento):"></asp:Label>
-            <asp:TextBox ID="txt_Direccion" runat="server" placeholder="Escriba su Dirección Exacta"></asp:TextBox>
-        </div>
-
-        <div class="form-group">
-            <asp:Label ID="lbl_Sexo" runat="server" Text="Sexo:"></asp:Label>
-            <div class="radio-group">
-                <asp:RadioButton ID="txt_Hombre" runat="server" GroupName="Sexo" Text="Hombre" />
-                <asp:RadioButton ID="txt_Mujer" runat="server" GroupName="Sexo" Text="Mujer" />
+                            <div class="form-group text-center">
+                                <asp:Button ID="Enviar" runat="server" Text="Enviar Datos" CssClass="btn btn-primary" OnClick="Enviar_Click" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="form-group">
-            <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal:"></asp:Label>
-            <asp:FileUpload ID="txt_Foto" runat="server" />
-        </div>
-
-        <div class="form-group">
-            <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:"></asp:Label>
-            <asp:FileUpload ID="txt_Curriculum" runat="server" />
-        </div>
-
-        <div class="form-group">
-            <asp:Button ID="Enviar" runat="server" Text="Enviar Datos" />
-        </div>
-    </div>
-</div>
-       </div>
     </form>
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
