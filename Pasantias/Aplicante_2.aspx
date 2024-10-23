@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="css/app-light.css" id="lightTheme" />
 </head>
 <body class="vertical light">
-    <!-- Aquí agregamos el enctype para poder subir archivos -->
     <form id="form1" runat="server" enctype="multipart/form-data">
         <div class="container mt-5">
             <div class="row">
@@ -46,7 +45,7 @@
                                 <asp:TextBox ID="txt_Direccion" runat="server" placeholder="Escriba su Dirección Exacta" CssClass="form-control"></asp:TextBox>
                             </div>
 
-                         <div class="form-group">
+                            <div class="form-group">
                                 <asp:Label ID="lbl_Sexo" runat="server" Text="Sexo:" CssClass="form-label"></asp:Label>
                                 <div class="form-check form-check-inline">
                                     <asp:RadioButton ID="txt_Hombre" runat="server" GroupName="Sexo" Text="" CssClass="form-check-input" />
@@ -67,6 +66,9 @@
                                 <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:" CssClass="form-label"></asp:Label>
                                 <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
                             </div>
+
+                            <!-- Label para mostrar errores -->
+                            <asp:Label ID="lbl_Error" runat="server" CssClass="text-danger" Visible="true"></asp:Label>
 
                             <div class="form-group text-center">
                                 <asp:Button ID="Enviar" runat="server" Text="Enviar Datos" CssClass="btn btn-primary" OnClick="Enviar_Click" />
