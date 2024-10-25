@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Data;
 
 namespace Modelo
 {
@@ -8,35 +9,46 @@ namespace Modelo
         ConexionBD conectar;
 
         // Método para agregar un nuevo aplicante
-        public int agregar(int IDUsuario,string Nombre1, string Nombre2, string Apellido1, string Apellido2, string DNI, string Correo)
+        public int agregar(int IDUsuario, string Nombre1, string Nombre2, string Apellido1, string Apellido2, string DNI, string Correo)
         {
-            // Primero, verifica si el DNI ya existe
-            if (ExisteDNI(DNI))
-            {
-                return -1; // Retorna -1 para indicar que el DNI ya existe
-            }
-
+            int no = 0;  // Esta variable almacenará el número de filas afectadas
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "INSERT INTO usuarios (IDUsuario,Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, DNI, Correo) " +
-                              "VALUES (@IDUsuario, @Nombre1, @Nombre2, @Apellido1, @Apellido2, @DNI, @Correo)";
+            string consulta = "AgregarUsuario";  // Nombre del procedimiento almacenado
 
-            using (MySqlCommand query = new MySqlCommand(consulta, conectar.conectar))
+            // Crear el comando y configurarlo como procedimiento almacenado
+            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
             {
-                query.Parameters.AddWithValue("@IDUsuario", IDUsuario);
-                query.Parameters.AddWithValue("@Nombre1", Nombre1);
-                query.Parameters.AddWithValue("@Nombre2", Nombre2);
-                query.Parameters.AddWithValue("@Apellido1", Apellido1);
-                query.Parameters.AddWithValue("@Apellido2", Apellido2);
-                query.Parameters.AddWithValue("@DNI", DNI);
-                query.Parameters.AddWithValue("@Correo", Correo);
+                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
 
-                query.ExecuteNonQuery();
+                // Agregar los parámetros al comando
+                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+                cmd.Parameters.AddWithValue("p_Nombre1", Nombre1);
+                cmd.Parameters.AddWithValue("p_Nombre2", Nombre2);
+                cmd.Parameters.AddWithValue("p_Apellido1", Apellido1);
+                cmd.Parameters.AddWithValue("p_Apellido2", Apellido2);
+                cmd.Parameters.AddWithValue("p_DNI", DNI);
+                cmd.Parameters.AddWithValue("p_Correo", Correo);
+
+                try
+                {
+                    // Ejecutar el procedimiento almacenado
+                    no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+                }
+                catch (MySqlException ex)
+                {
+                    // Manejo de excepciones si el DNI ya existe
+                    if (ex.Message.Contains("El DNI ya existe"))
+                    {
+                        return -1; // Retorna -1 si el DNI ya existe
+                    }
+                    throw; // Rethrow para manejar otras excepciones
+                }
             }
 
             conectar.CerrarConexion();
-            return ObtenerUltimoIDUsuario(); // Retorna el ID del nuevo registro
+            return no;  // Devolver el número de filas afectadas
         }
 
         public int ObtenerUltimoIDUsuario()
