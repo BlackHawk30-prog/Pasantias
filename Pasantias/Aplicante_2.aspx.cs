@@ -1,7 +1,5 @@
 ﻿using Modelo;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,12 +10,30 @@ namespace Pasantias
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                // Obtener el IDUsuario de la query string
+                string idUsuarioString = Request.QueryString["IDUsuario"];
+                if (!string.IsNullOrEmpty(idUsuarioString))
+                {
+                    ViewState["IDUsuario"] = idUsuarioString; // Almacena el IDUsuario en ViewState para usarlo más tarde
+                }
+                else
+                {
+                    lbl_Error.Text = "No se proporcionó un ID de usuario válido.";
+                }
+            }
         }
 
         protected void Enviar_Click(object sender, EventArgs e)
         {
-            int idUsuario = 1; // ID fijo de usuario por ahora
+            if (ViewState["IDUsuario"] == null)
+            {
+                lbl_Error.Text = "Error al obtener el ID de usuario.";
+                return;
+            }
+
+            int idUsuario = Convert.ToInt32(ViewState["IDUsuario"]); // Recupera el IDUsuario desde ViewState
 
             // Validar campos obligatorios
             if (!Utilidades.ValidarCampoObligatorio(txt_Telefono.Text) ||
@@ -25,7 +41,6 @@ namespace Pasantias
                 !Utilidades.ValidarCampoObligatorio(txt_Universidad.Text) ||
                 !Utilidades.ValidarCampoObligatorio(txt_Fecha.Text))
             {
-                // Mostrar un mensaje de error si hay campos vacíos
                 lbl_Error.Text = "Todos los campos son obligatorios.";
                 return;
             }
@@ -92,7 +107,5 @@ namespace Pasantias
             // Limpiar campos o redirigir al usuario después del registro exitoso
             lbl_Error.Text = "Datos enviados exitosamente.";
         }
-
-
     }
 }
