@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/feather.css" />
     <link rel="stylesheet" href="css/app-light.css" id="lightTheme" />
+
+    <style>
+        .required { color: red; }
+        .error { border-color: red !important; }
+    </style>
+    <script type="text/javascript">
+        function clearError(id) {
+            document.getElementById(id).classList.remove('error');
+        }
+    </script>
 </head>
 <body class="vertical light">
     <form id="form1" runat="server" enctype="multipart/form-data">
@@ -58,16 +68,15 @@
                             </div>
 
                             <div class="form-group">
-                                <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal:" CssClass="form-label"></asp:Label>
+                                <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal (Solo se aceptan formatos JPG y PNG):" CssClass="form-label"></asp:Label>
                                 <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
                             </div>
 
                             <div class="form-group">
-                                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:" CssClass="form-label"></asp:Label>
+                                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
                                 <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
                             </div>
 
-                            <!-- Label para mostrar errores -->
                             <asp:Label ID="lbl_Error" runat="server" CssClass="text-danger" Visible="true"></asp:Label>
 
                             <div class="form-group text-center">
