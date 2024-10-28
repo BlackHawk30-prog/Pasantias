@@ -8,26 +8,19 @@ using System.Web.UI.WebControls;
 
 namespace Pasantias
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class WebForm4 : System.Web.UI.Page
     {
-        Oficial oficial;
+        RH rH;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                oficial = new Oficial();
-                oficial.grid_oficial(GridView1);
+                rH = new RH();
+                rH.grid_rh(grid_rh);
             }
         }
 
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
- 
-
-
-        }
-
-        protected void Button1_Click(object sender, EventArgs e)
         {
 
         }
