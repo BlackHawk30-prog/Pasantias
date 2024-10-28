@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using MySql.Data.MySqlClient;
 using System.Web.UI.WebControls;
-using System.Data;
 
 namespace Modelo
 {
-    public class Finanzas
+    public class Finanza
     {
         ConexionBD conectar;
 
+        // Método privado que devuelve una tabla con los datos de Finanzas
         private DataTable grid_fina()
         {
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = string.Format("select IDUsuario as id, Primer_Nombre, Segundo_Nombre, DNI from usuarios;");
+            string consulta = "select IDUsuario as id, Primer_Nombre, Segundo_Nombre, DNI from usuarios;";
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
             conectar.CerrarConexion();
@@ -26,6 +23,7 @@ namespace Modelo
             return tabla;
         }
 
+        // Método público que vincula el GridView con los datos obtenidos
         public void grid_fina(GridView grid)
         {
             grid.DataSource = grid_fina();
