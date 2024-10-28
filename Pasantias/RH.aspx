@@ -1,23 +1,32 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="RH.aspx.cs" Inherits="Pasantias.WebForm2" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="RH.aspx.cs" Inherits="Pasantias.WebForm2" %> 
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-        <h1>Recursos Humanos </h1>
-    <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" CssClass="table">
-        <Columns>
-            <asp:TemplateField ShowHeader="False">
-                <ItemTemplate>
-                    <asp:Button ID="btn_selec" runat="server" CausesValidation="False" CommandName="Select" Text="Ver" />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField ShowHeader="False">
-                <ItemTemplate>
-                    <asp:Button ID="btn_borrar" runat="server" CausesValidation="False" CommandName="Delete" Text="Borrar" />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
-            <asp:BoundField DataField="DNI" HeaderText="DNI" />
-            <asp:BoundField DataField="Horas" HeaderText="Total Horas" />
-            <asp:BoundField DataField="Hoja de tiempo" HeaderText="Hoja de tiempo" />
-            <asp:BoundField DataField="Supervisor" HeaderText="Supervisor" />
-        </Columns>
-    </asp:GridView>
+    <h1 class="text-center">Recursos Humanos</h1> <!-- Título centrado -->
+
+    <!-- Div contenedor centrado -->
+    <div class="container d-flex justify-content-center mt-4"> <!-- Contenedor centralizado y margen superior -->
+        <div class="table-responsive" style="max-width: 800px;"> <!-- Ancho máximo ajustado -->
+            <!-- Centrar la tabla y agregar estilo con Bootstrap -->
+            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto text-center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
+                <Columns>
+                    <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
+                    <asp:BoundField DataField="DNI" HeaderText="DNI" />
+                    <asp:BoundField DataField="Segundo_Nombre" HeaderText="Supervisor" />
+
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" CommandName="Select" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:Button ID="btn_borrar" runat="server" CausesValidation="False" CommandName="Delete" Text="Borrar" CssClass="btn btn-danger" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
+        </div>
+    </div>
 </asp:Content>
+

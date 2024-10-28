@@ -19,5 +19,10 @@ namespace Pasantias
                 finanzas.grid_fina(grid_fina);
             }
         }
+
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
