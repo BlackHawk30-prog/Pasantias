@@ -17,81 +17,86 @@ namespace Pasantias
         {
             aplicante1 = new Aplicante1();
 
+            // Reiniciar el mensaje de error
+            lbl_Error.Text = "";
+            lbl_Error.Visible = false;
+
+            // Restablecer clases de error antes de la validación
+            txt_Nombre1.CssClass = txt_Nombre1.CssClass.Replace(" error", "");
+            txt_Nombre2.CssClass = txt_Nombre2.CssClass.Replace(" error", "");
+            txt_Apellido1.CssClass = txt_Apellido1.CssClass.Replace(" error", "");
+            txt_Apellido2.CssClass = txt_Apellido2.CssClass.Replace(" error", "");
+            txt_DNI.CssClass = txt_DNI.CssClass.Replace(" error", "");
+            txt_Correo.CssClass = txt_Correo.CssClass.Replace(" error", "");
+
             // Validar que ningún campo esté vacío
-            if (string.IsNullOrWhiteSpace(txt_Nombre1.Text) || string.IsNullOrWhiteSpace(txt_Apellido1.Text) ||
-                string.IsNullOrWhiteSpace(txt_DNI.Text) || string.IsNullOrWhiteSpace(txt_Correo.Text))
+            if (string.IsNullOrWhiteSpace(txt_Nombre1.Text) ||
+                string.IsNullOrWhiteSpace(txt_Apellido1.Text) ||
+                string.IsNullOrWhiteSpace(txt_DNI.Text) ||
+                string.IsNullOrWhiteSpace(txt_Correo.Text))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Todos los campos son obligatorios.');", true);
-                return; // Salir del método si hay campos vacíos 
+                lbl_Error.Text = "Todos los campos son obligatorios.";
+                lbl_Error.Visible = true;
+                if (string.IsNullOrWhiteSpace(txt_Nombre1.Text)) txt_Nombre1.CssClass += " error";
+                if (string.IsNullOrWhiteSpace(txt_Nombre2.Text)) txt_Nombre2.CssClass += " error";
+                if (string.IsNullOrWhiteSpace(txt_Apellido1.Text)) txt_Apellido1.CssClass += " error";
+                if (string.IsNullOrWhiteSpace(txt_Apellido2.Text)) txt_Apellido2.CssClass += " error";
+                if (string.IsNullOrWhiteSpace(txt_DNI.Text)) txt_DNI.CssClass += " error";
+                if (string.IsNullOrWhiteSpace(txt_Correo.Text)) txt_Correo.CssClass += " error";
+                return;
             }
 
-            // Validar que los campos de nombre y apellido no contengan caracteres especiales ni números
-            if (!ValidarNombreApellido(txt_Nombre1.Text) ||
-                !ValidarNombreApellido(txt_Apellido1.Text) ||
-                !ValidarNombreApellido(txt_Apellido2.Text) ||
-                !ValidarNombreApellido(txt_Nombre2.Text))
+            // Validar que los campos de nombre y apellido no contengan caracteres especiales ni tres letras consecutivas
+            if (!Utilidades.ValidarNombreApellido(txt_Nombre1.Text))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Los nombres y apellidos no pueden contener caracteres especiales ni números.');", true);
+                lbl_Error.Text = "El primer nombre no puede contener caracteres especiales ni tres letras consecutivas.";
+                lbl_Error.Visible = true;
+                txt_Nombre1.CssClass += " error";
+                return;
+            }
+
+            if (!Utilidades.ValidarNombreApellido(txt_Apellido1.Text))
+            {
+                lbl_Error.Text = "El primer apellido no puede contener caracteres especiales ni tres letras consecutivas.";
+                lbl_Error.Visible = true;
+                txt_Apellido1.CssClass += " error";
                 return;
             }
 
             // Validar que el correo tenga un formato válido
-            if (!ValidarCorreo(txt_Correo.Text))
+            if (!Utilidades.ValidarCorreo(txt_Correo.Text))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('El correo electrónico no es válido.');", true);
+                lbl_Error.Text = "El correo electrónico no es válido.";
+                lbl_Error.Visible = true;
+                txt_Correo.CssClass += " error";
                 return;
             }
 
             // Validar que el DNI contenga exactamente 13 dígitos
-            if (!ValidarDNI(txt_DNI.Text))
+            if (!Utilidades.ValidarDNI(txt_DNI.Text))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('El DNI debe contener exactamente 13 dígitos.');", true);
+                lbl_Error.Text = "El DNI debe contener exactamente 13 dígitos numéricos.";
+                lbl_Error.Visible = true;
+                txt_DNI.CssClass += " error";
                 return;
             }
 
             // Intentar agregar el aplicante
             int resultado = aplicante1.agregar(0, txt_Nombre1.Text, txt_Nombre2.Text, txt_Apellido1.Text, txt_Apellido2.Text, txt_DNI.Text, txt_Correo.Text);
 
-            // Verificar si el DNI ya existe
             if (resultado == -1)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('El DNI ya existe.');", true);
-                return; // Salir si el DNI ya está registrado
+                lbl_Error.Text = "El DNI ya existe.";
+                lbl_Error.Visible = true;
+                txt_DNI.CssClass += " error";
+                return;
             }
 
-            // Si la inserción fue exitosa, redirigir a la segunda página con el nuevo IDUsuario
             if (resultado > 0)
             {
-                // Obtener el IDUsuario del último registro insertado
-                int nuevoIDUsuario = aplicante1.ObtenerUltimoIDUsuario(); // Asegúrate de implementar este método
-                Response.Redirect("Aplicante_2.aspx?idUsuario=" + nuevoIDUsuario); // Pasar el IDUsuario a la siguiente página
+                int nuevoIDUsuario = aplicante1.ObtenerUltimoIDUsuario();
+                Response.Redirect("Aplicante_2.aspx?idUsuario=" + nuevoIDUsuario);
             }
-        }
-
-        // Método para validar nombres y apellidos
-        private bool ValidarNombreApellido(string valor)
-        {
-            // Verificar que no contenga caracteres especiales y números
-            if (System.Text.RegularExpressions.Regex.IsMatch(valor, @"^[a-zA-Z]+$"))
-            {
-                // Verificar que no tenga 3 letras seguidas
-                return !System.Text.RegularExpressions.Regex.IsMatch(valor, @"([a-zA-Z])\1{2,}");
-            }
-            return false;
-        }
-
-        // Método para validar el formato del correo electrónico
-        private bool ValidarCorreo(string correo)
-        {
-            // Usar una expresión regular para validar el formato del correo
-            return System.Text.RegularExpressions.Regex.IsMatch(correo, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        }
-
-        // Método para validar el DNI
-        private bool ValidarDNI(string dni)
-        {
-            // Verificar que solo contenga números y que tenga exactamente 13 caracteres
-            return dni.Length == 13 && System.Text.RegularExpressions.Regex.IsMatch(dni, @"^\d+$");
         }
     }
 }
