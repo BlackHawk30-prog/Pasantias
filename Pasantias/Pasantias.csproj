@@ -168,6 +168,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
+    <Content Include="Finanzas.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Hoja_Tiempo.aspx" />
     <Content Include="Log.aspx" />
@@ -204,6 +205,7 @@
     <Content Include="Oficial.aspx" />
     <Content Include="RH.aspx" />
     <Content Include="Seguridad.aspx" />
+    <Content Include="Recursos_Humanos.aspx" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -253,6 +255,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Finanzas.aspx.cs">
+      <DependentUpon>Finanzas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Finanzas.aspx.designer.cs">
+      <DependentUpon>Finanzas.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -327,6 +336,13 @@
     </Compile>
     <Compile Include="Seguridad.aspx.designer.cs">
       <DependentUpon>Seguridad.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recursos_Humanos.aspx.cs">
+      <DependentUpon>Recursos_Humanos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recursos_Humanos.aspx.designer.cs">
+      <DependentUpon>Recursos_Humanos.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

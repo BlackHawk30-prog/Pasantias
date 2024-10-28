@@ -1,17 +1,18 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Oficial.aspx.cs" Inherits="Pasantias.WebForm1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Recursos_Humanos.aspx.cs" Inherits="Pasantias.WebForm4" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <h1 class="text-center">Oficial<asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click" /> </h1> <!-- Título centrado -->
+    <h1 class="text-center"> Recursos Humanos </h1> 
 
     <!-- Div contenedor centrado -->
     <div class="container text-center">
-        <div class="table-responsive">
+    <div class="table-responsive">
             <!-- Centrar la tabla y agregar estilo con Bootstrap -->
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
+            <asp:GridView ID="grid_rh" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
     <Columns>
 
         <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
         <asp:BoundField DataField="DNI" HeaderText="DNI" />
+        <asp:BoundField DataField="Segundo_Nombre" HeaderText="Supervisor" />
        
         <asp:TemplateField ShowHeader="False">
             <ItemTemplate>
@@ -31,4 +32,3 @@
         </div>
     </div>
 </asp:Content>
-
