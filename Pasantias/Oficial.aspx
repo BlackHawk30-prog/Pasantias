@@ -18,14 +18,14 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField ShowHeader="False">
-                        <ItemTemplate>
-                            <asp:Button ID="btn_borrar" runat="server" CausesValidation="False" CommandName="Delete" Text="Borrar" CssClass="btn btn-danger" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
     </div>
-</asp:Content>
 
+    <!-- Div contenedor para alinear los botones horizontalmente -->
+    <div class="d-flex justify-content-center mt-3">
+        <asp:Button ID="btn_acept" runat="server" Text="Aceptar" CssClass="btn btn-success mx-2" Visible="True" OnClick="Button1_Click" />
+        <asp:Button ID="btn_rech" runat="server" Text="Rechazar" CssClass="btn btn-danger mx-2" Visible="True" OnClick="btn_rech_Click" />
+    </div>
+</asp:Content>
