@@ -10,12 +10,12 @@ namespace Pasantias
 {
     public partial class Finanzas : System.Web.UI.Page
     {
-        Finanzas finanzas;
+        Finanza finanzas;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                finanzas = new Finanzas();
+                finanzas = new Finanza();
                 finanzas.grid_fina(grid_fina);
             }
         }
