@@ -205,7 +205,6 @@
     <Content Include="Oficial.aspx" />
     <Content Include="RH.aspx" />
     <Content Include="Seguridad.aspx" />
-    <Content Include="Recursos_Humanos.aspx" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -336,13 +335,6 @@
     </Compile>
     <Compile Include="Seguridad.aspx.designer.cs">
       <DependentUpon>Seguridad.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Recursos_Humanos.aspx.cs">
-      <DependentUpon>Recursos_Humanos.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Recursos_Humanos.aspx.designer.cs">
-      <DependentUpon>Recursos_Humanos.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
