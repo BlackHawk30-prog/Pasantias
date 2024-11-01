@@ -235,6 +235,7 @@
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
     <Content Include="ViewSwitcher.ascx" />
+    <Content Include="VistaHJ.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -343,6 +344,13 @@
     </Compile>
     <Compile Include="Seguridad.aspx.designer.cs">
       <DependentUpon>Seguridad.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="VistaHJ.aspx.cs">
+      <DependentUpon>VistaHJ.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VistaHJ.aspx.designer.cs">
+      <DependentUpon>VistaHJ.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

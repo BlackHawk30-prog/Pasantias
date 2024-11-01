@@ -110,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RH.cs" />
     <Compile Include="Utilidades.cs" />
+    <Compile Include="Vista_HJ.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
