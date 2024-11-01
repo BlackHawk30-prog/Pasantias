@@ -41,12 +41,12 @@ namespace Modelo
             return telefono.Length == 8 && Regex.IsMatch(telefono, @"^\d+$");
         }
 
-        // Método para validar edad mínima de 17 años a partir de la fecha de nacimiento
+        // Método para validar edad mínima de 16 años a partir de la fecha de nacimiento
         public static bool ValidarEdad(DateTime fechaNacimiento)
         {
             int edad = DateTime.Now.Year - fechaNacimiento.Year;
             if (fechaNacimiento > DateTime.Now.AddYears(-edad)) edad--;
-            return edad >= 17;
+            return edad >= 16;
         }
 
         // Método para validar texto en campos como dirección o grado académico (sin caracteres especiales)
