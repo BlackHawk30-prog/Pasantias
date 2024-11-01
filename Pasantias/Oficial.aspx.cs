@@ -31,5 +31,10 @@ namespace Pasantias
         {
 
         }
+
+        protected void btn_rech_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
