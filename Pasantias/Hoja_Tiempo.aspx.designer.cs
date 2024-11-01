@@ -15,6 +15,15 @@ namespace Pasantias
     {
 
         /// <summary>
+        /// Control lbl_HorasTotales.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_HorasTotales;
+
+        /// <summary>
         /// Control lbl_Fecha.
         /// </summary>
         /// <remarks>
@@ -33,24 +42,6 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.TextBox txt_Fecha;
 
         /// <summary>
-        /// Control lbl_Actividades.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_Actividades;
-
-        /// <summary>
-        /// Control txt_Actividades.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_Actividades;
-
-        /// <summary>
         /// Control lbl_Horas.
         /// </summary>
         /// <remarks>
@@ -67,6 +58,24 @@ namespace Pasantias
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txt_Horas;
+
+        /// <summary>
+        /// Control lbl_Actividades.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_Actividades;
+
+        /// <summary>
+        /// Control txt_Actividades.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txt_Actividades;
 
         /// <summary>
         /// Control Btn_Agregar.
@@ -96,15 +105,6 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.Button Button1;
 
         /// <summary>
-        /// Control Btn_Enviar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Btn_Enviar;
-
-        /// <summary>
         /// Control lbl_Mensaje.
         /// </summary>
         /// <remarks>
@@ -121,5 +121,14 @@ namespace Pasantias
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView grid_hojas;
+
+        /// <summary>
+        /// Control Btn_Enviar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Btn_Enviar;
     }
 }

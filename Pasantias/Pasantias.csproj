@@ -167,6 +167,7 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
+    <Content Include="Editar_Perfil.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Finanzas.aspx" />
     <Content Include="Global.asax" />
@@ -255,6 +256,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Editar_Perfil.aspx.cs">
+      <DependentUpon>Editar_Perfil.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Editar_Perfil.aspx.designer.cs">
+      <DependentUpon>Editar_Perfil.aspx</DependentUpon>
     </Compile>
     <Compile Include="Finanzas.aspx.cs">
       <DependentUpon>Finanzas.aspx</DependentUpon>

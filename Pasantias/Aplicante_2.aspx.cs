@@ -1,117 +1,228 @@
 ﻿using Modelo;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.UI;
 
 namespace Pasantias
 {
     public partial class Aplicante_2 : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        Aplicante2 aplicante2;
+
+        public static class EncriptacionAES
         {
-            if (!IsPostBack)
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
             {
-                string idUsuarioString = Request.QueryString["IDUsuario"];
-                if (!string.IsNullOrEmpty(idUsuarioString))
+                // Asegura que la clave tenga exactamente 16 bytes (para AES-128)
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
                 {
-                    ViewState["IDUsuario"] = idUsuarioString;
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+                    return Convert.ToBase64String(encriptado);
                 }
-                else
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
                 {
-                    lbl_Error.Text = "No se proporcionó un ID de usuario válido.";
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
                 }
             }
         }
 
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                // Obtener y desencriptar el DNI de la URL
+                string dniEncriptado = Request.QueryString["DNI"];
+                if (string.IsNullOrEmpty(dniEncriptado))
+                {
+                    lbl_Error.Text = "DNI no válido.";
+                    lbl_Error.Visible = true;
+                    return;
+                }
+
+                // Verificar longitud y caracteres válidos
+                if (dniEncriptado.Length % 4 != 0 ||
+                    !IsBase64String(dniEncriptado))
+                {
+                    lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
+                    lbl_Error.Visible = true;
+                    return;
+                }
+
+                try
+                {
+                    string dniDesencriptado = EncriptacionAES.Desencriptar(dniEncriptado);
+                    ViewState["DNI"] = dniDesencriptado;  // Guardamos el DNI desencriptado en el estado de la vista
+                }
+                catch (CryptographicException ex)
+                {
+                    lbl_Error.Text = $"Error al desencriptar el DNI: {ex.Message}";
+                    lbl_Error.Visible = true;
+                }
+                catch (FormatException ex)
+                {
+                    lbl_Error.Text = $"Error de formato: {ex.Message}";
+                    lbl_Error.Visible = true;
+                }
+            }
+        }
+
+        // Método auxiliar para verificar si la cadena es Base64
+        private bool IsBase64String(string s)
+        {
+            if (string.IsNullOrEmpty(s) || s.Length % 4 != 0)
+                return false;
+
+            // Verifica si hay caracteres inválidos en la cadena
+            foreach (char c in s)
+            {
+                if (!char.IsLetterOrDigit(c) && c != '+' && c != '/' && c != '=')
+                    return false;
+            }
+            return true;
+        }
+
         protected void Enviar_Click(object sender, EventArgs e)
         {
-            bool hasError = false;
-            lbl_Error.Text = "";  // Reset error message
+            bool esValido = true;
+            lbl_Error.Text = string.Empty;
 
-            if (ViewState["IDUsuario"] == null)
-            {
-                lbl_Error.Text = "Error al obtener el ID de usuario.";
-                return;
-            }
-
-            int idUsuario = Convert.ToInt32(ViewState["IDUsuario"]);
-
-            // Validar campos obligatorios
-            if (!Utilidades.ValidarCampoObligatorio(txt_Telefono.Text))
-            {
-                txt_Telefono.CssClass += " error";
-                hasError = true;
-            }
-            if (!Utilidades.ValidarCampoObligatorio(txt_Direccion.Text))
-            {
-                txt_Direccion.CssClass += " error";
-                hasError = true;
-            }
-            if (!Utilidades.ValidarCampoObligatorio(txt_Universidad.Text))
-            {
-                txt_Universidad.CssClass += " error";
-                hasError = true;
-            }
-            if (!Utilidades.ValidarCampoObligatorio(txt_Fecha.Text))
-            {
-                txt_Fecha.CssClass += " error";
-                hasError = true;
-            }
-
-            // Validar teléfono
-            if (!Utilidades.ValidarTelefono(txt_Telefono.Text))
-            {
-                lbl_Error.Text += "El número de teléfono debe contener exactamente 8 dígitos y solo números.<br/>";
-                txt_Telefono.CssClass += " error";
-                hasError = true;
-            }
-
-            // Validar edad
+            // Validar campo obligatorio para Fecha de Nacimiento y Edad
             DateTime fechaNacimiento;
             if (!DateTime.TryParse(txt_Fecha.Text, out fechaNacimiento) || !Utilidades.ValidarEdad(fechaNacimiento))
             {
-                lbl_Error.Text += "Debes tener al menos 1 años.<br/>";
+                esValido = false;
                 txt_Fecha.CssClass += " error";
-                hasError = true;
+                lbl_Error.Text += "Ingrese una fecha de nacimiento válida (debe ser mayor de 16 años).<br/>";
+            }
+            else
+            {
+                txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "");
             }
 
-            // Validar texto (Grado Académico y Dirección)
-            if (!Utilidades.ValidarTexto(txt_Universidad.Text))
+            // Validar campo obligatorio y formato de Teléfono
+            if (!Utilidades.ValidarTelefono(txt_Telefono.Text))
             {
-                lbl_Error.Text += "El grado académico no puede contener caracteres especiales.<br/>";
+                esValido = false;
+                txt_Telefono.CssClass += " error";
+                lbl_Error.Text += "Ingrese un número de teléfono válido de 8 dígitos.<br/>";
+            }
+            else
+            {
+                txt_Telefono.CssClass = txt_Telefono.CssClass.Replace("error", "");
+            }
+
+            // Validar campo obligatorio y formato de Universidad
+            if (!Utilidades.ValidarCampoObligatorio(txt_Universidad.Text) || !Utilidades.ValidarTexto(txt_Universidad.Text))
+            {
+                esValido = false;
                 txt_Universidad.CssClass += " error";
-                hasError = true;
+                lbl_Error.Text += "Ingrese un nombre de universidad válido.<br/>";
             }
-            if (!Utilidades.ValidarTexto(txt_Direccion.Text))
+            else
             {
-                lbl_Error.Text += "La dirección no puede contener caracteres especiales.<br/>";
+                txt_Universidad.CssClass = txt_Universidad.CssClass.Replace("error", "");
+            }
+
+            // Validar campo obligatorio y formato de Dirección
+            if (!Utilidades.ValidarCampoObligatorio(txt_Direccion.Text) || !Utilidades.ValidarTexto(txt_Direccion.Text))
+            {
+                esValido = false;
                 txt_Direccion.CssClass += " error";
-                hasError = true;
+                lbl_Error.Text += "Ingrese una dirección válida.<br/>";
+            }
+            else
+            {
+                txt_Direccion.CssClass = txt_Direccion.CssClass.Replace("error", "");
             }
 
-            // Validar tipo de archivo de la foto
-            if (txt_Foto.HasFile && !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            // Validar selección de Sexo
+            string sexo = txt_Hombre.Checked ? "Hombre" : txt_Mujer.Checked ? "Mujer" : "";
+            if (string.IsNullOrEmpty(sexo))
             {
-                lbl_Error.Text += "Solo se permiten archivos de imagen JPG o PNG para la foto.<br/>";
+                esValido = false;
+                lbl_Error.Text += "Seleccione su sexo.<br/>";
+            }
+
+            // Validar formato de archivo Foto
+            if (!txt_Foto.HasFile || !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            {
+                esValido = false;
                 txt_Foto.CssClass += " error";
-                hasError = true;
+                lbl_Error.Text += "La foto debe estar en formato JPG o PNG.<br/>";
+            }
+            else
+            {
+                txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
             }
 
-            // Validar tipo de archivo del currículum
-            if (txt_Curriculum.HasFile && !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
+            // Validar formato de archivo Curriculum
+            if (!txt_Curriculum.HasFile || !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
             {
-                lbl_Error.Text += "Solo se permiten archivos .doc, .docx, .pdf, .dox, .360 para el currículum.<br/>";
+                esValido = false;
                 txt_Curriculum.CssClass += " error";
-                hasError = true;
+                lbl_Error.Text += "El currículum debe estar en formato DOC, DOCX o PDF.<br/>";
+            }
+            else
+            {
+                txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace("error", "");
             }
 
-            if (hasError)
+            if (!esValido)
             {
-                lbl_Error.Text = "Por favor, corrija los errores antes de enviar el formulario.";
+                lbl_Error.Visible = true;
                 return;
             }
 
-            // Proceder con el envío de los datos si no hay errores
-            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Datos enviados exitosamente.');", true);
+            // Guardar los datos
+            aplicante2 = new Aplicante2();
+            string dni = ViewState["DNI"].ToString();
+
+            int resultado = aplicante2.Crear(
+                txt_Telefono.Text,
+                txt_Direccion.Text,
+                txt_Universidad.Text,
+                sexo,
+                txt_Foto.FileBytes,
+                txt_Curriculum.FileBytes,
+                dni  // Usar el DNI desencriptado
+            );
+
+            if (resultado > 0)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Datos enviados exitosamente.');", true);
+            }
+            else
+            {
+                lbl_Error.Text = "Hubo un problema al enviar los datos.";
+                lbl_Error.Visible = true;
+            }
         }
     }
 }
