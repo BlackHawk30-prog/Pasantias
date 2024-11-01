@@ -1,10 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Modelo
 {
@@ -12,36 +9,75 @@ namespace Modelo
     {
         ConexionBD conectar;
 
-        public int crear(int Telefono, string Direccion, string Grado_Academico, string sexo, byte[] Foto, byte[] Curriculum, int IDUsuario)
+        public int Crear(string Telefono, string Direccion, string Grado_Academico, string Sexo, byte[] Foto, byte[] Curriculum, string DNI)
         {
-            int no = 0;  // Esta variable almacenará el número de filas afectadas
+            int filasAfectadas = 0;
             conectar = new ConexionBD();
-            conectar.AbrirConexion();
 
-            string consulta = "CrearDatosUsuario";  // Nombre del procedimiento almacenado
-
-            // Crear el comando y configurarlo como procedimiento almacenado
-            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
+                conectar.AbrirConexion();
 
-                // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("p_Telefono", Telefono);
-                cmd.Parameters.AddWithValue("p_Direccion", Direccion);
-                cmd.Parameters.AddWithValue("p_Grado_Academico", Grado_Academico);
-                cmd.Parameters.AddWithValue("p_Sexo", sexo);
-                cmd.Parameters.AddWithValue("p_Foto", Foto);  // Asignar los bytes de la foto
-                cmd.Parameters.AddWithValue("p_Curriculum", Curriculum);  // Asignar los bytes del currículum
-                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+                // 1. Buscar el IDUsuario basado en el DNI
+                int idUsuario = ObtenerIDUsuarioPorDNI(DNI);
 
-                // Ejecutar el procedimiento almacenado
-                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+                if (idUsuario == 0)
+                {
+                    throw new Exception("No se encontró un usuario con el DNI proporcionado.");
+                }
+
+                string consulta = "CrearDatosUsuario";  // Procedimiento almacenado
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("p_Telefono", Telefono);
+                    cmd.Parameters.AddWithValue("p_Direccion", Direccion);
+                    cmd.Parameters.AddWithValue("p_Grado_Academico", Grado_Academico);
+                    cmd.Parameters.AddWithValue("p_Sexo", Sexo);
+                    cmd.Parameters.AddWithValue("p_Foto", Foto ?? new byte[0]);
+                    cmd.Parameters.AddWithValue("p_Curriculum", Curriculum ?? new byte[0]);
+                    cmd.Parameters.AddWithValue("p_IDUsuario", idUsuario);  // Relación basada en el DNI
+
+                    filasAfectadas = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
             }
 
-            conectar.CerrarConexion();
-            return no;  // Devolver el número de filas afectadas
+            return filasAfectadas;
         }
 
-    }
+        // Método para obtener el IDUsuario usando el DNI
+        private int ObtenerIDUsuarioPorDNI(string dni)
+        {
+            int idUsuario = 0;
 
+            string query = "SELECT IDUsuario FROM usuarios WHERE DNI = @DNI LIMIT 1";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+            {
+                cmd.Parameters.AddWithValue("@DNI", dni);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        idUsuario = reader.GetInt32("IDUsuario");
+                    }
+                }
+            }
+
+            return idUsuario;
+        }
+    }
 }

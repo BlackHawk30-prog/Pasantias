@@ -12,7 +12,7 @@ namespace Pasantias
 {
     public partial class Hoja_Tiempo : System.Web.UI.Page
     {
-       HojaTiempo hojaTiempo;
+        HojaTiempo hojaTiempo;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -20,14 +20,13 @@ namespace Pasantias
                 hojaTiempo = new HojaTiempo();
                 grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Asignar el DataTable al GridView
                 grid_hojas.DataBind(); // Asegúrate de llamar a DataBind para enlazar los datos
+                CalcularTotalHoras();
             }
         }
-
 
         protected void Btn_Agregar_Click(object sender, EventArgs e)
         {
             hojaTiempo = new HojaTiempo();
-            DateTime fecha;
 
             // Validar que los campos no estén vacíos
             if (string.IsNullOrWhiteSpace(txt_Fecha.Text))
@@ -55,79 +54,62 @@ namespace Pasantias
                 return; // Salir del método si hay un error de validación
             }
 
-            // Validar la conversión de la fecha
-            if (DateTime.TryParse(txt_Fecha.Text, out fecha))
+            // No se valida la conversión de la fecha
+            // int horas;
+            // Validar la conversión de horas
+            if (int.TryParse(txt_Horas.Text, out int horas))
             {
-                // Validar que la fecha esté en el mes actual
-                if (fecha.Month != DateTime.Now.Month || fecha.Year != DateTime.Now.Year)
+                // Validar que las horas estén entre 1 y 8
+                if (horas < 1 || horas > 8)
                 {
-                    lbl_Mensaje.Text = $"Por favor, selecciona una fecha dentro del mes actual: {DateTime.Now.ToString("MMMM yyyy")}.";
-                    return; // Salir del método si la fecha no es válida
+                    lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
+                    return; // Salir del método si las horas no están en el rango permitido
                 }
 
-                int horas;
-                // Validar la conversión de horas
-                if (int.TryParse(txt_Horas.Text, out horas))
+                int idUsuario = 1; // Cambiar esto según el contexto de tu aplicación
+
+                // Convertir la fecha a string en el formato que tu base de datos espera
+                string fechaString = txt_Fecha.Text;  // Cambia el formato si es necesario
+
+                // Llamar al método 'crear' pasando 'fechaString' en lugar de 'fecha'
+                if (hojaTiempo.crear(0, fechaString, txt_Actividades.Text, horas, idUsuario) > 0)
                 {
-                    // Validar que las horas estén entre 1 y 8
-                    if (horas < 1 || horas > 8)
-                    {
-                        lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
-                        return; // Salir del método si las horas no están en el rango permitido
-                    }
+                    lbl_Mensaje.Text = "Registrado Exitosamente";
+                    hojaTiempo.grid_hojas(grid_hojas);
 
-                    int idUsuario = 1; // Cambiar esto según el contexto de tu aplicación
-
-                    // Convertir la fecha a string en el formato que tu base de datos espera
-                    string fechaString = fecha.ToString("yyyy-MM-dd");  // Cambia el formato si es necesario
-
-                    // Llamar al método 'crear' pasando 'fechaString' en lugar de 'fecha'
-                    if (hojaTiempo.crear(0, fechaString, txt_Actividades.Text, horas, idUsuario) > 0)
-                    {
-                        lbl_Mensaje.Text = "Registrado Exitosamente";
-                        hojaTiempo.grid_hojas(grid_hojas);
-
-                        // Limpiar los campos después de un registro exitoso
-                        txt_Fecha.Text = "";
-                        txt_Horas.Text = "";
-                        txt_Actividades.Text = "";
-                    }
-                    else
-                    {
-                        lbl_Mensaje.Text = "Error al registrar la hoja de tiempo.";
-                    }
+                    // Limpiar los campos después de un registro exitoso
+                    txt_Fecha.Text = "";
+                    txt_Horas.Text = "";
+                    txt_Actividades.Text = "";
                 }
                 else
                 {
-                    lbl_Mensaje.Text = "Por favor, ingresa un número válido de horas.";
+                    lbl_Mensaje.Text = "Error al registrar la hoja de tiempo.";
                 }
             }
             else
             {
-                lbl_Mensaje.Text = "Por favor, ingresa una fecha válida.";
+                lbl_Mensaje.Text = "Por favor, ingresa un número válido de horas.";
             }
+            CalcularTotalHoras();
         }
-
-
-
-
 
         protected void grid_hojas_SelectedIndexChanged(object sender, EventArgs e)
         {
             DateTime fecha = Convert.ToDateTime(grid_hojas.SelectedRow.Cells[0].Text);
-            txt_Fecha .Text = fecha.ToString("yyyy-MM-dd"); 
+            txt_Fecha.Text = fecha.ToString("yyyy-MM-dd");
             txt_Actividades.Text = grid_hojas.SelectedRow.Cells[1].Text;
             txt_Horas.Text = grid_hojas.SelectedRow.Cells[2].Text;
             Btn_Actualizar.Visible = true;
             Btn_Agregar.Visible = false;
             // Boton de agregar otro
             Button1.Visible = true;
+            CalcularTotalHoras();
         }
 
         protected void Btn_Actualizar_Click(object sender, EventArgs e)
         {
             hojaTiempo = new HojaTiempo();
-            DateTime fecha;
 
             // Validar que los campos no estén vacíos
             if (string.IsNullOrWhiteSpace(txt_Fecha.Text))
@@ -155,58 +137,42 @@ namespace Pasantias
                 return; // Salir del método si hay un error de validación
             }
 
-            // Validar la conversión de la fecha
-            if (DateTime.TryParse(txt_Fecha.Text, out fecha))
+            // No se valida la conversión de la fecha
+            // Validar la conversión de horas
+            if (int.TryParse(txt_Horas.Text, out int horas))
             {
-                // Validar que la fecha esté en el mes actual
-                if (fecha.Month != DateTime.Now.Month || fecha.Year != DateTime.Now.Year)
+                // Validar que las horas estén entre 1 y 8
+                if (horas < 1 || horas > 8)
                 {
-                    lbl_Mensaje.Text = $"Por favor, selecciona una fecha dentro del mes actual: {DateTime.Now.ToString("MMMM yyyy")}.";
-                    return; // Salir del método si la fecha no es válida
+                    lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
+                    return; // Salir del método si las horas no están en el rango permitido
                 }
 
-                int horas;
-                // Validar la conversión de horas
-                if (int.TryParse(txt_Horas.Text, out horas))
+                // Llamar al método 'actualizar' con los parámetros validados
+                if (hojaTiempo.actualizar(Convert.ToInt32(grid_hojas.SelectedValue), txt_Fecha.Text, txt_Actividades.Text, horas, 1) > 0)
                 {
-                    // Validar que las horas estén entre 1 y 8
-                    if (horas < 1 || horas > 8)
-                    {
-                        lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
-                        return; // Salir del método si las horas no están en el rango permitido
-                    }
+                    lbl_Mensaje.Text = "Modificado Exitosamente";
+                    hojaTiempo.grid_hojas(grid_hojas);
 
-                    // Llamar al método 'actualizar' con los parámetros validados
-                    if (hojaTiempo.actualizar(Convert.ToInt32(grid_hojas.SelectedValue), fecha.ToString("yyyy-MM-dd"), txt_Actividades.Text, horas, 1) > 0)
-                    {
-                        lbl_Mensaje.Text = "Modificado Exitosamente";
-                        hojaTiempo.grid_hojas(grid_hojas);
-
-                        // Limpiar los campos después de un registro exitoso
-                        txt_Fecha.Text = "";
-                        txt_Horas.Text = "";
-                        txt_Actividades.Text = "";
-                        Btn_Actualizar.Visible = false;
-                        Btn_Agregar.Visible = true;
-                        Button1.Visible = false;
-                    }
-                    else
-                    {
-                        lbl_Mensaje.Text = "Error al modificar la hoja de tiempo.";
-                    }
+                    // Limpiar los campos después de un registro exitoso
+                    txt_Fecha.Text = "";
+                    txt_Horas.Text = "";
+                    txt_Actividades.Text = "";
+                    Btn_Actualizar.Visible = false;
+                    Btn_Agregar.Visible = true;
+                    Button1.Visible = false;
                 }
                 else
                 {
-                    lbl_Mensaje.Text = "Por favor, ingresa un número válido de horas.";
+                    lbl_Mensaje.Text = "Error al modificar la hoja de tiempo.";
                 }
             }
             else
             {
-                lbl_Mensaje.Text = "Por favor, ingresa una fecha válida.";
+                lbl_Mensaje.Text = "Por favor, ingresa un número válido de horas.";
             }
+            CalcularTotalHoras();
         }
-
-
 
         protected void grid_hojas_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
@@ -219,7 +185,7 @@ namespace Pasantias
             if (hojaTiempo.eliminar(IDHoja) > 0)
             {
                 lbl_Mensaje.Text = "Eliminado Exitosamente";
-                hojaTiempo.grid_hojas(grid_hojas);  // Refresca el GridView\
+                hojaTiempo.grid_hojas(grid_hojas);  // Refresca el GridView
                 txt_Fecha.Text = "";
                 txt_Horas.Text = "";
                 txt_Actividades.Text = "";
@@ -234,14 +200,16 @@ namespace Pasantias
 
             // Cancelar el evento de eliminación para evitar la eliminación física
             e.Cancel = true;
+            CalcularTotalHoras();
         }
+
         private bool ValidarTexto(string texto)
         {
             // Expresión regular para validar que no haya caracteres especiales (excepto punto y coma)
             string regexCaracteresEspeciales = @"^[^<>!@#$%^&*()_+=-]+$";
             // Expresión regular para validar que no haya más de dos letras seguidas
             string regexTresLetrasSeguidas = @"^(?!.*([a-zA-Z])\1{2})"; // No permite tres letras seguidas
-                                                                        // Expresión regular para validar que no haya más de un punto o coma seguido
+            // Expresión regular para validar que no haya más de un punto o coma seguido
             string regexPuntosComasSeguidos = @"(?<![.,])[.,]{2,}(?![.,])";
 
             // Validar cada condición
@@ -263,8 +231,26 @@ namespace Pasantias
             Btn_Actualizar.Visible = false;
             Btn_Agregar.Visible = true;
             Button1.Visible = false;
-
         }
-    }
 
+        private void CalcularTotalHoras()
+        {
+            int totalHoras = 0;
+
+            // Iterar sobre cada fila del GridView para sumar las horas
+            foreach (GridViewRow row in grid_hojas.Rows)
+            {
+                // Obtener las horas desde la columna correspondiente (asumiendo que las horas están en la tercera columna)
+                if (int.TryParse(row.Cells[2].Text, out int horas))
+                {
+                    totalHoras += horas; // Sumar horas al total
+                }
+            }
+
+            // Mostrar el total de horas en un Label (deberías tener un Label para mostrar el total)
+            lbl_HorasTotales.Text = $"Total de Horas: {totalHoras}"; // Asegúrate de tener un Label con este ID
+        }
+
+    }
 }
+
