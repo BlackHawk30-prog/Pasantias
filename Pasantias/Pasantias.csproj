@@ -173,6 +173,7 @@
     <Content Include="Global.asax" />
     <Content Include="Hoja_Tiempo.aspx" />
     <Content Include="Log.aspx" />
+    <Content Include="Login.aspx" />
     <Content Include="Postulaciones.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -287,6 +288,13 @@
     </Compile>
     <Compile Include="Log.aspx.designer.cs">
       <DependentUpon>Log.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Postulaciones.aspx.cs">
       <DependentUpon>Postulaciones.aspx</DependentUpon>
