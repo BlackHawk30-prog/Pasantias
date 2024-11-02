@@ -3,6 +3,7 @@ using System;
 using System.Web.UI;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net.Mail;
 
 namespace Pasantias
 {
@@ -206,9 +207,7 @@ namespace Pasantias
 
                 if (correo != null)
                 {
-                    // Dividir el mensaje en partes para evitar truncamiento en el alert
-                    string mensaje = $"Datos enviados exitosamente. Correo: {correo}";
-                    ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('{mensaje}');", true);
+                    EnviarCorreoAgradecimiento(correo);
                 }
                 else
                 {
@@ -220,7 +219,37 @@ namespace Pasantias
                 lbl_Error.Text = "Hubo un problema al enviar los datos.";
                 lbl_Error.Visible = true;
             }
+        }
 
+        private void EnviarCorreoAgradecimiento(string destinatario)
+        {
+            try
+            {
+                using (MailMessage mensaje = new MailMessage())
+                {
+                    mensaje.From = new MailAddress("hreyesfotos@gmail.com"); // Dirección de correo de origen
+                    mensaje.To.Add(destinatario);
+                    mensaje.Subject = "Gracias por aplicar a la pasantía";
+                    mensaje.Body = "Estimado(a) postulante,\n\nGracias por aplicar a nuestra pasantía. Su solicitud ha sido recibida exitosamente. Nos pondremos en contacto con usted en breve.\n\nSaludos cordiales,\nEl equipo de Pasantías";
+                    mensaje.IsBodyHtml = false;
+
+                    using (SmtpClient clienteSmtp = new SmtpClient())
+                    {
+                        clienteSmtp.Host = "smtp.gmail.com"; // Configura el servidor SMTP
+                        clienteSmtp.Port = 587; // Puerto del servidor SMTP
+                        clienteSmtp.Credentials = new System.Net.NetworkCredential("hreyesfotos@gmail.com", "ovqx ypvm vtbt fttp"); // Configura tus credenciales
+                        clienteSmtp.EnableSsl = true;
+
+                        clienteSmtp.Send(mensaje);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lbl_Error.Text = $"Error al enviar el correo de agradecimiento: {ex.Message}";
+                lbl_Error.Visible = true;
+            }
         }
     }
 }
+
