@@ -1,8 +1,8 @@
 ﻿using Modelo;
 using System;
+using System.Web.UI;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.UI;
 
 namespace Pasantias
 {
@@ -16,7 +16,6 @@ namespace Pasantias
 
             private static byte[] ObtenerClave(string clave)
             {
-                // Asegura que la clave tenga exactamente 16 bytes (para AES-128)
                 byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
                 Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
                 return claveBytes;
@@ -57,7 +56,6 @@ namespace Pasantias
         {
             if (!IsPostBack)
             {
-                // Obtener y desencriptar el DNI de la URL
                 string dniEncriptado = Request.QueryString["DNI"];
                 if (string.IsNullOrEmpty(dniEncriptado))
                 {
@@ -66,9 +64,7 @@ namespace Pasantias
                     return;
                 }
 
-                // Verificar longitud y caracteres válidos
-                if (dniEncriptado.Length % 4 != 0 ||
-                    !IsBase64String(dniEncriptado))
+                if (dniEncriptado.Length % 4 != 0 || !IsBase64String(dniEncriptado))
                 {
                     lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
                     lbl_Error.Visible = true;
@@ -78,7 +74,7 @@ namespace Pasantias
                 try
                 {
                     string dniDesencriptado = EncriptacionAES.Desencriptar(dniEncriptado);
-                    ViewState["DNI"] = dniDesencriptado;  // Guardamos el DNI desencriptado en el estado de la vista
+                    ViewState["DNI"] = dniDesencriptado;
                 }
                 catch (CryptographicException ex)
                 {
@@ -93,13 +89,11 @@ namespace Pasantias
             }
         }
 
-        // Método auxiliar para verificar si la cadena es Base64
         private bool IsBase64String(string s)
         {
             if (string.IsNullOrEmpty(s) || s.Length % 4 != 0)
                 return false;
 
-            // Verifica si hay caracteres inválidos en la cadena
             foreach (char c in s)
             {
                 if (!char.IsLetterOrDigit(c) && c != '+' && c != '/' && c != '=')
@@ -113,7 +107,6 @@ namespace Pasantias
             bool esValido = true;
             lbl_Error.Text = string.Empty;
 
-            // Validar campo obligatorio para Fecha de Nacimiento y Edad
             DateTime fechaNacimiento;
             if (!DateTime.TryParse(txt_Fecha.Text, out fechaNacimiento) || !Utilidades.ValidarEdad(fechaNacimiento))
             {
@@ -126,7 +119,6 @@ namespace Pasantias
                 txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "");
             }
 
-            // Validar campo obligatorio y formato de Teléfono
             if (!Utilidades.ValidarTelefono(txt_Telefono.Text))
             {
                 esValido = false;
@@ -138,7 +130,6 @@ namespace Pasantias
                 txt_Telefono.CssClass = txt_Telefono.CssClass.Replace("error", "");
             }
 
-            // Validar campo obligatorio y formato de Universidad
             if (!Utilidades.ValidarCampoObligatorio(txt_Universidad.Text) || !Utilidades.ValidarTexto(txt_Universidad.Text))
             {
                 esValido = false;
@@ -150,7 +141,6 @@ namespace Pasantias
                 txt_Universidad.CssClass = txt_Universidad.CssClass.Replace("error", "");
             }
 
-            // Validar campo obligatorio y formato de Dirección
             if (!Utilidades.ValidarCampoObligatorio(txt_Direccion.Text) || !Utilidades.ValidarTexto(txt_Direccion.Text))
             {
                 esValido = false;
@@ -162,7 +152,6 @@ namespace Pasantias
                 txt_Direccion.CssClass = txt_Direccion.CssClass.Replace("error", "");
             }
 
-            // Validar selección de Sexo
             string sexo = txt_Hombre.Checked ? "Hombre" : txt_Mujer.Checked ? "Mujer" : "";
             if (string.IsNullOrEmpty(sexo))
             {
@@ -170,7 +159,6 @@ namespace Pasantias
                 lbl_Error.Text += "Seleccione su sexo.<br/>";
             }
 
-            // Validar formato de archivo Foto
             if (!txt_Foto.HasFile || !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
             {
                 esValido = false;
@@ -182,7 +170,6 @@ namespace Pasantias
                 txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
             }
 
-            // Validar formato de archivo Curriculum
             if (!txt_Curriculum.HasFile || !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
             {
                 esValido = false;
@@ -200,7 +187,6 @@ namespace Pasantias
                 return;
             }
 
-            // Guardar los datos
             aplicante2 = new Aplicante2();
             string dni = ViewState["DNI"].ToString();
 
@@ -211,18 +197,30 @@ namespace Pasantias
                 sexo,
                 txt_Foto.FileBytes,
                 txt_Curriculum.FileBytes,
-                dni  // Usar el DNI desencriptado
+                dni
             );
 
             if (resultado > 0)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Datos enviados exitosamente.');", true);
+                string correo = aplicante2.ObtenerCorreoPorDNI(dni);
+
+                if (correo != null)
+                {
+                    // Dividir el mensaje en partes para evitar truncamiento en el alert
+                    string mensaje = $"Datos enviados exitosamente. Correo: {correo}";
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('{mensaje}');", true);
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Datos enviados exitosamente, pero no se encontró el correo.');", true);
+                }
             }
             else
             {
                 lbl_Error.Text = "Hubo un problema al enviar los datos.";
                 lbl_Error.Visible = true;
             }
+
         }
     }
 }
