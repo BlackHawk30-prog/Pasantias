@@ -2,13 +2,13 @@
 using System;
 using System.Data;
 
-
 namespace Modelo
 {
     public class Aplicante2
     {
         ConexionBD conectar;
 
+        // Método para crear datos del usuario
         public int Crear(string Telefono, string Direccion, string Grado_Academico, string Sexo, byte[] Foto, byte[] Curriculum, string DNI)
         {
             int filasAfectadas = 0;
@@ -18,7 +18,7 @@ namespace Modelo
             {
                 conectar.AbrirConexion();
 
-                // 1. Buscar el IDUsuario basado en el DNI
+                // Buscar el IDUsuario basado en el DNI
                 int idUsuario = ObtenerIDUsuarioPorDNI(DNI);
 
                 if (idUsuario == 0)
@@ -39,7 +39,7 @@ namespace Modelo
                     cmd.Parameters.AddWithValue("p_Sexo", Sexo);
                     cmd.Parameters.AddWithValue("p_Foto", Foto ?? new byte[0]);
                     cmd.Parameters.AddWithValue("p_Curriculum", Curriculum ?? new byte[0]);
-                    cmd.Parameters.AddWithValue("p_IDUsuario", idUsuario);  // Relación basada en el DNI
+                    cmd.Parameters.AddWithValue("p_IDUsuario", idUsuario);
 
                     filasAfectadas = cmd.ExecuteNonQuery();
                 }
@@ -61,7 +61,6 @@ namespace Modelo
         private int ObtenerIDUsuarioPorDNI(string dni)
         {
             int idUsuario = 0;
-
             string query = "SELECT IDUsuario FROM usuarios WHERE DNI = @DNI LIMIT 1";
 
             using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
@@ -79,5 +78,43 @@ namespace Modelo
 
             return idUsuario;
         }
+
+        // Método para obtener el correo basado en el DNI usando el procedimiento almacenado
+        public string ObtenerCorreoPorDNI(string dni)
+        {
+            string correo = null;
+            conectar = new ConexionBD();
+
+            try
+            {
+                conectar.AbrirConexion();
+
+                // Consulta SQL directa para obtener el correo basado en el DNI
+                string consulta = "SELECT correo FROM usuarios WHERE DNI = @DNI LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@DNI", dni);
+
+                    object resultado = cmd.ExecuteScalar();
+                    if (resultado != null && resultado != DBNull.Value)
+                    {
+                        correo = resultado.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return correo;
+        }
+
     }
 }
