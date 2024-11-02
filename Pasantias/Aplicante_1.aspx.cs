@@ -135,7 +135,8 @@ namespace Pasantias
             string dniEncriptado = EncriptacionAES.Encriptar(dni);
 
             // Redirigir al segundo formulario usando el DNI encriptado
-            Response.Redirect("Aplicante_2.aspx?DNI=" + dniEncriptado);
+           
+            Response.Redirect("Aplicante_2.aspx?DNI=" + Server.UrlEncode(dniEncriptado));
         }
 
         private void RestablecerClasesError()

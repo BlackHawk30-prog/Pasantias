@@ -65,12 +65,12 @@ namespace Pasantias
                     return;
                 }
 
-                if (dniEncriptado.Length % 4 != 0 || !IsBase64String(dniEncriptado))
-                {
-                    lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
-                    lbl_Error.Visible = true;
-                    return;
-                }
+              //  if (dniEncriptado.Length % 4 != 0 || !IsBase64String(dniEncriptado))
+              //  {
+           //         lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
+            //        lbl_Error.Visible = true;
+            //        return;
+            //    }
 
                 try
                 {
