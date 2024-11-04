@@ -18,7 +18,8 @@ namespace Pasantias
             if (!IsPostBack)
             {
                 hojaTiempo = new HojaTiempo();
-                grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Asignar el DataTable al GridView
+                grid_hojas.DataSource = hojaTiempo.grid_hojas(); 
+                // Asignar el DataTable al GridView
                 grid_hojas.DataBind(); // Asegúrate de llamar a DataBind para enlazar los datos
                 CalcularTotalHoras();
             }
@@ -66,7 +67,7 @@ namespace Pasantias
                     return; // Salir del método si las horas no están en el rango permitido
                 }
 
-                int idUsuario = 1; // Cambiar esto según el contexto de tu aplicación
+                int idUsuario = (int)Session["UserID"]; // Cambiar esto según el contexto de tu aplicación
 
                 // Convertir la fecha a string en el formato que tu base de datos espera
                 string fechaString = txt_Fecha.Text;  // Cambia el formato si es necesario
@@ -147,7 +148,7 @@ namespace Pasantias
                     lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
                     return; // Salir del método si las horas no están en el rango permitido
                 }
-
+                int idUsuario = (int)Session["UserID"];
                 // Llamar al método 'actualizar' con los parámetros validados
                 if (hojaTiempo.actualizar(Convert.ToInt32(grid_hojas.SelectedValue), txt_Fecha.Text, txt_Actividades.Text, horas, 1) > 0)
                 {
