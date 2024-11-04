@@ -24,40 +24,40 @@ namespace Pasantias
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// Control LabelEmail.
+        /// Control lbl_Usuario.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelEmail;
+        protected global::System.Web.UI.WebControls.Label lbl_Usuario;
 
         /// <summary>
-        /// Control indextxtEmail.
+        /// Control txt_Usuario.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox indextxtEmail;
+        protected global::System.Web.UI.WebControls.TextBox txt_Usuario;
 
         /// <summary>
-        /// Control LabelPassword.
+        /// Control lbl_Password.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelPassword;
+        protected global::System.Web.UI.WebControls.Label lbl_Password;
 
         /// <summary>
-        /// Control indextxtPassword.
+        /// Control txt_Password.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox indextxtPassword;
+        protected global::System.Web.UI.WebControls.TextBox txt_Password;
 
         /// <summary>
         /// Control Button1.
