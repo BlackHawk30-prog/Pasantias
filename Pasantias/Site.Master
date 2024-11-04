@@ -55,9 +55,7 @@
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href='<%= ResolveUrl("~/Hoja_Tiempo.aspx") %>'>Perfil</a>
-                    <a class="dropdown-item">Configuración</a>
-                    <a class="dropdown-item" href="#">Actividades</a>
+                    <a class="dropdown-item" href='<%= ResolveUrl("~/Editar_Perfil.aspx") %>'>Perfil</a>
                 </div>
             </li>
         </ul>
@@ -104,12 +102,36 @@
                         <span class="ml-3 item-text">Hoja de Tiempo</span>
                     </a>
                 </li>
-                <li class="nav-item w-100">
-                    <a class="nav-link" href='<%= ResolveClientUrl("~/CEModulo.aspx") %>'>
-                        <i class="fe fe-home fe-16"></i>
-                        <span class="ml-3 item-text">Centro Educativo</span>
-                    </a>
-                </li>
+                                 <li class="nav-item w-100">
+                     <a class="nav-link" href='<%= ResolveClientUrl("~/Finanzas.aspx") %>'>
+                         <i class="fe fe-users fe-16"></i>
+                         <span class="ml-3 item-text">Finanzas</span>
+                     </a>
+                 </li>
+                                <li class="nav-item w-100">
+    <a class="nav-link" href='<%= ResolveClientUrl("~/Oficial.aspx") %>'>
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Oficial (cambiar nombre)</span>
+    </a>
+</li>
+                                <li class="nav-item w-100">
+    <a class="nav-link" href='<%= ResolveClientUrl("~/Postulaciones.aspx") %>'>
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Postulaciones</span>
+    </a>
+</li>
+                                <li class="nav-item w-100">
+    <a class="nav-link" href='<%= ResolveClientUrl("~/RH.aspx") %>'>
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Recursos Humanos (cambiar nombre)</span>
+    </a>
+</li>
+                                <li class="nav-item w-100">
+    <a class="nav-link" href='<%= ResolveClientUrl("~/Seguridad.aspx") %>'>
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Seguridad (cambiar nombre)</span>
+    </a>
+</li>
                 <!-- Más módulos aquí -->
             </ul>
         </nav>
