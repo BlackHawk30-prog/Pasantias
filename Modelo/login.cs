@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.Web;
 
 namespace Modelo
 {
@@ -8,10 +9,11 @@ namespace Modelo
     {
         ConexionBD conectar;
 
-        // Método para verificar las credenciales de login usando un procedimiento almacenado
-        public bool VerificarCredenciales(string usuario, string password)
+        // Método para verificar las credenciales de login y obtener el rol del usuario
+        public bool VerificarCredenciales(string usuario, string password, out int rol)
         {
             bool credencialesValidas = false;  // Variable para almacenar el resultado
+            rol = -1;  // Inicializa el rol con un valor de error o sin rol asignado
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
@@ -27,13 +29,25 @@ namespace Modelo
                 cmd.Parameters.AddWithValue("p_usuario", usuario);
                 cmd.Parameters.AddWithValue("p_password", password);
 
+                // Parámetro de salida para el rol
+                MySqlParameter outputParam = new MySqlParameter("p_rol", MySqlDbType.Int32);
+                outputParam.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outputParam);
+
                 try
                 {
-                    // Ejecutar el procedimiento almacenado y verificar si se encuentra algún resultado
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    // Ejecutar el procedimiento almacenado
+                    cmd.ExecuteNonQuery();
 
-                    // Si el resultado es mayor que 0, significa que las credenciales son correctas
-                    credencialesValidas = count > 0;
+                    // Comprobar si el valor de salida es DBNull antes de convertirlo
+                    if (outputParam.Value != DBNull.Value)
+                    {
+                        // Obtener el rol del parámetro de salida
+                        rol = Convert.ToInt32(outputParam.Value);
+
+                        // Si el rol no es -1, significa que las credenciales son correctas
+                        credencialesValidas = rol != -1;
+                    }
                 }
                 catch (MySqlException ex)
                 {
