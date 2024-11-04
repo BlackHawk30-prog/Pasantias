@@ -60,6 +60,7 @@ namespace Pasantias
                 else if (rol == 5)
                 {
                     OficialNav.Visible = true;
+                    HojaTiempoNav.Visible = true;
                 }
                 else if (rol == 6)
                 {

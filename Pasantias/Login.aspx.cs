@@ -22,13 +22,14 @@ namespace Pasantias
 
             // Variable para almacenar el rol
             int rol;
+            int idUsuario;
 
             // Verificar las credenciales y obtener el rol
-            bool credencialesValidas = login.VerificarCredenciales(usuario, password, out rol);
+            bool credencialesValidas = login.VerificarCredenciales(usuario, password, out rol, out idUsuario);
 
             // Redirigir o mostrar mensaje según el resultado de la verificación
             if (credencialesValidas)
-            {
+            { 
                 if (rol == -1)
                 {
                     // Mostrar mensaje si el usuario no tiene un rol asignado
@@ -38,9 +39,12 @@ namespace Pasantias
                 {
                     // Almacenar el rol en la sesión para uso global
                     Session["UserRol"] = rol;
+                    Session["UserID"] = idUsuario;
+                    SessionStore.UserID = idUsuario; // Asignar el ID de usuario en SessionStore
 
-                    // Redirigir a la página principal si las credenciales son correctas y tiene rol
-                    Response.Redirect("Default.aspx");
+                    // Redirigir a la página principal y pasar el IDUsuario en la URL
+                    Response.Redirect($"Default.aspx?IDUsuario={idUsuario}");
+                    
                 }
             }
             else
