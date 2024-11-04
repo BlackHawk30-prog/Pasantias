@@ -20,7 +20,7 @@
             </div>
 
             <div class="form-group mb-3">
-                <asp:Label ID="LabelEmail" runat="server" AssociatedControlID="indextxtEmail" Text="Email address" CssClass="form-label"></asp:Label>
+                <asp:Label ID="LabelEmail" runat="server" AssociatedControlID="indextxtEmail" Text="Email address HOLA" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="indextxtEmail" runat="server" AutoCompleteType="Email" CssClass="form-control" Placeholder="Email address" AutoComplete="off"></asp:TextBox>
             </div>
 
