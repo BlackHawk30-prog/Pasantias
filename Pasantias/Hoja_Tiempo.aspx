@@ -16,7 +16,7 @@
                 <asp:Label ID="lbl_Fecha" runat="server" Text="Fecha:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Fecha" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
             </div>
-
+             
             <div class="form-group">
                 <asp:Label ID="lbl_Horas" runat="server" Text="Horas Trabajadas:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Horas" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>

@@ -1,5 +1,6 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Pasantias.SiteMaster" %>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
@@ -92,48 +93,50 @@
                 </li>
             </ul>
 
-            <p class="text-muted nav-heading mt-4 mb-1">
-                <span>Módulos</span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link" href='<%= ResolveClientUrl("~/Hoja_Tiempo.aspx") %>'>
-                        <i class="fe fe-users fe-16"></i>
-                        <span class="ml-3 item-text">Hoja de Tiempo</span>
-                    </a>
-                </li>
-                                 <li class="nav-item w-100">
-                     <a class="nav-link" href='<%= ResolveClientUrl("~/Finanzas.aspx") %>'>
-                         <i class="fe fe-users fe-16"></i>
-                         <span class="ml-3 item-text">Finanzas</span>
-                     </a>
-                 </li>
-                                <li class="nav-item w-100">
-    <a class="nav-link" href='<%= ResolveClientUrl("~/Oficial.aspx") %>'>
-        <i class="fe fe-users fe-16"></i>
-        <span class="ml-3 item-text">Oficial (cambiar nombre)</span>
-    </a>
-</li>
-                                <li class="nav-item w-100">
-    <a class="nav-link" href='<%= ResolveClientUrl("~/Postulaciones.aspx") %>'>
-        <i class="fe fe-users fe-16"></i>
-        <span class="ml-3 item-text">Postulaciones</span>
-    </a>
-</li>
-                                <li class="nav-item w-100">
-    <a class="nav-link" href='<%= ResolveClientUrl("~/RH.aspx") %>'>
-        <i class="fe fe-users fe-16"></i>
-        <span class="ml-3 item-text">Recursos Humanos (cambiar nombre)</span>
-    </a>
-</li>
-                                <li class="nav-item w-100">
-    <a class="nav-link" href='<%= ResolveClientUrl("~/Seguridad.aspx") %>'>
-        <i class="fe fe-users fe-16"></i>
-        <span class="ml-3 item-text">Seguridad (cambiar nombre)</span>
-    </a>
-</li>
-                <!-- Más módulos aquí -->
-            </ul>
+<p class="text-muted nav-heading mt-4 mb-1">
+    <span>Módulos</span>
+</p>
+<ul class="navbar-nav flex-fill w-100 mb-2">
+    <li class="nav-item w-100">
+        <a class="nav-link" id="HojaTiempoNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Hoja de Tiempo</span>
+        </a>
+    </li>
+    <li class="nav-item w-100">
+        <a class="nav-link" id="FinanzasNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Finanzas</span>
+        </a>
+    </li>
+    <li class="nav-item w-100">
+        <a class="nav-link" id="OficialNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Oficial (cambiar nombre)</span>
+        </a>
+    </li>
+    <li class="nav-item w-100">
+        <a class="nav-link" id="PostulacionesNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Postulaciones</span>
+        </a>
+    </li>
+    <li class="nav-item w-100">
+        <a class="nav-link" id="RHNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Recursos Humanos (cambiar nombre)</span>
+        </a>
+    </li>
+    <li class="nav-item w-100">
+        <a class="nav-link" id="SeguridadNav" runat="server">
+            <i class="fe fe-users fe-16"></i>
+            <span class="ml-3 item-text">Seguridad (cambiar nombre)</span>
+        </a>
+    </li>
+</ul>
+
+
+
         </nav>
     </aside>
 
