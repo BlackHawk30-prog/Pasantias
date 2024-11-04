@@ -29,11 +29,19 @@ namespace Pasantias
             // Redirigir o mostrar mensaje según el resultado de la verificación
             if (credencialesValidas)
             {
-                // Almacenar el rol en la sesión para uso global
-                Session["UserRol"] = rol;
+                if (rol == -1)
+                {
+                    // Mostrar mensaje si el usuario no tiene un rol asignado
+                    ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('Usuario sin rol asignado.');", true);
+                }
+                else
+                {
+                    // Almacenar el rol en la sesión para uso global
+                    Session["UserRol"] = rol;
 
-                // Redirigir a la página principal si las credenciales son correctas
-                Response.Redirect("Hoja_Tiempo.aspx");
+                    // Redirigir a la página principal si las credenciales son correctas y tiene rol
+                    Response.Redirect("Default.aspx");
+                }
             }
             else
             {
