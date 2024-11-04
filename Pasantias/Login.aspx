@@ -18,18 +18,19 @@
 
                 <h2 class="h5 mb-4">Sign in</h2>
             </div>
+                <div class="form-group mb-3">
+                    <asp:Label ID="lbl_Usuario" runat="server" AssociatedControlID="txt_Usuario" Text="Usuario" CssClass="form-label"></asp:Label>
+                    <asp:TextBox ID="txt_Usuario" runat="server" CssClass="form-control" Placeholder="Usuario" AutoComplete="off"></asp:TextBox>
+                </div>
 
-            <div class="form-group mb-3">
-                <asp:Label ID="LabelEmail" runat="server" AssociatedControlID="indextxtEmail" Text="Email address HOLA" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="indextxtEmail" runat="server" AutoCompleteType="Email" CssClass="form-control" Placeholder="Email address" AutoComplete="off"></asp:TextBox>
-            </div>
 
-            <div class="form-group mb-3">
-                <asp:Label ID="LabelPassword" runat="server" AssociatedControlID="indextxtPassword" Text="Password" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="indextxtPassword" runat="server" TextMode="Password" CssClass="form-control" Placeholder="Password"></asp:TextBox>
-            </div>
+          <div class="form-group mb-3">
+    <asp:Label ID="lbl_Password" runat="server" AssociatedControlID="txt_Password" Text="Password" CssClass="form-label"></asp:Label>
+    <asp:TextBox ID="txt_Password" runat="server" TextMode="Password" CssClass="form-control" Placeholder="Password"></asp:TextBox>
+</div>
 
-            <asp:Button ID="Button1" runat="server" Text="Sign In" CssClass="btn btn-primary w-100" />
+
+            <asp:Button ID="Button1" runat="server" Text="Sign In" CssClass="btn btn-primary w-100" OnClick="Button1_Click" />
 
             <div class="text-center mt-3">
                 <a href='<%= ResolveUrl("~/ResetPassword.aspx") %>' class="forgot-password text-decoration-none">¿Olvidaste tu contraseña?</a>
