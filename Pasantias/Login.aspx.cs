@@ -1,5 +1,5 @@
 ﻿using System;
-using Modelo;  // Asegúrate de que estás usando el namespace correcto donde está la clase Login
+using Modelo;
 using System.Web.UI;
 
 namespace Pasantias
@@ -8,7 +8,6 @@ namespace Pasantias
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         // Método para manejar el evento click del botón
@@ -21,12 +20,18 @@ namespace Pasantias
             // Instanciar la clase Login (del namespace Modelo)
             Modelo.Login login = new Modelo.Login();
 
-            // Verificar las credenciales
-            bool credencialesValidas = login.VerificarCredenciales(usuario, password);
+            // Variable para almacenar el rol
+            int rol;
+
+            // Verificar las credenciales y obtener el rol
+            bool credencialesValidas = login.VerificarCredenciales(usuario, password, out rol);
 
             // Redirigir o mostrar mensaje según el resultado de la verificación
             if (credencialesValidas)
             {
+                // Almacenar el rol en la sesión para uso global
+                Session["UserRol"] = rol;
+
                 // Redirigir a la página principal si las credenciales son correctas
                 Response.Redirect("Hoja_Tiempo.aspx");
             }
