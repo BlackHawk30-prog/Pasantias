@@ -65,13 +65,6 @@ namespace Pasantias
                     return;
                 }
 
-              //  if (dniEncriptado.Length % 4 != 0 || !IsBase64String(dniEncriptado))
-              //  {
-           //         lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
-            //        lbl_Error.Visible = true;
-            //        return;
-            //    }
-
                 try
                 {
                     string dniDesencriptado = EncriptacionAES.Desencriptar(dniEncriptado);
@@ -90,24 +83,12 @@ namespace Pasantias
             }
         }
 
-        private bool IsBase64String(string s)
-        {
-            if (string.IsNullOrEmpty(s) || s.Length % 4 != 0)
-                return false;
-
-            foreach (char c in s)
-            {
-                if (!char.IsLetterOrDigit(c) && c != '+' && c != '/' && c != '=')
-                    return false;
-            }
-            return true;
-        }
-
         protected void Enviar_Click(object sender, EventArgs e)
         {
             bool esValido = true;
             lbl_Error.Text = string.Empty;
 
+            // Validación de fecha de nacimiento
             DateTime fechaNacimiento;
             if (!DateTime.TryParse(txt_Fecha.Text, out fechaNacimiento) || !Utilidades.ValidarEdad(fechaNacimiento))
             {
@@ -120,6 +101,7 @@ namespace Pasantias
                 txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "");
             }
 
+            // Validación de teléfono
             if (!Utilidades.ValidarTelefono(txt_Telefono.Text))
             {
                 esValido = false;
@@ -131,6 +113,7 @@ namespace Pasantias
                 txt_Telefono.CssClass = txt_Telefono.CssClass.Replace("error", "");
             }
 
+            // Validación de universidad
             if (!Utilidades.ValidarCampoObligatorio(txt_Universidad.Text) || !Utilidades.ValidarTexto(txt_Universidad.Text))
             {
                 esValido = false;
@@ -142,6 +125,7 @@ namespace Pasantias
                 txt_Universidad.CssClass = txt_Universidad.CssClass.Replace("error", "");
             }
 
+            // Validación de dirección
             if (!Utilidades.ValidarCampoObligatorio(txt_Direccion.Text) || !Utilidades.ValidarTexto(txt_Direccion.Text))
             {
                 esValido = false;
@@ -153,6 +137,7 @@ namespace Pasantias
                 txt_Direccion.CssClass = txt_Direccion.CssClass.Replace("error", "");
             }
 
+            // Validación de sexo
             string sexo = txt_Hombre.Checked ? "Hombre" : txt_Mujer.Checked ? "Mujer" : "";
             if (string.IsNullOrEmpty(sexo))
             {
@@ -160,6 +145,7 @@ namespace Pasantias
                 lbl_Error.Text += "Seleccione su sexo.<br/>";
             }
 
+            // Validación de foto
             if (!txt_Foto.HasFile || !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
             {
                 esValido = false;
@@ -171,6 +157,7 @@ namespace Pasantias
                 txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
             }
 
+            // Validación de currículum
             if (!txt_Curriculum.HasFile || !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
             {
                 esValido = false;
@@ -192,6 +179,7 @@ namespace Pasantias
             string dni = ViewState["DNI"].ToString();
 
             int resultado = aplicante2.Crear(
+                fechaNacimiento,
                 txt_Telefono.Text,
                 txt_Direccion.Text,
                 txt_Universidad.Text,
@@ -252,4 +240,3 @@ namespace Pasantias
         }
     }
 }
-

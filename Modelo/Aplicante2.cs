@@ -9,7 +9,7 @@ namespace Modelo
         ConexionBD conectar;
 
         // Método para crear datos del usuario
-        public int Crear(string Telefono, string Direccion, string Grado_Academico, string Sexo, byte[] Foto, byte[] Curriculum, string DNI)
+        public int Crear(DateTime FechaNacimiento, string Telefono, string Direccion, string Grado_Academico, string Sexo, byte[] Foto, byte[] Curriculum, string DNI)
         {
             int filasAfectadas = 0;
             conectar = new ConexionBD();
@@ -33,6 +33,7 @@ namespace Modelo
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("p_Fecha_Nacimiento", FechaNacimiento);
                     cmd.Parameters.AddWithValue("p_Telefono", Telefono);
                     cmd.Parameters.AddWithValue("p_Direccion", Direccion);
                     cmd.Parameters.AddWithValue("p_Grado_Academico", Grado_Academico);
