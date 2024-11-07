@@ -9,9 +9,9 @@ namespace Modelo
         ConexionBD conectar;
 
         // Método para agregar un nuevo aplicante
-        public int agregar(int IDUsuario, string Nombre1, string Nombre2, string Apellido1, string Apellido2, string DNI, string Correo)
+        public int agregar(string Nombre1, string Nombre2, string Apellido1, string Apellido2, string DNI, string Correo)
         {
-            int no = 0;  // Esta variable almacenará el número de filas afectadas
+            int no = 0;  // Variable que almacena el número de filas afectadas
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
@@ -22,8 +22,7 @@ namespace Modelo
             {
                 cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
 
-                // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+                // Agregar solo los parámetros necesarios
                 cmd.Parameters.AddWithValue("p_Nombre1", Nombre1);
                 cmd.Parameters.AddWithValue("p_Nombre2", Nombre2);
                 cmd.Parameters.AddWithValue("p_Apellido1", Apellido1);
@@ -51,22 +50,6 @@ namespace Modelo
             return no;  // Devolver el número de filas afectadas
         }
 
-        public int ObtenerUltimoIDUsuario()
-        {
-            int idUsuario = 0;
-            using (var conectar = new ConexionBD())
-            {
-                conectar.AbrirConexion();
-                string consulta = "SELECT LAST_INSERT_ID();";
-
-                using (var cmd = new MySqlCommand(consulta, conectar.conectar))
-                {
-                    idUsuario = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-            }
-            return idUsuario;
-        }
-
         // Método para verificar si el DNI ya existe
         public bool ExisteDNI(string dni)
         {
@@ -74,7 +57,7 @@ namespace Modelo
             using (var conectar = new ConexionBD())
             {
                 conectar.AbrirConexion();
-                string consulta = "SELECT COUNT(*) FROM usuarios WHERE DNI = @DNI"; // Cambia 'usuarios' al nombre de tu tabla real
+                string consulta = "SELECT COUNT(*) FROM usuarios WHERE DNI = @DNI";
 
                 using (var cmd = new MySqlCommand(consulta, conectar.conectar))
                 {

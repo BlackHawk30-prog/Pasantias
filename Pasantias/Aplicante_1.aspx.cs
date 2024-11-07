@@ -119,7 +119,7 @@ namespace Pasantias
             }
 
             // Intentar agregar el aplicante
-            int resultado = aplicante1.agregar(0, txt_Nombre1.Text, txt_Nombre2.Text,
+            int resultado = aplicante1.agregar( txt_Nombre1.Text, txt_Nombre2.Text,
                                                txt_Apellido1.Text, txt_Apellido2.Text,
                                                txt_DNI.Text, txt_Correo.Text);
 

@@ -91,7 +91,7 @@ namespace Pasantias
                             txt_Apellido2.Text = reader["Segundo_Apellido"].ToString();
                             txt_DNI.Text = reader["DNI"].ToString();
                             txt_Correo.Text = reader["Correo"].ToString();
-                           // txt_Fecha.Text = Convert.ToDateTime(reader["FechaNacimiento"]).ToString("yyyy-MM-dd");
+                            txt_Fecha.Text = Convert.ToDateTime(reader["FechaNacimiento"]).ToString("yyyy-MM-dd");
                             txt_Telefono.Text = reader["Telefono"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString(); // Ajusta si es necesario
                             txt_Direccion.Text = reader["Direccion"].ToString();
