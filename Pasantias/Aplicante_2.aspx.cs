@@ -179,7 +179,8 @@ namespace Pasantias
                 lbl_Error.Visible = true;
                 return;
             }
-
+            // Asignar tamaños al Label lbl_salida
+            lbl_salida.Text = $"Tamaño de Foto: {fotoBytes.Length} bytes\nTamaño de Curriculum: {curriculumBytes.Length} bytes";
             // Crear el objeto aplicante y almacenar los datos en la base de datos
             aplicante2 = new Aplicante2();
             string dni = ViewState["DNI"].ToString();

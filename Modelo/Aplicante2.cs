@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.IO;
 
 namespace Modelo
 {
@@ -38,8 +39,12 @@ namespace Modelo
                     cmd.Parameters.AddWithValue("p_Direccion", Direccion);
                     cmd.Parameters.AddWithValue("p_Grado_Academico", Grado_Academico);
                     cmd.Parameters.AddWithValue("p_Sexo", Sexo);
-                    cmd.Parameters.AddWithValue("p_Foto", Foto ?? new byte[0]);
-                    cmd.Parameters.AddWithValue("p_Curriculum", Curriculum ?? new byte[0]);
+
+                    // Convertir los datos binarios de los archivos en streams
+                    cmd.Parameters.Add("p_Foto", MySqlDbType.LongBlob).Value = Foto ?? new byte[0];
+                    cmd.Parameters.Add("p_Curriculum", MySqlDbType.LongBlob).Value = Curriculum ?? new byte[0];
+
+
                     cmd.Parameters.AddWithValue("p_IDUsuario", idUsuario);
 
                     filasAfectadas = cmd.ExecuteNonQuery();
@@ -116,6 +121,5 @@ namespace Modelo
 
             return correo;
         }
-
     }
 }
