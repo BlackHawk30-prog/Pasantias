@@ -108,6 +108,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="login.cs" />
     <Compile Include="Oficial.cs" />
+    <Compile Include="Postulacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RH.cs" />
     <Compile Include="SessionStore.cs" />

@@ -146,35 +146,41 @@ namespace Pasantias
             }
 
             // Validación de foto
-            if (!txt_Foto.HasFile || !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            byte[] fotoBytes = null;
+            if (txt_Foto.HasFile && Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            {
+                fotoBytes = txt_Foto.FileBytes;
+                txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
+            }
+            else
             {
                 esValido = false;
                 txt_Foto.CssClass += " error";
                 lbl_Error.Text += "La foto debe estar en formato JPG o PNG.<br/>";
             }
-            else
-            {
-                txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
-            }
 
             // Validación de currículum
-            if (!txt_Curriculum.HasFile || !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
+            byte[] curriculumBytes = null;
+            if (txt_Curriculum.HasFile && Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
+            {
+                curriculumBytes = txt_Curriculum.FileBytes;
+                txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace("error", "");
+            }
+            else
             {
                 esValido = false;
                 txt_Curriculum.CssClass += " error";
                 lbl_Error.Text += "El currículum debe estar en formato DOC, DOCX o PDF.<br/>";
             }
-            else
-            {
-                txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace("error", "");
-            }
 
+            // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
             {
                 lbl_Error.Visible = true;
                 return;
             }
 
+            // Crear el objeto aplicante y almacenar los datos en la base de datos
             aplicante2 = new Aplicante2();
             string dni = ViewState["DNI"].ToString();
 
@@ -184,15 +190,14 @@ namespace Pasantias
                 txt_Direccion.Text,
                 txt_Universidad.Text,
                 sexo,
-                txt_Foto.FileBytes,
-                txt_Curriculum.FileBytes,
+                fotoBytes,
+                curriculumBytes,
                 dni
             );
 
             if (resultado > 0)
             {
                 string correo = aplicante2.ObtenerCorreoPorDNI(dni);
-
                 if (correo != null)
                 {
                     EnviarCorreoAgradecimiento(correo);
@@ -208,6 +213,7 @@ namespace Pasantias
                 lbl_Error.Visible = true;
             }
         }
+
 
         private void EnviarCorreoAgradecimiento(string destinatario)
         {
