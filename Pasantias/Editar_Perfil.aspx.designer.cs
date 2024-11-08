@@ -240,6 +240,15 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.FileUpload txt_Foto;
 
         /// <summary>
+        /// Control imgFoto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgFoto;
+
+        /// <summary>
         /// Control lbl_Curriculum.
         /// </summary>
         /// <remarks>
@@ -256,6 +265,15 @@ namespace Pasantias
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload txt_Curriculum;
+
+        /// <summary>
+        /// Control lnkCurriculum.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkCurriculum;
 
         /// <summary>
         /// Control btnGuardar.

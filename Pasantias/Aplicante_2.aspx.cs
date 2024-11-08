@@ -65,13 +65,6 @@ namespace Pasantias
                     return;
                 }
 
-              //  if (dniEncriptado.Length % 4 != 0 || !IsBase64String(dniEncriptado))
-              //  {
-           //         lbl_Error.Text = "El DNI encriptado no tiene un formato válido.";
-            //        lbl_Error.Visible = true;
-            //        return;
-            //    }
-
                 try
                 {
                     string dniDesencriptado = EncriptacionAES.Desencriptar(dniEncriptado);
@@ -90,24 +83,12 @@ namespace Pasantias
             }
         }
 
-        private bool IsBase64String(string s)
-        {
-            if (string.IsNullOrEmpty(s) || s.Length % 4 != 0)
-                return false;
-
-            foreach (char c in s)
-            {
-                if (!char.IsLetterOrDigit(c) && c != '+' && c != '/' && c != '=')
-                    return false;
-            }
-            return true;
-        }
-
         protected void Enviar_Click(object sender, EventArgs e)
         {
             bool esValido = true;
             lbl_Error.Text = string.Empty;
 
+            // Validación de fecha de nacimiento
             DateTime fechaNacimiento;
             if (!DateTime.TryParse(txt_Fecha.Text, out fechaNacimiento) || !Utilidades.ValidarEdad(fechaNacimiento))
             {
@@ -120,6 +101,7 @@ namespace Pasantias
                 txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "");
             }
 
+            // Validación de teléfono
             if (!Utilidades.ValidarTelefono(txt_Telefono.Text))
             {
                 esValido = false;
@@ -131,6 +113,7 @@ namespace Pasantias
                 txt_Telefono.CssClass = txt_Telefono.CssClass.Replace("error", "");
             }
 
+            // Validación de universidad
             if (!Utilidades.ValidarCampoObligatorio(txt_Universidad.Text) || !Utilidades.ValidarTexto(txt_Universidad.Text))
             {
                 esValido = false;
@@ -142,6 +125,7 @@ namespace Pasantias
                 txt_Universidad.CssClass = txt_Universidad.CssClass.Replace("error", "");
             }
 
+            // Validación de dirección
             if (!Utilidades.ValidarCampoObligatorio(txt_Direccion.Text) || !Utilidades.ValidarTexto(txt_Direccion.Text))
             {
                 esValido = false;
@@ -153,6 +137,7 @@ namespace Pasantias
                 txt_Direccion.CssClass = txt_Direccion.CssClass.Replace("error", "");
             }
 
+            // Validación de sexo
             string sexo = txt_Hombre.Checked ? "Hombre" : txt_Mujer.Checked ? "Mujer" : "";
             if (string.IsNullOrEmpty(sexo))
             {
@@ -160,51 +145,60 @@ namespace Pasantias
                 lbl_Error.Text += "Seleccione su sexo.<br/>";
             }
 
-            if (!txt_Foto.HasFile || !Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            // Validación de foto
+            byte[] fotoBytes = null;
+            if (txt_Foto.HasFile && Utilidades.ValidarTipoArchivoFoto(txt_Foto.FileName))
+            {
+                fotoBytes = txt_Foto.FileBytes;
+                txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
+            }
+            else
             {
                 esValido = false;
                 txt_Foto.CssClass += " error";
                 lbl_Error.Text += "La foto debe estar en formato JPG o PNG.<br/>";
             }
-            else
-            {
-                txt_Foto.CssClass = txt_Foto.CssClass.Replace("error", "");
-            }
 
-            if (!txt_Curriculum.HasFile || !Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
+            // Validación de currículum
+            byte[] curriculumBytes = null;
+            if (txt_Curriculum.HasFile && Utilidades.ValidarTipoArchivoCurriculum(txt_Curriculum.FileName))
+            {
+                curriculumBytes = txt_Curriculum.FileBytes;
+                txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace("error", "");
+            }
+            else
             {
                 esValido = false;
                 txt_Curriculum.CssClass += " error";
                 lbl_Error.Text += "El currículum debe estar en formato DOC, DOCX o PDF.<br/>";
             }
-            else
-            {
-                txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace("error", "");
-            }
 
+            // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
             {
                 lbl_Error.Visible = true;
                 return;
             }
-
+            // Asignar tamaños al Label lbl_salida
+            lbl_salida.Text = $"Tamaño de Foto: {fotoBytes.Length} bytes\nTamaño de Curriculum: {curriculumBytes.Length} bytes";
+            // Crear el objeto aplicante y almacenar los datos en la base de datos
             aplicante2 = new Aplicante2();
             string dni = ViewState["DNI"].ToString();
 
             int resultado = aplicante2.Crear(
+                fechaNacimiento,
                 txt_Telefono.Text,
                 txt_Direccion.Text,
                 txt_Universidad.Text,
                 sexo,
-                txt_Foto.FileBytes,
-                txt_Curriculum.FileBytes,
+                fotoBytes,
+                curriculumBytes,
                 dni
             );
 
             if (resultado > 0)
             {
                 string correo = aplicante2.ObtenerCorreoPorDNI(dni);
-
                 if (correo != null)
                 {
                     EnviarCorreoAgradecimiento(correo);
@@ -220,6 +214,7 @@ namespace Pasantias
                 lbl_Error.Visible = true;
             }
         }
+
 
         private void EnviarCorreoAgradecimiento(string destinatario)
         {
@@ -252,4 +247,3 @@ namespace Pasantias
         }
     }
 }
-

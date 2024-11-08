@@ -1,8 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Editar_Perfil.aspx.cs" Inherits="Pasantias.Editar_Perfil" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-
-
-
  <!-- Contenedor para centrar el contenido -->
  <div class="container">
      <h1 class="text-center">Editar Perfil</h1>
@@ -64,13 +61,16 @@
                  <asp:Label runat="server" AssociatedControlID="txt_Mujer" CssClass="form-check-label">Mujer</asp:Label>
              </div>
          </div>
-         <div class="form-group">
-             <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal (Solo se aceptan formatos JPG y PNG):" CssClass="form-label"></asp:Label>
-             <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
-         </div>
+       <div class="form-group">
+    <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal (Solo se aceptan formatos JPG y PNG):" CssClass="form-label"></asp:Label>
+    <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
+    <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
+</div>
+
          <div class="form-group">
              <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
              <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
+             <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
          </div>
      </div>
      
@@ -82,15 +82,10 @@
      .form-container { background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
      .form-group { margin-bottom: 1rem; }
      .form-label { font-weight: bold; }
-     .btn { display: inline-block; padding: 5px 10px; cursor: pointer; }
-     .btn-primary { background-color: #007bff; color: white; border: none; }
-     .btn-primary:hover { background-color: #0056b3; }
+     .img-thumbnail { display: block; }
  </style>
 
-    <!-- Botón para Guardar Cambios -->
-    <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" />
+ <!-- Botón para Guardar Cambios -->
+ <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-primary mt-3"  />
 
 </asp:Content>
-
-
-
