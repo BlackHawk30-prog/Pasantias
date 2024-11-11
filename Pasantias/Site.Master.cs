@@ -32,14 +32,14 @@ namespace Pasantias
             SeguridadNav.Visible = false;
 
             // Depuración temporal para verificar el rol en sesión
-            if (Session["UserRol"] == null)
-            {
-                Response.Write("No hay rol en la sesión.");
-            }
-            else
-            {
-                Response.Write("Rol en sesión: " + Session["UserRol"]);
-            }
+           // if (Session["UserRol"] == null)
+          //  {
+          //      Response.Write("No hay rol en la sesión.");
+          //  }
+          //  else
+          //  {
+          //      Response.Write("Rol en sesión: " + Session["UserRol"]);
+          //  }
 
             // Verifica si el rol está en la sesión
             if (Session["UserRol"] != null)
