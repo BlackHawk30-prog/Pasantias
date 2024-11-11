@@ -42,7 +42,7 @@
         <!-- Contenedor centrado para la tabla -->
         <div class="form-container">
             <div class="form-group text-center">
-                <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHoja" 
+                <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo" 
                  CssClass="table table-condensed" OnSelectedIndexChanged="grid_hojas_SelectedIndexChanged" 
                  OnRowDeleting="grid_hojas_RowDeleting">
                  <Columns>

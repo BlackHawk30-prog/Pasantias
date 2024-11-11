@@ -13,7 +13,8 @@
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="css/simplebar.css">
     <!-- Fonts CSS -->
-    <link rel="stylesheet" href="css/feather.css">
+    <link rel="stylesheet" href="<%= ResolveClientUrl("~/css/feather.css") %>">
+
     <link rel="stylesheet" href="css/app-light.css">
 
     <asp:PlaceHolder runat="server">
@@ -26,8 +27,8 @@
     <!-- Barra de navegación superior -->
     <nav class="topnav navbar navbar-light">
         <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar" id="menuToggle">
-            <i id="toggle-menu" class="fe fe-menu navbar-toggler-icon"></i>
-        </button>
+    <i id="toggle-menu" class="fe fe-menu navbar-toggler-icon"></i>
+</button>
         <form class="form-inline mr-auto searchform text-muted">
             <input class="form-control mr-sm-2 bg-transparent border-0 pl-4 text-muted" type="search" placeholder="Type something..." aria-label="Search">
         </form>
