@@ -51,13 +51,14 @@ namespace Pasantias
                 {
                     HojaTiempoNav.Visible = true;
                     PostulacionesNav.Visible = true;
+                    OficialNav.Visible = true;
                 }
                 else if (rol == 2)
                 {
                     HojaTiempoNav.Visible = true;
                     FinanzasNav.Visible = true;
                 }
-                else if (rol == 5)
+                else if (rol == 3)
                 {
                     OficialNav.Visible = true;
                     HojaTiempoNav.Visible = true;
