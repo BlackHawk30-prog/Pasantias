@@ -18,6 +18,7 @@ namespace Pasantias
                 oficial = new Oficial();
                 oficial.grid_oficial(GridView1);
             }
+
         }
 
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
