@@ -23,9 +23,8 @@ namespace Modelo
 
             // Obtener el ID del usuario desde la sesión
             int idUsuario = SessionStore.UserID;
-            string consulta = $"SELECT * FROM hoja_tiempo WHERE Eliminado = 0 AND MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual} AND idUsuario = {idUsuario}";
-
-
+            //string consulta = $"SELECT * FROM hoja_tiempo WHERE Eliminado = 0 AND MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual} AND idUsuario = {idUsuario}";
+            string consulta = $"SELECT * FROM detalle_hoja_tiempo WHERE MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual} AND IDHojaTiempo = 1";
 
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);

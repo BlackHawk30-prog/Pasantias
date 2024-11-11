@@ -5,8 +5,8 @@
         <h1 class="text-center">Postulantes a Pasantia</h1>
         
         <!-- Tabla de postulantes -->
-        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario,IDDatos_Usuarios,IDRol" 
-                      CssClass="table table-condensed">
+        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario,IDDatos_Usuarios,IDRol"
+            CssClass="table table-condensed" OnSelectedIndexChanged="grid_aplicantes_SelectedIndexChanged">
             <Columns>
                 <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" ItemStyle-CssClass="text-center"></asp:BoundField>
                 <asp:BoundField DataField="Primer_Apellido" HeaderText="Apellido" ItemStyle-CssClass="text-center"></asp:BoundField>
