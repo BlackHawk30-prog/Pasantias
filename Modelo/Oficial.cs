@@ -30,7 +30,9 @@ namespace Modelo
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = string.Format("select IDUsuario as id, Primer_Nombre, DNI from usuarios;");
+            int idUsuario = SessionStore.UserID;
+           // string consulta = string.Format("select * from usuarios where supervisor = {idUsuario};");
+            string consulta = $"SELECT * FROM usuarios WHERE  supervisor = {idUsuario}";
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
             conectar.CerrarConexion();
