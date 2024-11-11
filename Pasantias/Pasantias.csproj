@@ -172,6 +172,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Finanzas.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Hojas_Generales.aspx" />
     <Content Include="Hoja_Tiempo.aspx" />
     <Content Include="Log.aspx" />
     <Content Include="Login.aspx" />
@@ -261,6 +262,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Hojas_Generales.aspx.cs">
+      <DependentUpon>Hojas_Generales.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Hojas_Generales.aspx.designer.cs">
+      <DependentUpon>Hojas_Generales.aspx</DependentUpon>
     </Compile>
     <Compile Include="Hoja_Tiempo.aspx.cs">
       <DependentUpon>Hoja_Tiempo.aspx</DependentUpon>

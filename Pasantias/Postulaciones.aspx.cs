@@ -21,6 +21,9 @@ namespace Pasantias
 
         }
 
+        protected void grid_aplicantes_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
+        }
     }
 }
