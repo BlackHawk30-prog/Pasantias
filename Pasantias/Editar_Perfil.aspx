@@ -66,12 +66,13 @@
     <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
     <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
 </div>
+         <br />
+      <div class="form-group">
+    <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
+    <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
+    <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn-custom" Text="Descargar Curriculum" Visible="false" Target="_blank" />
+</div>
 
-         <div class="form-group">
-             <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
-             <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
-             <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
-         </div>
 
                <!-- Botón para Guardar Cambios -->
 <div class="text-center">
@@ -91,6 +92,23 @@
      .form-group { margin-bottom: 1rem; }
      .form-label { font-weight: bold; }
      .img-thumbnail { display: block; }
+   .btn-custom {
+    display: inline-block;
+    padding: 0.5em 1em;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+}
+
+
+
  </style>
 
 
