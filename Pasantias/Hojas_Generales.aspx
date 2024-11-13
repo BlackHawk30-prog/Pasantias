@@ -3,20 +3,25 @@
 
 <div class="container">
     <h1 class="text-center">Hojas Generales</h1>
+   <div style="text-align: right;">
+    <asp:Button ID="BtnNuevaHoja" runat="server" Text="Nueva Hoja de Tiempo" CssClass="btn btn-info" />
+</div>
+
 
     <!-- Tabla centrada y con estilos -->
     <div class="form-container">
-        <asp:GridView ID="grid_Generales" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo,IDUsuario" CssClass="table table-condensed">
+       <asp:GridView ID="grid_Generales" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo,IDUsuario" OnRowCommand="grid_Generales_RowCommand">
             <Columns>
                 <asp:BoundField DataField="IDHojaTiempo" HeaderText="Hoja de Tiempo"></asp:BoundField>
                 <asp:BoundField DataField="IDUsuario" HeaderText="Usuario"></asp:BoundField>
                 <asp:BoundField DataField="Fecha" HeaderText="Fecha Creada" DataFormatString="{0:dd/MM/yyyy}"></asp:BoundField>
                
-                <asp:TemplateField ShowHeader="True" HeaderText="Accion">
-                    <ItemTemplate>
-                        <asp:Button ID="Btn_Editar" runat="server" CausesValidation="False" CommandName="Select" Text="Editar" CssClass="btn btn-info" />
-                    </ItemTemplate>
-                </asp:TemplateField>
+               <asp:TemplateField ShowHeader="True" HeaderText="Accion">
+    <ItemTemplate>
+        <asp:Button ID="Btn_Editar" runat="server" CausesValidation="False" CommandName="Editar" Text="Editar" CssClass="btn btn-info" CommandArgument='<%# Eval("IDHojaTiempo") %>' />
+    </ItemTemplate>
+</asp:TemplateField>
+
             </Columns>
         </asp:GridView>
     </div>
