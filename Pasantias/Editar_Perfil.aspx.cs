@@ -2,7 +2,9 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.IO;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Pasantias
 {
@@ -165,19 +167,81 @@ namespace Pasantias
         {
             if (DatosModificados())
             {
-                int idUsuario = (int)Session["UserID"];
-                ActualizarDatosUsuario(idUsuario);
-                ScriptManager.RegisterStartupScript(this, GetType(), "ChangesAlert",
-                    "alert('Actualizado Exitosamente.'); window.location.href='Default.aspx';", true);
-            }
+                try
+                {
+                    int idUsuario = (int)Session["UserID"];
+                    string dni = txt_DNI.Text.Trim();
 
+                    // Guardar la foto si se ha seleccionado un archivo
+                    if (txt_Foto.HasFile)
+                    {
+                        GuardarArchivo(txt_Foto, "Fotos", dni + "_foto");
+                        // Agregar una marca de tiempo a la URL para forzar la actualización de la imagen
+                        imgFoto.ImageUrl = "~/Fotos/" + dni + "_foto" + Path.GetExtension(txt_Foto.FileName) + "?t=" + DateTime.Now.Ticks;
+                    }
+
+                    // Guardar el currículum si se ha seleccionado un archivo
+                    if (txt_Curriculum.HasFile)
+                    {
+                        GuardarArchivo(txt_Curriculum, "Curriculum", dni + "_curriculum");
+                        // Agregar una marca de tiempo a la URL para forzar la actualización del currículum
+                        lnkCurriculum.NavigateUrl = "~/Curriculum/" + dni + "_curriculum" + Path.GetExtension(txt_Curriculum.FileName) + "?t=" + DateTime.Now.Ticks;
+                        lnkCurriculum.Visible = true;
+                    }
+
+                    // Llamar al método de actualización de datos del usuario
+                    ActualizarDatosUsuario(idUsuario);
+
+                    // Mostrar mensaje de éxito y redirigir
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ChangesAlert",
+                        "alert('Actualizado Exitosamente.'); window.location.href='Default.aspx';", true);
+                }
+                catch (Exception ex)
+                {
+                    // Mostrar mensaje de error en caso de fallo
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ErrorAlert",
+                        $"alert('Error al actualizar: {ex.Message}');", true);
+                }
+            }
             else
             {
+                // Mostrar mensaje de que no hubo cambios
                 ScriptManager.RegisterStartupScript(this, GetType(), "NoChangesAlert",
                     "alert('No se realizaron cambios.'); window.location.href='Default.aspx';", true);
             }
         }
 
+
+
+
+
+
+        // Método para guardar el archivo en el sistema de archivos
+        private void GuardarArchivo(FileUpload fileUploadControl, string carpeta, string nombreArchivo)
+        {
+            // Verificar el tipo de archivo permitido
+            string extension = Path.GetExtension(fileUploadControl.FileName).ToLower();
+            if ((carpeta == "Fotos" && (extension == ".jpg" || extension == ".png")) ||
+                (carpeta == "Curriculum" && (extension == ".doc" || extension == ".docx" || extension == ".pdf" || extension == ".dox" || extension == ".360")))
+            {
+                // Definir el directorio y la ruta completa del archivo
+                string directorio = Path.Combine(Server.MapPath("~/" + carpeta));
+                string rutaCompleta = Path.Combine(directorio, nombreArchivo + extension);
+
+                // Crear el directorio si no existe
+                if (!Directory.Exists(directorio))
+                {
+                    Directory.CreateDirectory(directorio);
+                }
+
+                // Guardar el archivo y reemplazar si ya existe
+                fileUploadControl.SaveAs(rutaCompleta);
+            }
+            else
+            {
+                throw new InvalidOperationException("Formato de archivo no permitido.");
+            }
+        }
         private bool DatosModificados()
         {
             ConexionBD conectar = new ConexionBD();
@@ -187,12 +251,12 @@ namespace Pasantias
             try
             {
                 string consulta = @"
-                    SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-                        u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-                        du.Grado_academico, du.Sexo 
-                    FROM usuarios u 
-                    JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-                    WHERE u.IDUsuario = @userId";
+            SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
+                u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
+                du.Grado_academico, du.Sexo, du.Foto, du.Curriculum 
+            FROM usuarios u 
+            JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
+            WHERE u.IDUsuario = @userId";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -202,6 +266,7 @@ namespace Pasantias
                     {
                         if (reader.Read())
                         {
+                            // Verificar si hay cambios en los campos de texto y en los archivos
                             modificado = txt_Nombre1.Text != reader["Primer_Nombre"].ToString() ||
                                          txt_Nombre2.Text != reader["Segundo_Nombre"].ToString() ||
                                          txt_Apellido1.Text != reader["Primer_Apellido"].ToString() ||
@@ -213,7 +278,9 @@ namespace Pasantias
                                          txt_Universidad.Text != reader["Grado_academico"].ToString() ||
                                          txt_Direccion.Text != reader["Direccion"].ToString() ||
                                          (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||
-                                         (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer");
+                                         (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer") ||
+                                         txt_Foto.HasFile || // Verifica si se seleccionó una nueva foto
+                                         txt_Curriculum.HasFile; // Verifica si se seleccionó un nuevo curriculum
                         }
                     }
                 }
@@ -229,6 +296,7 @@ namespace Pasantias
 
             return modificado;
         }
+
 
         private void ActualizarDatosUsuario(int userId)
         {
