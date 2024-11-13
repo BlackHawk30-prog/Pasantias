@@ -68,6 +68,14 @@ namespace Modelo
         {
             if (archivo == null || archivo.Length == 0) return null;
 
+            // Obtener la extensión del archivo desde el nombre proporcionado
+            string extension = Path.GetExtension(nombreArchivo);
+            if (string.IsNullOrEmpty(extension))
+            {
+                throw new ArgumentException("El archivo no tiene una extensión válida.");
+            }
+
+            // Definir el directorio y nombre completo del archivo a guardar
             string directorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, carpeta);
 
             // Crear el directorio si no existe
@@ -76,7 +84,10 @@ namespace Modelo
                 Directory.CreateDirectory(directorio);
             }
 
+            // Concatenar el nombre y la extensión para formar el nombre completo del archivo
             string rutaCompleta = Path.Combine(directorio, nombreArchivo);
+
+            // Guardar el archivo en el sistema de archivos
             File.WriteAllBytes(rutaCompleta, archivo);
 
             // Devolver solo la ruta relativa para guardar en la base de datos
