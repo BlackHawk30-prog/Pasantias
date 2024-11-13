@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="text-center">Hojas Generales</h1>
    <div style="text-align: right;">
-    <asp:Button ID="BtnNuevaHoja" runat="server" Text="Nueva Hoja de Tiempo" CssClass="btn btn-info" />
+    <asp:Button ID="BtnNuevaHoja" runat="server" Text="Nueva Hoja de Tiempo" CssClass="btn btn-info" OnClick="BtnNuevaHoja_Click" />
 </div>
 
 
