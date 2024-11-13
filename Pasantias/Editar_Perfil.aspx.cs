@@ -8,38 +8,33 @@ namespace Pasantias
 {
     public partial class Editar_Perfil : Page
     {
+        private bool cambiosRealizados = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Verificar si hay un IDUsuario en la sesión
                 if (Session["UserID"] != null)
                 {
                     int idUsuario = (int)Session["UserID"];
-
-                    // Log de depuración para confirmar el IDUsuario recibido
                     System.Diagnostics.Debug.WriteLine($"IDUsuario recibido de la sesión: {idUsuario}");
-
-                    // Cargar los datos del usuario
                     CargarDatosUsuario(idUsuario);
 
-                    // Asignar la URL de la imagen y el enlace del curriculum si existen en la base de datos
                     string imagePath = ObtenerRutaFotoDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(imagePath))
                     {
-                        imgFoto.ImageUrl = ResolveUrl("~/" + imagePath);  // Asegurarse de que la URL esté correctamente formateada
+                        imgFoto.ImageUrl = ResolveUrl("~/" + imagePath);
                     }
 
                     string curriculumPath = ObtenerRutaCurriculumDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(curriculumPath))
                     {
-                        lnkCurriculum.NavigateUrl = ResolveUrl("~/" + curriculumPath);  // Asegurar la URL correcta
+                        lnkCurriculum.NavigateUrl = ResolveUrl("~/" + curriculumPath);
                         lnkCurriculum.Visible = true;
                     }
                 }
                 else
                 {
-                    // Log de depuración indicando que no se encontró el IDUsuario en la sesión
                     System.Diagnostics.Debug.WriteLine("No se encontró el IDUsuario en la sesión.");
                     Response.Redirect("Login.aspx");
                 }
@@ -55,28 +50,12 @@ namespace Pasantias
             {
                 string consulta = @"
                     SELECT 
-                        u.IDUsuario,
-                        u.Primer_Nombre, 
-                        u.Segundo_Nombre, 
-                        u.Primer_Apellido, 
-                        u.Segundo_Apellido, 
-                        u.DNI, 
-                        u.Correo, 
-                        u.Usuario, 
-                        u.Password, 
-                        du.Fecha_Nacimiento,
-                        du.Telefono, 
-                        du.Direccion, 
-                        du.Grado_academico, 
-                        du.Sexo
-                    FROM 
-                        usuarios u 
-                    JOIN 
-                        datos_usuario du 
-                    ON 
-                        u.IDUsuario = du.IDUsuario 
-                    WHERE 
-                        u.IDUsuario = @userId";
+                        u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
+                        u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
+                        du.Grado_academico, du.Sexo 
+                    FROM usuarios u 
+                    JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
+                    WHERE u.IDUsuario = @userId";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -96,8 +75,6 @@ namespace Pasantias
                             txt_Telefono.Text = reader["Telefono"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString();
                             txt_Direccion.Text = reader["Direccion"].ToString();
-
-                            // Seleccionar el sexo adecuado en el RadioButton
                             if (reader["Sexo"].ToString() == "Hombre")
                             {
                                 txt_Hombre.Checked = true;
@@ -106,10 +83,6 @@ namespace Pasantias
                             {
                                 txt_Mujer.Checked = true;
                             }
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("No se encontraron datos para el usuario.");
                         }
                     }
                 }
@@ -124,7 +97,6 @@ namespace Pasantias
             }
         }
 
-        // Método para obtener la ruta de la foto desde la base de datos
         private string ObtenerRutaFotoDesdeBD(int userId)
         {
             ConexionBD conectar = new ConexionBD();
@@ -141,7 +113,7 @@ namespace Pasantias
 
                     if (resultado != DBNull.Value)
                     {
-                        rutaFoto = resultado.ToString();  // Almacena la ruta como texto
+                        rutaFoto = resultado.ToString();
                     }
                 }
             }
@@ -157,7 +129,6 @@ namespace Pasantias
             return rutaFoto;
         }
 
-        // Método para obtener la ruta del curriculum desde la base de datos
         private string ObtenerRutaCurriculumDesdeBD(int userId)
         {
             ConexionBD conectar = new ConexionBD();
@@ -174,7 +145,7 @@ namespace Pasantias
 
                     if (resultado != DBNull.Value)
                     {
-                        rutaCurriculum = resultado.ToString();  // Almacena la ruta como texto
+                        rutaCurriculum = resultado.ToString();
                     }
                 }
             }
@@ -190,11 +161,144 @@ namespace Pasantias
             return rutaCurriculum;
         }
 
-        protected void btnRegresar_Click(object sender, EventArgs e)
+        protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Default.aspx");
+            if (DatosModificados())
+            {
+                int idUsuario = (int)Session["UserID"];
+                ActualizarDatosUsuario(idUsuario);
+                ScriptManager.RegisterStartupScript(this, GetType(), "ChangesAlert",
+                    "alert('Actualizado Exitosamente.'); window.location.href='Default.aspx';", true);
+            }
+
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "NoChangesAlert",
+                    "alert('No se realizaron cambios.'); window.location.href='Default.aspx';", true);
+            }
         }
 
+        private bool DatosModificados()
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+            bool modificado = false;
 
+            try
+            {
+                string consulta = @"
+                    SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
+                        u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
+                        du.Grado_academico, du.Sexo 
+                    FROM usuarios u 
+                    JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
+                    WHERE u.IDUsuario = @userId";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@userId", (int)Session["UserID"]);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            modificado = txt_Nombre1.Text != reader["Primer_Nombre"].ToString() ||
+                                         txt_Nombre2.Text != reader["Segundo_Nombre"].ToString() ||
+                                         txt_Apellido1.Text != reader["Primer_Apellido"].ToString() ||
+                                         txt_Apellido2.Text != reader["Segundo_Apellido"].ToString() ||
+                                         txt_DNI.Text != reader["DNI"].ToString() ||
+                                         txt_Correo.Text != reader["Correo"].ToString() ||
+                                         txt_Fecha.Text != Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd") ||
+                                         txt_Telefono.Text != reader["Telefono"].ToString() ||
+                                         txt_Universidad.Text != reader["Grado_academico"].ToString() ||
+                                         txt_Direccion.Text != reader["Direccion"].ToString() ||
+                                         (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||
+                                         (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer");
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al verificar cambios: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return modificado;
+        }
+
+        private void ActualizarDatosUsuario(int userId)
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+
+            try
+            {
+                string updateUsuarios = @"
+                    UPDATE usuarios SET 
+                        Primer_Nombre = @Nombre1, Segundo_Nombre = @Nombre2, 
+                        Primer_Apellido = @Apellido1, Segundo_Apellido = @Apellido2, 
+                        DNI = @DNI, Correo = @Correo 
+                    WHERE IDUsuario = @userId";
+
+                string updateDatosUsuario = @"
+                    UPDATE datos_usuario SET 
+                        Fecha_Nacimiento = @FechaNacimiento, Telefono = @Telefono, 
+                        Direccion = @Direccion, Grado_academico = @Grado, 
+                        Sexo = @Sexo 
+                    WHERE IDUsuario = @userId";
+
+                using (MySqlCommand cmd1 = new MySqlCommand(updateUsuarios, conectar.conectar))
+                {
+                    cmd1.Parameters.AddWithValue("@Nombre1", txt_Nombre1.Text);
+                    cmd1.Parameters.AddWithValue("@Nombre2", txt_Nombre2.Text);
+                    cmd1.Parameters.AddWithValue("@Apellido1", txt_Apellido1.Text);
+                    cmd1.Parameters.AddWithValue("@Apellido2", txt_Apellido2.Text);
+                    cmd1.Parameters.AddWithValue("@DNI", txt_DNI.Text);
+                    cmd1.Parameters.AddWithValue("@Correo", txt_Correo.Text);
+                    cmd1.Parameters.AddWithValue("@userId", userId);
+                    cmd1.ExecuteNonQuery();
+                }
+
+                using (MySqlCommand cmd2 = new MySqlCommand(updateDatosUsuario, conectar.conectar))
+                {
+                    cmd2.Parameters.AddWithValue("@FechaNacimiento", DateTime.Parse(txt_Fecha.Text));
+                    cmd2.Parameters.AddWithValue("@Telefono", txt_Telefono.Text);
+                    cmd2.Parameters.AddWithValue("@Direccion", txt_Direccion.Text);
+                    cmd2.Parameters.AddWithValue("@Grado", txt_Universidad.Text);
+                    cmd2.Parameters.AddWithValue("@Sexo", txt_Hombre.Checked ? "Hombre" : "Mujer");
+                    cmd2.Parameters.AddWithValue("@userId", userId);
+                    cmd2.ExecuteNonQuery();
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al actualizar datos del usuario: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+        }
+
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+            if (DatosModificados())
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "ConfirmarRegreso",
+                    "if(confirm('Hay cambios sin guardar. ¿Desea regresar sin guardar los cambios?')) " +
+                    "{ window.location.href='Default.aspx'; }", true);
+            }
+            else
+            {
+                Response.Redirect("Default.aspx");
+            }
+        }
     }
 }
+
+
+
