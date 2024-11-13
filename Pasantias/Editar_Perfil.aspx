@@ -75,7 +75,7 @@
 
                <!-- Botón para Guardar Cambios -->
 <div class="text-center">
-    <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-primary mx-2" />
+    <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-primary mx-2" OnClick="btnGuardar_Click" />
 <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
 
 </div>
