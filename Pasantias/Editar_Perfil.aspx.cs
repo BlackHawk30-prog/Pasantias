@@ -27,13 +27,13 @@ namespace Pasantias
                     string imagePath = ObtenerRutaFotoDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(imagePath))
                     {
-                        imgFoto.ImageUrl = imagePath;
+                        imgFoto.ImageUrl = ResolveUrl("~/" + imagePath);  // Asegurarse de que la URL esté correctamente formateada
                     }
 
                     string curriculumPath = ObtenerRutaCurriculumDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(curriculumPath))
                     {
-                        lnkCurriculum.NavigateUrl = curriculumPath;
+                        lnkCurriculum.NavigateUrl = ResolveUrl("~/" + curriculumPath);  // Asegurar la URL correcta
                         lnkCurriculum.Visible = true;
                     }
                 }
@@ -68,9 +68,7 @@ namespace Pasantias
                         du.Telefono, 
                         du.Direccion, 
                         du.Grado_academico, 
-                        du.Sexo, 
-                        du.Foto, 
-                        du.Curriculum 
+                        du.Sexo
                     FROM 
                         usuarios u 
                     JOIN 
@@ -126,7 +124,7 @@ namespace Pasantias
             }
         }
 
-        // Método para obtener la foto en formato base64 y asignarla correctamente
+        // Método para obtener la ruta de la foto desde la base de datos
         private string ObtenerRutaFotoDesdeBD(int userId)
         {
             ConexionBD conectar = new ConexionBD();
@@ -143,10 +141,7 @@ namespace Pasantias
 
                     if (resultado != DBNull.Value)
                     {
-                        byte[] fotoBytes = (byte[])resultado;
-
-                        // Convertir los bytes en una cadena Base64 y especificar el tipo de imagen
-                        rutaFoto = "data:image/png;base64," + Convert.ToBase64String(fotoBytes);
+                        rutaFoto = resultado.ToString();  // Almacena la ruta como texto
                     }
                 }
             }
@@ -161,6 +156,8 @@ namespace Pasantias
 
             return rutaFoto;
         }
+
+        // Método para obtener la ruta del curriculum desde la base de datos
         private string ObtenerRutaCurriculumDesdeBD(int userId)
         {
             ConexionBD conectar = new ConexionBD();
@@ -177,41 +174,13 @@ namespace Pasantias
 
                     if (resultado != DBNull.Value)
                     {
-                        byte[] curriculumBytes = (byte[])resultado;
-
-                        // Comprobación adicional de la longitud del archivo para asegurarse de que no esté vacío o incompleto
-                        System.Diagnostics.Debug.WriteLine("Tamaño del archivo en bytes: " + curriculumBytes.Length);
-
-                        if (curriculumBytes.Length > 0)
-                        {
-                            // Asegurar que el directorio existe
-                            string folderPath = Server.MapPath("~/ArchivosTemporales");
-                            if (!System.IO.Directory.Exists(folderPath))
-                            {
-                                System.IO.Directory.CreateDirectory(folderPath);
-                            }
-
-                            // Guardar el archivo en una ruta temporal en el servidor
-                            string filePath = System.IO.Path.Combine(folderPath, "Curriculum_" + userId + ".pdf");
-                            System.IO.File.WriteAllBytes(filePath, curriculumBytes);
-
-                            // Generar la URL de descarga
-                            rutaCurriculum = "/ArchivosTemporales/Curriculum_" + userId + ".pdf";
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("El archivo está vacío o incompleto.");
-                        }
+                        rutaCurriculum = resultado.ToString();  // Almacena la ruta como texto
                     }
                 }
             }
             catch (MySqlException ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al obtener el curriculum del usuario: " + ex.Message);
-            }
-            catch (System.IO.IOException ioEx)
-            {
-                System.Diagnostics.Debug.WriteLine("Error al escribir el archivo en la ruta especificada: " + ioEx.Message);
             }
             finally
             {
@@ -220,7 +189,5 @@ namespace Pasantias
 
             return rutaCurriculum;
         }
-
-
     }
 }
