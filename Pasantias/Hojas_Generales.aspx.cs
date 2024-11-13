@@ -20,5 +20,17 @@ namespace Pasantias
             }
 
         }
+        protected void grid_Generales_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Editar")
+            {
+                // Obtener el IDHojaTiempo del CommandArgument
+                string idHojaTiempo = e.CommandArgument.ToString();
+
+                // Redirigir a la página Hoja_Tiempo con el IDHojaTiempo como parámetro en la URL
+                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idHojaTiempo}");
+            }
+        }
+
     }
 }

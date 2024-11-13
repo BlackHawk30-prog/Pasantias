@@ -9,5 +9,6 @@ namespace Modelo
     public class SessionStore
     {
         public static int UserID { get; set; }
+        public static int HojaID { get; set; }
     }
 }
