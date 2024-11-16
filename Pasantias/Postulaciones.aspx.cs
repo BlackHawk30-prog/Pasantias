@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Modelo;
 
@@ -11,34 +10,32 @@ namespace Pasantias
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Asegurarte de inicializar el objeto Postulacion en cada carga de la página
+            Postulacion = new Postulacion();
+
             if (!IsPostBack)
             {
-                Postulacion = new Postulacion();
                 Postulacion.grid_aplicantes(grid_aplicantes);
             }
         }
 
         protected void grid_aplicantes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            // Obtenemos el IDUsuario desde el CommandArgument
-            int idUsuario = Convert.ToInt32(e.CommandArgument);
-
-            if (e.CommandName == "Detalles")
+            if (e.CommandName == "Aceptar")
             {
-                // Redirige a la vista Detalle_Postulante con el IDUsuario en la query string
-                Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idUsuario}");
-            }
-            else if (e.CommandName == "Aceptar")
-            {
-                // Cambia el valor de RHConfirmado a 1
-                Postulacion.ActualizarEstadoUsuario(idUsuario, "RHConfirmado", 1);
-                Postulacion.grid_aplicantes(grid_aplicantes); // Recargar datos
+                int idUsuario = Convert.ToInt32(e.CommandArgument);
+                // Llamar al método para aceptar la postulación
+                Postulacion.AceptarPostulacion(idUsuario);
+                // Volver a cargar la tabla
+                Postulacion.grid_aplicantes(grid_aplicantes);
             }
             else if (e.CommandName == "Rechazar")
             {
-                // Cambia el valor de Eliminado a 1
-                Postulacion.ActualizarEstadoUsuario(idUsuario, "Eliminado", 1);
-                Postulacion.grid_aplicantes(grid_aplicantes); // Recargar datos
+                int idUsuario = Convert.ToInt32(e.CommandArgument);
+                // Llamar al método para rechazar la postulación
+                Postulacion.RechazarPostulacion(idUsuario);
+                // Volver a cargar la tabla
+                Postulacion.grid_aplicantes(grid_aplicantes);
             }
         }
     }
