@@ -75,7 +75,7 @@
              <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
          </div>
              <div class="container" align="center">
-    <asp:Button ID="btnGuardar" runat="server" Text="Regresar" CssClass="btn btn-primary" />
+     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-primary" OnClick="btnRegresar_Click" />
     <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" />
     <asp:Button ID="btnRechazar" runat="server" Text="Rechazar" CssClass="btn btn-danger" />
 </div>
