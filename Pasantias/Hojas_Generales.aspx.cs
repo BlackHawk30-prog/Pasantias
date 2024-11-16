@@ -1,4 +1,5 @@
 ﻿using Modelo;
+using MySql.Data.MySqlClient;
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -21,21 +22,36 @@ namespace Pasantias
         protected void BtnNuevaHoja_Click(object sender, EventArgs e)
         {
             int userID = Convert.ToInt32(Session["UserID"]);
+            Hojas = new HojasGenerales();
 
             // Llama al método crear para insertar una nueva hoja de tiempo
-            Hojas = new HojasGenerales();
             int resultado = Hojas.crear(userID);
 
             if (resultado > 0)
             {
-                // Redirige a Hoja_Tiempo.aspx con el IDUsuario actual como parámetro en la URL
-                Response.Redirect($"Hoja_Tiempo.aspx?IDUsuario={userID}");
+                // Después de crear la hoja de tiempo, consulta el IDHojaTiempo más reciente del usuario
+                int idHojaTiempo;
+                using (var conectar = new ConexionBD())
+                {
+                    conectar.AbrirConexion();
+                    string consulta = "SELECT IDHojaTiempo FROM hoja_tiempo WHERE IDUsuario = @IDUsuario ORDER BY IDHojaTiempo DESC LIMIT 1;\r\n";
+                    MySqlCommand obtenerId = new MySqlCommand(consulta, conectar.conectar);
+                    obtenerId.Parameters.AddWithValue("@IDUsuario", userID);
+                    idHojaTiempo = Convert.ToInt32(obtenerId.ExecuteScalar());
+                    SessionStore.HojaID = idHojaTiempo;
+                    conectar.CerrarConexion();
+                }
+
+                // Redirige a Hoja_Tiempo.aspx con el IDHojaTiempo recién obtenido
+                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idHojaTiempo}", false);
+
             }
             else
             {
                 Response.Write("<script>alert('Error al crear la hoja de tiempo.');</script>");
             }
         }
+
 
 
         protected void grid_Generales_RowCommand(object sender, GridViewCommandEventArgs e)

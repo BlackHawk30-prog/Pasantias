@@ -1,12 +1,9 @@
-﻿using Microsoft.Ajax.Utilities;
-using Modelo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Modelo;
 using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using System;
+using System.Web.UI;
+
 
 namespace Pasantias
 {
@@ -23,7 +20,7 @@ namespace Pasantias
                 if (int.TryParse(Request.QueryString["IDHojaTiempo"], out idHojaTiempo))
                 {
                     hojaTiempo = new HojaTiempo();
-                    SessionStore.HojaID = idHojaTiempo; // Guardar el ID en la sesión
+                    SessionStore.HojaID = idHojaTiempo; // Guardar el ID de Hoja en la sesión
                     grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Llama al método para cargar datos
                     grid_hojas.DataBind(); // Enlaza los datos al GridView
                     CalcularTotalHoras(); // Calcula las horas totales
@@ -71,10 +68,10 @@ namespace Pasantias
                     return;
                 }
 
-                int idUsuario = (int)Session["UserID"];
+                int idHojaTiempo = (int)SessionStore.HojaID;
                 string fechaString = txt_Fecha.Text;
 
-                if (hojaTiempo.crear(0, fechaString, txt_Actividades.Text, horas, idUsuario) > 0)
+                if (hojaTiempo.crear(fechaString, txt_Actividades.Text, horas, idHojaTiempo) > 0)
                 {
                     lbl_Mensaje.Text = "Registrado Exitosamente";
                     hojaTiempo.grid_hojas(grid_hojas);
@@ -142,8 +139,9 @@ namespace Pasantias
                     lbl_Mensaje.Text = "Por favor, ingresa un número de horas entre 1 y 8.";
                     return;
                 }
-                int idUsuario = (int)Session["UserID"];
-                if (hojaTiempo.actualizar(Convert.ToInt32(grid_hojas.SelectedValue), txt_Fecha.Text, txt_Actividades.Text, horas, 1) > 0)
+
+                int idHojaTiempo = (int)SessionStore.HojaID;
+                if (hojaTiempo.actualizar(Convert.ToInt32(grid_hojas.SelectedValue), txt_Fecha.Text, txt_Actividades.Text, horas, idHojaTiempo) > 0)
                 {
                     lbl_Mensaje.Text = "Modificado Exitosamente";
                     hojaTiempo.grid_hojas(grid_hojas);
@@ -231,5 +229,13 @@ namespace Pasantias
 
             lbl_HorasTotales.Text = $"Total de Horas: {totalHoras}";
         }
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+           
+            
+                Response.Redirect("Hojas_Generales.aspx");
+            
+        }
     }
 }
+

@@ -1,30 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using System.Web.UI.WebControls;
 using System.Data;
-using Org.BouncyCastle.Asn1.Mozilla;
+using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
 
 namespace Modelo
 {
     public class HojaTiempo
     {
         ConexionBD conectar;
+
+        // Método para obtener las hojas de tiempo
         public DataTable grid_hojas()
         {
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            int mesActual = DateTime.Now.Month;
-            int anioActual = DateTime.Now.Year;
 
             // Obtener el ID de Hoja de Tiempo desde la sesión
             int idHojaTiempo = SessionStore.HojaID;
 
-            string consulta = $"SELECT * FROM detalle_hoja_tiempo WHERE MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual} AND IDHojaTiempo = {idHojaTiempo}";
+            string consulta = $"SELECT * FROM detalle_hoja_tiempo WHERE IDHojaTiempo = {idHojaTiempo}";
 
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
@@ -32,36 +27,33 @@ namespace Modelo
             return tabla;
         }
 
-
-
+        // Método para llenar el GridView con los datos de las hojas de tiempo
         public void grid_hojas(GridView grid)
         {
             grid.DataSource = grid_hojas();
             grid.DataBind();
         }
 
-        public int crear(int IDHoja, string Fecha, string Actividades, int Horas, int IDUsuario)
+        // Método para crear una nueva hoja de tiempo
+        public int crear(string Fecha, string Actividades, int Horas, int IDHojaTiempo)
         {
             int no = 0;  // Esta variable almacenará el número de filas afectadas
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "InsertarHojaTiempo";  // Nombre del procedimiento almacenado
+            string consulta = "INSERT INTO detalle_hoja_tiempo (Fecha, Actividades, Horas, IDHojaTiempo) " +
+                              "VALUES (@Fecha, @Actividades, @Horas, @IDHojaTiempo)";
 
-
-            // Crear el comando y configurarlo como procedimiento almacenado
+            // Crear el comando SQL
             using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
             {
-                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
-
                 // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
-                cmd.Parameters.AddWithValue("p_Fecha", Fecha);
-                cmd.Parameters.AddWithValue("p_Actividades", Actividades);
-                cmd.Parameters.AddWithValue("p_Horas", Horas);
-                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+                cmd.Parameters.AddWithValue("@Fecha", Fecha);
+                cmd.Parameters.AddWithValue("@Actividades", Actividades);
+                cmd.Parameters.AddWithValue("@Horas", Horas);
+                cmd.Parameters.AddWithValue("@IDHojaTiempo", IDHojaTiempo);
 
-                // Ejecutar el procedimiento almacenado
+                // Ejecutar el comando SQL
                 no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
             }
 
@@ -69,27 +61,27 @@ namespace Modelo
             return no;  // Devolver el número de filas afectadas
         }
 
-        public int actualizar(int IDHoja, string Fecha, string Actividades, int Horas, int IDUsuario)
+        // Método para actualizar una hoja de tiempo existente
+        public int actualizar(int IDHoja, string Fecha, string Actividades, int Horas, int IDHojaTiempo)
         {
             int no = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "ActualizarHojaTiempo";  // Nombre del procedimiento almacenado
+            string consulta = "UPDATE detalle_hoja_tiempo SET Fecha = @Fecha, Actividades = @Actividades, " +
+                              "Horas = @Horas, IDHojaTiempo = @IDHojaTiempo WHERE ID_Detalle = @IDHoja";
 
-            // Crear el comando y configurarlo como procedimiento almacenado
+            // Crear el comando SQL
             using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
             {
-                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
-
                 // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
-                cmd.Parameters.AddWithValue("p_Fecha", Fecha);
-                cmd.Parameters.AddWithValue("p_Actividades", Actividades);
-                cmd.Parameters.AddWithValue("p_Horas", Horas);
-                cmd.Parameters.AddWithValue("p_IDUsuario", IDUsuario);
+                cmd.Parameters.AddWithValue("@IDHoja", IDHoja);
+                cmd.Parameters.AddWithValue("@Fecha", Fecha);
+                cmd.Parameters.AddWithValue("@Actividades", Actividades);
+                cmd.Parameters.AddWithValue("@Horas", Horas);
+                cmd.Parameters.AddWithValue("@IDHojaTiempo", IDHojaTiempo);
 
-                // Ejecutar el procedimiento almacenado
+                // Ejecutar el comando SQL
                 no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
             }
 
@@ -97,29 +89,27 @@ namespace Modelo
             return no;  // Devolver el número de filas afectadas
         }
 
+        // Método para eliminar una hoja de tiempo
         public int eliminar(int IDHoja)
         {
             int no = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "EliminarHojaTiempo";  // Nombre del procedimiento almacenado
+            string consulta = "DELETE FROM detalle_hoja_tiempo WHERE ID_Detalle = @IDHoja";
 
-            // Crear el comando y configurarlo como procedimiento almacenado
+            // Crear el comando SQL
             using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
             {
-                cmd.CommandType = CommandType.StoredProcedure;  // Indicar que es un procedimiento almacenado
-
                 // Agregar el parámetro al comando
-                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
+                cmd.Parameters.AddWithValue("@IDHoja", IDHoja);
 
-                // Ejecutar el procedimiento almacenado
+                // Ejecutar el comando SQL
                 no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
             }
 
             conectar.CerrarConexion();
             return no;  // Devolver el número de filas afectadas
         }
-
     }
 }

@@ -4,11 +4,15 @@
     <!-- Contenedor para centrar el contenido -->
     <div class="container">
         <h1 class="text-center">Hoja de Tiempo</h1>
-        
-        <!-- Campo para el total de horas -->
-        <div class="form-group d-flex justify-content-end">
-            <asp:Label ID="lbl_HorasTotales" runat="server" Text="Total de Horas: 0" CssClass="form-label"></asp:Label>
-        </div>
+          <!-- Contenedor flex para alinear el botón y el campo de horas -->
+<div class="form-group d-flex justify-content-between align-items-center">
+    <!-- Botón Regresar alineado a la izquierda -->
+    <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
+    
+    <!-- Campo para el total de horas alineado a la derecha -->
+    <asp:Label ID="lbl_HorasTotales" runat="server" Text="Total de Horas: 0" CssClass="form-label"></asp:Label>
+</div>
+
         
         <!-- Cuadro blanco para el formulario -->
         <div class="form-container">
@@ -42,7 +46,7 @@
         <!-- Contenedor centrado para la tabla -->
         <div class="form-container">
             <div class="form-group text-center">
-                <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo" 
+                <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="ID_Detalle" 
                  CssClass="table table-condensed" OnSelectedIndexChanged="grid_hojas_SelectedIndexChanged" 
                  OnRowDeleting="grid_hojas_RowDeleting">
                  <Columns>
