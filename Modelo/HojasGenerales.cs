@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI.WebControls;
 
 
@@ -18,13 +19,29 @@ namespace Modelo
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            string consulta = string.Format("Select * From hoja_tiempo;");
-            MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
-            query.Fill(tabla);
-            conectar.CerrarConexion();
 
+            // Obtener el ID de usuario desde la sesión
+            int idUsuario = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+
+            // Consulta SQL con un parámetro
+            string consulta = "SELECT * FROM hoja_tiempo WHERE IDUsuario = @UserID;";
+
+            using (MySqlCommand comando = new MySqlCommand(consulta, conectar.conectar))
+            {
+                // Agregar parámetro a la consulta
+                comando.Parameters.AddWithValue("@UserID", idUsuario);
+
+                // Ejecutar la consulta con MySqlDataAdapter
+                using (MySqlDataAdapter query = new MySqlDataAdapter(comando))
+                {
+                    query.Fill(tabla);
+                }
+            }
+
+            conectar.CerrarConexion();
             return tabla;
         }
+
 
         public void grid_Generales(GridView grid)
         {
