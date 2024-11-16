@@ -32,18 +32,31 @@ namespace Modelo
             grid.DataBind();
         }
 
-        public void ActualizarEstadoUsuario(int idUsuario, string campo, int valor)
+        public void AceptarPostulacion(int idUsuario)
         {
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = $"UPDATE usuarios SET {campo} = @valor WHERE IDUsuario = @idUsuario";
+            string consulta = "UPDATE usuarios SET RHConfirmado = 1 WHERE IDUsuario = @IDUsuario";
             MySqlCommand comando = new MySqlCommand(consulta, conectar.conectar);
-            comando.Parameters.AddWithValue("@valor", valor);
-            comando.Parameters.AddWithValue("@idUsuario", idUsuario);
-
+            comando.Parameters.AddWithValue("@IDUsuario", idUsuario);
             comando.ExecuteNonQuery();
+
             conectar.CerrarConexion();
         }
+
+        public void RechazarPostulacion(int idUsuario)
+        {
+            conectar = new ConexionBD();
+            conectar.AbrirConexion();
+
+            string consulta = "UPDATE usuarios SET Eliminado = 1 WHERE IDUsuario = @IDUsuario";
+            MySqlCommand comando = new MySqlCommand(consulta, conectar.conectar);
+            comando.Parameters.AddWithValue("@IDUsuario", idUsuario);
+            comando.ExecuteNonQuery();
+
+            conectar.CerrarConexion();
+        }
+
     }
 }
