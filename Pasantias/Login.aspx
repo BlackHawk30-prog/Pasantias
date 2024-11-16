@@ -33,9 +33,6 @@
 
             <asp:Button ID="Button1" runat="server" Text="Sign In" CssClass="btn btn-primary w-100" OnClick="Button1_Click" />
 
-            <div class="text-center mt-3">
-                <a href='<%= ResolveUrl("~/ResetPassword.aspx") %>' class="forgot-password text-decoration-none">¿Olvidaste tu contraseña?</a>
-            </div>
         </div>
     </form>
 

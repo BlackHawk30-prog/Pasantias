@@ -20,7 +20,7 @@ namespace Pasantias
             // Instanciar la clase Login (del namespace Modelo)
             Modelo.Login login = new Modelo.Login();
 
-            // Variable para almacenar el rol
+            // Variables para almacenar rol e ID de usuario
             int rol;
             int idUsuario;
 
@@ -29,7 +29,7 @@ namespace Pasantias
 
             // Redirigir o mostrar mensaje según el resultado de la verificación
             if (credencialesValidas)
-            { 
+            {
                 if (rol == -1)
                 {
                     // Mostrar mensaje si el usuario no tiene un rol asignado
@@ -37,14 +37,18 @@ namespace Pasantias
                 }
                 else
                 {
-                    // Almacenar el rol en la sesión para uso global
+                    // Obtener datos adicionales del usuario
+                    var datosUsuario = login.ObtenerDatosUsuario(idUsuario);
+
+                    // Almacenar datos en la sesión
                     Session["UserRol"] = rol;
                     Session["UserID"] = idUsuario;
+                    Session["PrimerNombre"] = datosUsuario.PrimerNombre;
+                    Session["PrimerApellido"] = datosUsuario.PrimerApellido;
                     SessionStore.UserID = idUsuario; // Asignar el ID de usuario en SessionStore
 
-                    // Redirigir a la página principal y pasar el IDUsuario en la URL
-                    Response.Redirect($"Default.aspx?IDUsuario={idUsuario}");
-                    
+                    // Redirigir a la página principal
+                    Response.Redirect("Default.aspx");
                 }
             }
             else
