@@ -21,13 +21,17 @@ namespace Modelo
 
                 // Buscar el IDUsuario basado en el DNI
                 int idUsuario = ObtenerIDUsuarioPorDNI(DNI);
-
                 if (idUsuario == 0)
                 {
                     throw new Exception("No se encontró un usuario con el DNI proporcionado.");
                 }
 
-                string consulta = "CrearDatosUsuario";  // Procedimiento almacenado
+                // Guardar foto y currículum en el sistema de archivos y obtener las rutas
+                string fotoPath = GuardarArchivoLocal(Foto, "Fotos", DNI + "_foto.jpg");
+                string curriculumPath = GuardarArchivoLocal(Curriculum, "Curriculum", DNI + "_curriculum.pdf");
+
+                // Procedimiento almacenado
+                string consulta = "CrearDatosUsuario";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -39,12 +43,8 @@ namespace Modelo
                     cmd.Parameters.AddWithValue("p_Direccion", Direccion);
                     cmd.Parameters.AddWithValue("p_Grado_Academico", Grado_Academico);
                     cmd.Parameters.AddWithValue("p_Sexo", Sexo);
-
-                    // Convertir los datos binarios de los archivos en streams
-                    cmd.Parameters.Add("p_Foto", MySqlDbType.LongBlob).Value = Foto ?? new byte[0];
-                    cmd.Parameters.Add("p_Curriculum", MySqlDbType.LongBlob).Value = Curriculum ?? new byte[0];
-
-
+                    cmd.Parameters.AddWithValue("p_Foto", fotoPath);
+                    cmd.Parameters.AddWithValue("p_Curriculum", curriculumPath);
                     cmd.Parameters.AddWithValue("p_IDUsuario", idUsuario);
 
                     filasAfectadas = cmd.ExecuteNonQuery();
@@ -61,6 +61,37 @@ namespace Modelo
             }
 
             return filasAfectadas;
+        }
+
+        // Método para guardar el archivo en el sistema de archivos y devolver la ruta
+        private string GuardarArchivoLocal(byte[] archivo, string carpeta, string nombreArchivo)
+        {
+            if (archivo == null || archivo.Length == 0) return null;
+
+            // Obtener la extensión del archivo desde el nombre proporcionado
+            string extension = Path.GetExtension(nombreArchivo);
+            if (string.IsNullOrEmpty(extension))
+            {
+                throw new ArgumentException("El archivo no tiene una extensión válida.");
+            }
+
+            // Definir el directorio y nombre completo del archivo a guardar
+            string directorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, carpeta);
+
+            // Crear el directorio si no existe
+            if (!Directory.Exists(directorio))
+            {
+                Directory.CreateDirectory(directorio);
+            }
+
+            // Concatenar el nombre y la extensión para formar el nombre completo del archivo
+            string rutaCompleta = Path.Combine(directorio, nombreArchivo);
+
+            // Guardar el archivo en el sistema de archivos
+            File.WriteAllBytes(rutaCompleta, archivo);
+
+            // Devolver solo la ruta relativa para guardar en la base de datos
+            return Path.Combine(carpeta, nombreArchivo);
         }
 
         // Método para obtener el IDUsuario usando el DNI

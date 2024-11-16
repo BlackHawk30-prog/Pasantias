@@ -24,7 +24,7 @@
          </div>
          <div class="form-group">
              <asp:Label ID="lbl_DNI" runat="server" Text="DNI:" CssClass="form-label"></asp:Label>
-             <asp:TextBox ID="txt_DNI" runat="server" placeholder="Escriba su Número de Identidad" CssClass="form-control" OnKeyUp="clearError(this.id)"></asp:TextBox>
+             <asp:TextBox ID="txt_DNI" runat="server" placeholder="Escriba su Número de Identidad" CssClass="form-control" OnKeyUp="clearError(this.id)" ReadOnly></asp:TextBox>
          </div>
          <div class="form-group">
              <asp:Label ID="lbl_Correo" runat="server" Text="Correo Electrónico:" CssClass="form-label"></asp:Label>
@@ -66,14 +66,23 @@
     <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
     <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
 </div>
+         <br />
+      <div class="form-group">
+    <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
+    <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
+    <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn-custom" Text="Descargar Curriculum" Visible="false" Target="_blank" />
+</div>
 
-         <div class="form-group">
-             <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
-             <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
-             <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
-         </div>
+
+               <!-- Botón para Guardar Cambios -->
+<div class="text-center">
+    <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-primary mx-2" OnClick="btnGuardar_Click" />
+<asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
+
+</div>
      </div>
-     
+
+
  </div>
 
  <!-- Estilos adicionales -->
@@ -83,9 +92,25 @@
      .form-group { margin-bottom: 1rem; }
      .form-label { font-weight: bold; }
      .img-thumbnail { display: block; }
+   .btn-custom {
+    display: inline-block;
+    padding: 0.5em 1em;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+}
+
+
+
  </style>
 
- <!-- Botón para Guardar Cambios -->
- <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-primary mt-3"  />
+
 
 </asp:Content>
