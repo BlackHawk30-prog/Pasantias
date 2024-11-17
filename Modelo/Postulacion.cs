@@ -18,12 +18,13 @@ namespace Modelo
                               "JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario " +
                               "JOIN roles_usuarios ru ON u.IDUsuario = ru.IDUsuario " +
                               "JOIN roles r ON ru.IDRol = r.IDRol " +
-                              "WHERE r.IDRol = 1;";
+                              "WHERE r.IDRol = 1 AND u.Eliminado = 0 AND u.RHConfirmado = 0;";
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
             conectar.CerrarConexion();
 
             return tabla;
+
         }
 
         public void grid_aplicantes(GridView grid)
