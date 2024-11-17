@@ -37,6 +37,12 @@ namespace Pasantias
                 // Volver a cargar la tabla
                 Postulacion.grid_aplicantes(grid_aplicantes);
             }
+            else if (e.CommandName == "Detalles")
+            {
+                int idUsuario = Convert.ToInt32(e.CommandArgument);
+                // Redirigir a la vista Detalle_Postulante con el IDUsuario como parámetro en la URL
+                Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idUsuario}");
+            }
         }
     }
 }
