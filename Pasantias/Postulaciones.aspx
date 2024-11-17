@@ -19,7 +19,7 @@
                 
                 <asp:BoundField DataField="Telefono" HeaderText="Teléfono" ItemStyle-CssClass="text-center" />
 
-                <asp:TemplateField HeaderText="Detalles">
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
                         <asp:LinkButton ID="Btn_Detalles" runat="server" Text="Detalles" CssClass="btn btn-info" 
                             CommandName="Detalles" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
@@ -27,7 +27,7 @@
                 </asp:TemplateField>
 
               
-                <asp:TemplateField ShowHeader="False">
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
                         <asp:LinkButton ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" 
                             CommandName="Aceptar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
@@ -35,7 +35,7 @@
                 </asp:TemplateField>
 
            
-                <asp:TemplateField ShowHeader="False">
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
                         <asp:LinkButton ID="Btn_Rechazar" runat="server" Text="Rechazar" CssClass="btn btn-danger" 
                             CommandName="Rechazar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
