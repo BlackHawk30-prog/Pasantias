@@ -1,6 +1,7 @@
 ﻿using Modelo;
 using MySql.Data.MySqlClient;
 using System;
+using System.IO;
 using System.Web.UI;
 
 namespace Pasantias
@@ -25,9 +26,12 @@ namespace Pasantias
                         if (!string.IsNullOrEmpty(imagePath))
                         {
                             imgFoto.ImageUrl = ResolveUrl("~/" + imagePath);
+                            lnkFoto.Visible = true;
+                            lnkFoto.CommandArgument = imagePath; // Ruta de la foto como argumento
                         }
 
-                        // Cargar curriculum
+
+                        // Cargar curriculum (sin cambios)
                         string curriculumPath = ObtenerRutaCurriculumDesdeBD(idUsuario);
                         if (!string.IsNullOrEmpty(curriculumPath))
                         {
@@ -168,12 +172,31 @@ namespace Pasantias
 
             return rutaCurriculum;
         }
+
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
-
-
             Response.Redirect("Postulaciones.aspx");
-
         }
+        protected void lnkFoto_Click(object sender, EventArgs e)
+        {
+            string rutaFoto = ((System.Web.UI.WebControls.LinkButton)sender).CommandArgument;
+            string rutaAbsoluta = Server.MapPath("~/" + rutaFoto);
+
+            if (File.Exists(rutaAbsoluta))
+            {
+                Response.Clear();
+                Response.ContentType = "image/jpeg"; // Cambia según el tipo de imagen, si no siempre es JPG
+                Response.AppendHeader("Content-Disposition", $"attachment; filename={Path.GetFileName(rutaFoto)}");
+                Response.WriteFile(rutaAbsoluta);
+                Response.End();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"Archivo no encontrado: {rutaAbsoluta}");
+            }
+        }
+
+
+
     }
 }
