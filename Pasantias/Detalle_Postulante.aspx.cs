@@ -8,6 +8,7 @@ namespace Pasantias
 {
     public partial class Detalle_Postulante : Page
     {
+        Postulacion Postulacion;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -196,6 +197,69 @@ namespace Pasantias
             }
         }
 
+        protected void btnAceptar_Click(object sender, EventArgs e)
+        {
+            if (Request.QueryString["IDUsuario"] != null)
+            {
+                int idUsuario;
+                if (int.TryParse(Request.QueryString["IDUsuario"], out idUsuario))
+                {
+                    try
+                    {
+                        // Instanciar la clase Postulacion
+                        Postulacion postulacion = new Postulacion();
+
+                        // Llamar al método para aceptar la postulación
+                        postulacion.AceptarPostulacion(idUsuario);
+                        MostrarMensaje("La postulación fue aceptada exitosamente.");
+
+                        // Opcional: redirigir o recargar la página
+                        Response.Redirect("Postulaciones.aspx");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al aceptar postulación: {ex.Message}");
+                        MostrarMensaje("Ocurrió un error al aceptar la postulación.");
+                    }
+                }
+            }
+        }
+
+        protected void btnRechazar_Click(object sender, EventArgs e)
+        {
+            if (Request.QueryString["IDUsuario"] != null)
+            {
+                int idUsuario;
+                if (int.TryParse(Request.QueryString["IDUsuario"], out idUsuario))
+                {
+                    try
+                    {
+                        // Instanciar la clase Postulacion
+                        Postulacion postulacion = new Postulacion();
+
+                        // Llamar al método para rechazar la postulación
+                        postulacion.RechazarPostulacion(idUsuario);
+                        MostrarMensaje("La postulación fue rechazada exitosamente.");
+
+                        // Opcional: redirigir o recargar la página
+                        Response.Redirect("Postulaciones.aspx");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al rechazar postulación: {ex.Message}");
+                        MostrarMensaje("Ocurrió un error al rechazar la postulación.");
+                    }
+                }
+            }
+        }
+
+
+        private void MostrarMensaje(string mensaje)
+        {
+            // Utiliza un script de JavaScript para mostrar un mensaje al usuario
+            string script = $"alert('{mensaje}');";
+            ClientScript.RegisterStartupScript(this.GetType(), "Mensaje", script, true);
+        }
 
 
     }
