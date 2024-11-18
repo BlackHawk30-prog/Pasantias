@@ -166,6 +166,8 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Convenio.aspx" />
+    <Content Include="Convenios_Generales.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Detalle_Postulante.aspx" />
     <Content Include="Editar_Perfil.aspx" />
@@ -234,6 +236,20 @@
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Convenio.aspx.cs">
+      <DependentUpon>Convenio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Convenio.aspx.designer.cs">
+      <DependentUpon>Convenio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Convenios_Generales.aspx.cs">
+      <DependentUpon>Convenios_Generales.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Convenios_Generales.aspx.designer.cs">
+      <DependentUpon>Convenios_Generales.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
