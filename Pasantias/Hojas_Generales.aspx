@@ -3,9 +3,14 @@
 
 <div class="container">
     <h1 class="text-center">Hojas Generales</h1>
-    <div style="text-align: right;">
-        <asp:Button ID="BtnNuevaHoja" runat="server" Text="Nueva Hoja de Tiempo" CssClass="btn btn-info" OnClick="BtnNuevaHoja_Click" />
-    </div>
+              <!-- Contenedor flex para alinear el botón y el campo de horas -->
+<div class="form-group d-flex justify-content-between align-items-center">
+    <!-- Botón Regresar alineado a la izquierda -->
+    <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
+    
+    <!-- Boton para nueva hoja -->
+     <asp:Button ID="BtnNuevaHoja" runat="server" Text="Nueva Hoja de Tiempo" CssClass="btn btn-info" OnClick="BtnNuevaHoja_Click" />
+</div>
 
     <!-- Tabla centrada y con estilos -->
     <div class="form-container">

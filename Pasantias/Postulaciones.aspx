@@ -2,34 +2,43 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
-        <h1 class="text-center">Postulantes a Pasantia</h1>
-        
-        <!-- Tabla de postulantes -->
-        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario,IDDatos_Usuarios,IDRol"
-            CssClass="table table-condensed" OnSelectedIndexChanged="grid_aplicantes_SelectedIndexChanged">
+        <h1 class="text-center">Postulantes a Pasantía</h1>
+
+        <!-- GridView sin el formulario adicional -->
+        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario"
+            CssClass="table table-condensed" OnRowCommand="grid_aplicantes_RowCommand">
             <Columns>
-                <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" ItemStyle-CssClass="text-center"></asp:BoundField>
-                <asp:BoundField DataField="Primer_Apellido" HeaderText="Apellido" ItemStyle-CssClass="text-center"></asp:BoundField>
-                <asp:BoundField DataField="DNI" HeaderText="DNI" ItemStyle-CssClass="text-center"></asp:BoundField>
-                <asp:BoundField DataField="Correo" HeaderText="Correo" ItemStyle-CssClass="text-center"></asp:BoundField>
-                <asp:BoundField DataField="Telefono" HeaderText="Telefono" ItemStyle-CssClass="text-center"></asp:BoundField>
-                
+             
+                <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" ItemStyle-CssClass="text-center" />
+             
+                <asp:BoundField DataField="Primer_Apellido" HeaderText="Apellido" ItemStyle-CssClass="text-center" />
               
-                <asp:TemplateField HeaderText="Detalles">
+                <asp:BoundField DataField="DNI" HeaderText="DNI" ItemStyle-CssClass="text-center" />
+               
+                <asp:BoundField DataField="Correo" HeaderText="Correo" ItemStyle-CssClass="text-center" />
+                
+                <asp:BoundField DataField="Telefono" HeaderText="Teléfono" ItemStyle-CssClass="text-center" />
+
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
-                        <asp:Button ID="Btn_Detalles" runat="server" Text="Detalles" CssClass="btn btn-info" />
+                        <asp:LinkButton ID="Btn_Detalles" runat="server" Text="Detalles" CssClass="btn btn-info" 
+                            CommandName="Detalles" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                
-                <asp:TemplateField HeaderText="Aceptar">
+
+              
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
-                        <asp:Button ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" />
+                        <asp:LinkButton ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" 
+                            CommandName="Aceptar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
-                
-                <asp:TemplateField HeaderText="Rechazar">
+
+           
+                <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
-                        <asp:Button ID="Btn_Rechazar" runat="server" Text="Rechazar" CssClass="btn btn-danger" />
+                        <asp:LinkButton ID="Btn_Rechazar" runat="server" Text="Rechazar" CssClass="btn btn-danger" 
+                            CommandName="Rechazar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

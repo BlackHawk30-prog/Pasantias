@@ -231,15 +231,6 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.Label lbl_Fotografia;
 
         /// <summary>
-        /// Control txt_Foto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload txt_Foto;
-
-        /// <summary>
         /// Control imgFoto.
         /// </summary>
         /// <remarks>
@@ -247,6 +238,15 @@ namespace Pasantias
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgFoto;
+
+        /// <summary>
+        /// Control lnkFoto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkFoto;
 
         /// <summary>
         /// Control lbl_Curriculum.
@@ -258,15 +258,6 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.Label lbl_Curriculum;
 
         /// <summary>
-        /// Control txt_Curriculum.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload txt_Curriculum;
-
-        /// <summary>
         /// Control lnkCurriculum.
         /// </summary>
         /// <remarks>
@@ -276,13 +267,13 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.HyperLink lnkCurriculum;
 
         /// <summary>
-        /// Control btnGuardar.
+        /// Control btnRegresar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnGuardar;
+        protected global::System.Web.UI.WebControls.Button btnRegresar;
 
         /// <summary>
         /// Control btnAceptar.

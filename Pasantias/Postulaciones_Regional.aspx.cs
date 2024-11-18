@@ -1,21 +1,29 @@
-﻿using System;
+﻿using Modelo;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
-using Modelo;
 
 namespace Pasantias
 {
-    public partial class Postulaciones : System.Web.UI.Page
+    public partial class Postulaciones_Regional : System.Web.UI.Page
     {
-        Postulacion Postulacion;
+        private Postulacion Postulacion; // Declaración del objeto Postulacion
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Asegurarte de inicializar el objeto Postulacion en cada carga de la página
-            Postulacion = new Postulacion();
+            // Inicialización del objeto Postulacion
+            if (Postulacion == null)
+            {
+                Postulacion = new Postulacion();
+            }
 
             if (!IsPostBack)
             {
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionSeguridad = "u.RHConfirmado = 1 AND SConfirmado = 1 AND RConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionSeguridad);
             }
         }
 
@@ -25,7 +33,7 @@ namespace Pasantias
             {
                 int idUsuario = Convert.ToInt32(e.CommandArgument);
                 // Llamar al método para aceptar la postulación
-                Postulacion.AceptarPostulacion(idUsuario);
+                Postulacion.AceptarPostulacionRegional(idUsuario);
                 // Volver a cargar la tabla
                 Postulacion.grid_aplicantes(grid_aplicantes);
             }

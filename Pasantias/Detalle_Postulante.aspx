@@ -63,21 +63,22 @@
     </div>
 </div>
 
-       <div class="form-group">
-    <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal (Solo se aceptan formatos JPG y PNG):" CssClass="form-label"></asp:Label>
-    <asp:FileUpload ID="txt_Foto" runat="server" CssClass="form-control" />
+      <div class="form-group">
+    <asp:Label ID="lbl_Fotografia" runat="server" Text="Fotografía Frontal:" CssClass="form-label"></asp:Label>
     <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
+ <asp:LinkButton ID="lnkFoto" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Fotografía" Visible="false" OnClick="lnkFoto_Click" />
 </div>
 
+
          <div class="form-group">
-             <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
-             <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
+             <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:" CssClass="form-label"></asp:Label>
              <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
          </div>
              <div class="container" align="center">
-    <asp:Button ID="btnGuardar" runat="server" Text="Regresar" CssClass="btn btn-primary" />
-    <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" />
-    <asp:Button ID="btnRechazar" runat="server" Text="Rechazar" CssClass="btn btn-danger" />
+     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-primary" OnClick="btnRegresar_Click" />
+   <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" OnClick="btnAceptar_Click" CssClass="btn btn-success" />
+<asp:Button ID="btnRechazar" runat="server" Text="Rechazar" OnClick="btnRechazar_Click" CssClass="btn btn-danger" />
+
 </div>
      </div>
      
