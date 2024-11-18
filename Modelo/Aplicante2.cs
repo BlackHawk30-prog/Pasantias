@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.IO;
 
+
 namespace Modelo
 {
     public class Aplicante2

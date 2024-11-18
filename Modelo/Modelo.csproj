@@ -103,6 +103,7 @@
     <Compile Include="Aplicante1.cs" />
     <Compile Include="Aplicante2.cs" />
     <Compile Include="ConexionBD.cs" />
+    <Compile Include="ConveniosGenerales.cs" />
     <Compile Include="Finanza.cs" />
     <Compile Include="HojasGenerales.cs" />
     <Compile Include="HojaTiempo.cs" />
