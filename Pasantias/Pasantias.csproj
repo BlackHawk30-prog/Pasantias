@@ -168,6 +168,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Convenio.aspx" />
     <Content Include="Convenios_Generales.aspx" />
+    <Content Include="Convenio_Personal.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Detalle_Postulante.aspx" />
     <Content Include="Editar_Perfil.aspx" />
@@ -249,6 +250,13 @@
     </Compile>
     <Compile Include="Convenios_Generales.aspx.designer.cs">
       <DependentUpon>Convenios_Generales.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Convenio_Personal.aspx.cs">
+      <DependentUpon>Convenio_Personal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Convenio_Personal.aspx.designer.cs">
+      <DependentUpon>Convenio_Personal.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
