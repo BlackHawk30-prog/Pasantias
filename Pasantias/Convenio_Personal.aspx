@@ -7,7 +7,7 @@
              
     <div class="form-group d-flex justify-content-between align-items-center">
         <!-- Botón Regresar alineado a la izquierda -->
-        <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"  />
+        <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"   OnClick="btnRegresar_Click"/>
     </div>
 
     <!-- Tabla centrada y con estilos -->
