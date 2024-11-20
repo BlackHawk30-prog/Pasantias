@@ -21,7 +21,7 @@ namespace Modelo
                               "JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario " +
                               "JOIN roles_usuarios ru ON u.IDUsuario = ru.IDUsuario " +
                               "JOIN roles r ON ru.IDRol = r.IDRol " +
-                              "WHERE r.IDRol = 1 AND u.Eliminado = 0";
+                              "WHERE r.IDRol = 1 AND u.Eliminado = 0 ";
 
             if (!string.IsNullOrWhiteSpace(condicionAdicional))
             {

@@ -17,5 +17,12 @@ namespace Pasantias
                 modeloConvenios.grid_Convenios(grid_Convenios); // Invoca el método desde la instancia.
             }
         }
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+
+
+            Response.Redirect("Default.aspx");
+
+        }
     }
 }

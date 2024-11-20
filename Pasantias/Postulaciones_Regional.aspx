@@ -2,7 +2,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
       <div class="container">
       <h1 class="text-center">Postulantes a Pasantía</h1>
-
+           <div class="form-group d-flex justify-content-between align-items-center">
+     <!-- Botón Regresar alineado a la izquierda -->
+     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"   OnClick="btnRegresar_Click" />
+ </div>
       <!-- GridView sin el formulario adicional -->
       <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario"
           CssClass="table table-condensed" OnRowCommand="grid_aplicantes_RowCommand">
