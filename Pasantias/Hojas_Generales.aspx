@@ -14,11 +14,11 @@
 
     <!-- Tabla centrada y con estilos -->
     <div class="form-container">
-        <asp:GridView ID="grid_Generales" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo,IDUsuario" 
+        <asp:GridView ID="grid_Generales" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHojaTiempo,IDUsuario"
             CssClass="table table-condensed" OnRowCommand="grid_Generales_RowCommand">
             <Columns>
                 <asp:BoundField DataField="IDHojaTiempo" HeaderText="Hoja de Tiempo" ItemStyle-CssClass="fecha"></asp:BoundField>
-                <asp:BoundField DataField="IDUsuario" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
+                <asp:BoundField DataField="Primer_Nombre" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
                 <asp:BoundField DataField="Fecha" HeaderText="Fecha Creada" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha"></asp:BoundField>
                 <asp:TemplateField ShowHeader="True" HeaderText="Accion">
                     <ItemTemplate>

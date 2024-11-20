@@ -11,12 +11,12 @@
 
     <!-- Tabla centrada y con estilos -->
     <div class="form-container">
-        <asp:GridView ID="grid_Convenios" runat="server" AutoGenerateColumns="False" DataKeyNames="IDConvenio,IDUsuario" 
+        <asp:GridView ID="grid_Convenios" runat="server" AutoGenerateColumns="False" DataKeyNames="IDConvenio,IDUsuario"
             CssClass="table table-condensed">
             <Columns>
                 <asp:BoundField DataField="Fecha_Inicio" HeaderText="Fecha de Inicio" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha"></asp:BoundField>
                 <asp:BoundField DataField="Fecha_Final" HeaderText="Fecha de Finalización" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha"></asp:BoundField>
-                <asp:BoundField DataField="IDUsuario" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
+                <asp:BoundField DataField="Primer_Nombre" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
             </Columns>
         </asp:GridView>
     </div>
