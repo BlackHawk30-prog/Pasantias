@@ -58,6 +58,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href='<%= ResolveUrl("~/Editar_Perfil.aspx") %>'>Perfil</a>
+                     <a class="dropdown-item" href='<%= ResolveUrl("~/CerrarSesion.aspx") %>'>Cerrar Sesion</a>
                 </div>
             </li>
         </ul>
