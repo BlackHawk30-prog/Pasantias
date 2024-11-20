@@ -20,5 +20,12 @@ namespace Pasantias
             }
 
         }
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+
+
+            Response.Redirect("Default.aspx");
+
+        }
     }
 }

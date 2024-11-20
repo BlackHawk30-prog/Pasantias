@@ -131,5 +131,12 @@ namespace Pasantias
                // lbl_Error.Visible = true;
             }
         }
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+
+
+            Response.Redirect("Default.aspx");
+
+        }
     }
 }

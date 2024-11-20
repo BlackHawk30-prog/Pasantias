@@ -165,6 +165,13 @@ namespace Pasantias
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            // Validar formulario antes de guardar
+            if (!ValidarFormulario())
+            {
+                lbl_Error.Visible = true;
+                return;
+            }
+
             if (DatosModificados())
             {
                 try
@@ -176,7 +183,6 @@ namespace Pasantias
                     if (txt_Foto.HasFile)
                     {
                         GuardarArchivo(txt_Foto, "Fotos", dni + "_foto");
-                        // Agregar una marca de tiempo a la URL para forzar la actualización de la imagen
                         imgFoto.ImageUrl = "~/Fotos/" + dni + "_foto" + Path.GetExtension(txt_Foto.FileName) + "?t=" + DateTime.Now.Ticks;
                     }
 
@@ -184,57 +190,105 @@ namespace Pasantias
                     if (txt_Curriculum.HasFile)
                     {
                         GuardarArchivo(txt_Curriculum, "Curriculum", dni + "_curriculum");
-                        // Agregar una marca de tiempo a la URL para forzar la actualización del currículum
                         lnkCurriculum.NavigateUrl = "~/Curriculum/" + dni + "_curriculum" + Path.GetExtension(txt_Curriculum.FileName) + "?t=" + DateTime.Now.Ticks;
                         lnkCurriculum.Visible = true;
                     }
 
-                    // Llamar al método de actualización de datos del usuario
                     ActualizarDatosUsuario(idUsuario);
 
-                    // Mostrar mensaje de éxito y redirigir
+                    // Mostrar mensaje de éxito
                     ScriptManager.RegisterStartupScript(this, GetType(), "ChangesAlert",
                         "alert('Actualizado Exitosamente.'); window.location.href='Default.aspx';", true);
                 }
                 catch (Exception ex)
                 {
-                    // Mostrar mensaje de error en caso de fallo
+                    // Mostrar mensaje de error
                     ScriptManager.RegisterStartupScript(this, GetType(), "ErrorAlert",
                         $"alert('Error al actualizar: {ex.Message}');", true);
                 }
             }
             else
             {
-                // Mostrar mensaje de que no hubo cambios
+                // Mensaje si no hay cambios
                 ScriptManager.RegisterStartupScript(this, GetType(), "NoChangesAlert",
                     "alert('No se realizaron cambios.'); window.location.href='Default.aspx';", true);
             }
         }
 
+        private bool ValidarFormulario()
+        {
+            lbl_Error.Text = string.Empty;
+            bool esValido = true;
+
+            // Resetear estilos previos
+            txt_Nombre1.CssClass = txt_Nombre1.CssClass.Replace("error", "").Trim();
+            txt_Nombre2.CssClass = txt_Nombre2.CssClass.Replace("error", "").Trim();
+            txt_Apellido1.CssClass = txt_Apellido1.CssClass.Replace("error", "").Trim();
+            txt_Apellido2.CssClass = txt_Apellido2.CssClass.Replace("error", "").Trim();
+            txt_Correo.CssClass = txt_Correo.CssClass.Replace("error", "").Trim();
+            txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "").Trim();
+
+            // Validación de nombres y apellidos
+            if (!Utilidades.ValidarCampoObligatorio(txt_Nombre1.Text) || !Utilidades.ValidarNombreApellido(txt_Nombre1.Text))
+            {
+                lbl_Error.Text += "Los nombres no pueden contener caracteres especiales ni letras consecutivas.<br/>";
+                txt_Nombre1.CssClass += " error";
+                esValido = false;
+            }
+            if (!Utilidades.ValidarCampoObligatorio(txt_Nombre2.Text) || !Utilidades.ValidarNombreApellido(txt_Nombre2.Text))
+            {
+                lbl_Error.Text += "Los nombres no pueden contener caracteres especiales ni letras consecutivas.<br/>";
+                txt_Nombre2.CssClass += " error";
+                esValido = false;
+            }
+            if (!Utilidades.ValidarCampoObligatorio(txt_Apellido1.Text) || !Utilidades.ValidarNombreApellido(txt_Apellido1.Text))
+            {
+                lbl_Error.Text += "Los apellidos no pueden contener caracteres especiales ni letras consecutivas.<br/>";
+                txt_Apellido1.CssClass += " error";
+                esValido = false;
+            }
+            if (!Utilidades.ValidarCampoObligatorio(txt_Apellido2.Text) || !Utilidades.ValidarNombreApellido(txt_Apellido2.Text))
+            {
+                lbl_Error.Text += "Los apellidos no pueden contener caracteres especiales ni letras consecutivas.<br/>";
+                txt_Apellido2.CssClass += " error";
+                esValido = false;
+            }
+
+            // Validación del correo
+            if (!Utilidades.ValidarCorreo(txt_Correo.Text))
+            {
+                lbl_Error.Text += "El correo electrónico no es válido.<br/>";
+                txt_Correo.CssClass += " error";
+                esValido = false;
+            }
+
+            // Validación de fecha de nacimiento
+            DateTime fechaNacimiento;
+            if (!DateTime.TryParse(txt_Fecha.Text, out fechaNacimiento) || !Utilidades.ValidarEdad(fechaNacimiento))
+            {
+                lbl_Error.Text += "Ingrese una fecha de nacimiento válida (debe ser mayor de 16 años).<br/>";
+                txt_Fecha.CssClass += " error";
+                esValido = false;
+            }
+
+            return esValido;
+        }
 
 
-
-
-
-        // Método para guardar el archivo en el sistema de archivos
         private void GuardarArchivo(FileUpload fileUploadControl, string carpeta, string nombreArchivo)
         {
-            // Verificar el tipo de archivo permitido
             string extension = Path.GetExtension(fileUploadControl.FileName).ToLower();
             if ((carpeta == "Fotos" && (extension == ".jpg" || extension == ".png")) ||
-                (carpeta == "Curriculum" && (extension == ".doc" || extension == ".docx" || extension == ".pdf" || extension == ".dox" || extension == ".360")))
+                (carpeta == "Curriculum" && (extension == ".doc" || extension == ".pdf" || extension == ".docx")))
             {
-                // Definir el directorio y la ruta completa del archivo
                 string directorio = Path.Combine(Server.MapPath("~/" + carpeta));
                 string rutaCompleta = Path.Combine(directorio, nombreArchivo + extension);
 
-                // Crear el directorio si no existe
                 if (!Directory.Exists(directorio))
                 {
                     Directory.CreateDirectory(directorio);
                 }
 
-                // Guardar el archivo y reemplazar si ya existe
                 fileUploadControl.SaveAs(rutaCompleta);
             }
             else
@@ -242,62 +296,6 @@ namespace Pasantias
                 throw new InvalidOperationException("Formato de archivo no permitido.");
             }
         }
-        private bool DatosModificados()
-        {
-            ConexionBD conectar = new ConexionBD();
-            conectar.AbrirConexion();
-            bool modificado = false;
-
-            try
-            {
-                string consulta = @"
-            SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-                u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-                du.Grado_academico, du.Sexo, du.Foto, du.Curriculum 
-            FROM usuarios u 
-            JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-            WHERE u.IDUsuario = @userId";
-
-                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
-                {
-                    cmd.Parameters.AddWithValue("@userId", (int)Session["UserID"]);
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            // Verificar si hay cambios en los campos de texto y en los archivos
-                            modificado = txt_Nombre1.Text != reader["Primer_Nombre"].ToString() ||
-                                         txt_Nombre2.Text != reader["Segundo_Nombre"].ToString() ||
-                                         txt_Apellido1.Text != reader["Primer_Apellido"].ToString() ||
-                                         txt_Apellido2.Text != reader["Segundo_Apellido"].ToString() ||
-                                         txt_DNI.Text != reader["DNI"].ToString() ||
-                                         txt_Correo.Text != reader["Correo"].ToString() ||
-                                         txt_Fecha.Text != Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd") ||
-                                         txt_Telefono.Text != reader["Telefono"].ToString() ||
-                                         txt_Universidad.Text != reader["Grado_academico"].ToString() ||
-                                         txt_Direccion.Text != reader["Direccion"].ToString() ||
-                                         (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||
-                                         (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer") ||
-                                         txt_Foto.HasFile || // Verifica si se seleccionó una nueva foto
-                                         txt_Curriculum.HasFile; // Verifica si se seleccionó un nuevo curriculum
-                        }
-                    }
-                }
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error al verificar cambios: " + ex.Message);
-            }
-            finally
-            {
-                conectar.CerrarConexion();
-            }
-
-            return modificado;
-        }
-
-
         private void ActualizarDatosUsuario(int userId)
         {
             ConexionBD conectar = new ConexionBD();
@@ -306,18 +304,18 @@ namespace Pasantias
             try
             {
                 string updateUsuarios = @"
-                    UPDATE usuarios SET 
-                        Primer_Nombre = @Nombre1, Segundo_Nombre = @Nombre2, 
-                        Primer_Apellido = @Apellido1, Segundo_Apellido = @Apellido2, 
-                        DNI = @DNI, Correo = @Correo 
-                    WHERE IDUsuario = @userId";
+             UPDATE usuarios SET 
+                 Primer_Nombre = @Nombre1, Segundo_Nombre = @Nombre2, 
+                 Primer_Apellido = @Apellido1, Segundo_Apellido = @Apellido2, 
+                 DNI = @DNI, Correo = @Correo 
+             WHERE IDUsuario = @userId";
 
                 string updateDatosUsuario = @"
-                    UPDATE datos_usuario SET 
-                        Fecha_Nacimiento = @FechaNacimiento, Telefono = @Telefono, 
-                        Direccion = @Direccion, Grado_academico = @Grado, 
-                        Sexo = @Sexo 
-                    WHERE IDUsuario = @userId";
+             UPDATE datos_usuario SET 
+                 Fecha_Nacimiento = @FechaNacimiento, Telefono = @Telefono, 
+                 Direccion = @Direccion, Grado_academico = @Grado, 
+                 Sexo = @Sexo 
+             WHERE IDUsuario = @userId";
 
                 using (MySqlCommand cmd1 = new MySqlCommand(updateUsuarios, conectar.conectar))
                 {
@@ -365,8 +363,60 @@ namespace Pasantias
                 Response.Redirect("Default.aspx");
             }
         }
+
+        private bool DatosModificados()
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+            bool modificado = false;
+
+            try
+            {
+                string consulta = @"
+     SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
+         u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
+         du.Grado_academico, du.Sexo, du.Foto, du.Curriculum 
+     FROM usuarios u 
+     JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
+     WHERE u.IDUsuario = @userId";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@userId", (int)Session["UserID"]);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Verificar si hay cambios en los campos de texto y en los archivos
+                            modificado = txt_Nombre1.Text != reader["Primer_Nombre"].ToString() ||
+                                         txt_Nombre2.Text != reader["Segundo_Nombre"].ToString() ||
+                                         txt_Apellido1.Text != reader["Primer_Apellido"].ToString() ||
+                                         txt_Apellido2.Text != reader["Segundo_Apellido"].ToString() ||
+                                         txt_DNI.Text != reader["DNI"].ToString() ||
+                                         txt_Correo.Text != reader["Correo"].ToString() ||
+                                         txt_Fecha.Text != Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd") ||
+                                         txt_Telefono.Text != reader["Telefono"].ToString() ||
+                                         txt_Universidad.Text != reader["Grado_academico"].ToString() ||
+                                         txt_Direccion.Text != reader["Direccion"].ToString() ||
+                                         (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||
+                                         (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer") ||
+                                         txt_Foto.HasFile || // Verifica si se seleccionó una nueva foto
+                                         txt_Curriculum.HasFile; // Verifica si se seleccionó un nuevo curriculum
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al verificar cambios: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return modificado;
+        }
     }
 }
-
-
-

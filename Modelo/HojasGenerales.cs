@@ -24,7 +24,12 @@ namespace Modelo
             int idUsuario = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
 
             // Consulta SQL con un parámetro
-            string consulta = "SELECT * FROM hoja_tiempo WHERE IDUsuario = @UserID;";
+            string consulta = @"
+    SELECT ht.IDHojaTiempo, u.Primer_Nombre, u.IDUsuario, ht.Fecha
+    FROM hoja_tiempo ht
+    INNER JOIN usuarios u ON ht.IDUsuario = u.IDUsuario
+    WHERE ht.IDUsuario = @UserID;";
+
 
             using (MySqlCommand comando = new MySqlCommand(consulta, conectar.conectar))
             {

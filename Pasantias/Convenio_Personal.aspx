@@ -7,17 +7,17 @@
              
     <div class="form-group d-flex justify-content-between align-items-center">
         <!-- Botón Regresar alineado a la izquierda -->
-        <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"  />
+        <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"   OnClick="btnRegresar_Click"/>
     </div>
 
     <!-- Tabla centrada y con estilos -->
     <div class="form-container">
-        <asp:GridView ID="grid_Convenio_personal" runat="server" AutoGenerateColumns="False" DataKeyNames="IDConvenio,IDUsuario" 
+        <asp:GridView ID="grid_Convenio_personal" runat="server" AutoGenerateColumns="False" DataKeyNames="IDConvenio,IDUsuario"
             CssClass="table table-condensed">
             <Columns>
                 <asp:BoundField DataField="Fecha_Inicio" HeaderText="Fecha de Inicio" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha"></asp:BoundField>
                 <asp:BoundField DataField="Fecha_Final" HeaderText="Fecha de Finalización" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha"></asp:BoundField>
-                <asp:BoundField DataField="IDUsuario" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
+                <asp:BoundField DataField="Primer_Nombre" HeaderText="Usuario" ItemStyle-CssClass="actividades"></asp:BoundField>
             </Columns>
         </asp:GridView>
     </div>

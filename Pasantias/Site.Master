@@ -58,6 +58,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href='<%= ResolveUrl("~/Editar_Perfil.aspx") %>'>Perfil</a>
+                     <a class="dropdown-item" href='<%= ResolveUrl("~/CerrarSesion.aspx") %>'>Cerrar Sesion</a>
                 </div>
             </li>
         </ul>
@@ -111,12 +112,7 @@
             <span class="ml-3 item-text">Oficial (cambiar nombre)</span>
         </a>
     </li>
-    <li class="nav-item w-100">
-        <a class="nav-link" id="PostulacionesNav" runat="server">
-            <i class="fe fe-users fe-16"></i>
-            <span class="ml-3 item-text">Postulaciones</span>
-        </a>
-    </li>
+   
     <li class="nav-item w-100">
         <a class="nav-link" id="RHNav" runat="server">
             <i class="fe fe-users fe-16"></i>
@@ -135,6 +131,36 @@
           <span class="ml-3 item-text">Hojas Generales</span>
       </a>
   </li>
+        <li class="nav-item w-100">
+    <a class="nav-link" id="ConvenioPersonal" runat="server">
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Convenio Personal</span>
+    </a>
+</li>
+            <li class="nav-item w-100">
+    <a class="nav-link" id="ConveniosGenerales" runat="server">
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Convenios</span>
+    </a>
+</li>
+                <li class="nav-item w-100">
+    <a class="nav-link" id="PostulacionesRH" runat="server">
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Postulaciones</span>
+    </a>
+</li>
+                    <li class="nav-item w-100">
+    <a class="nav-link" id="PostulacionesS" runat="server">
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Postulaciones</span>
+    </a>
+</li>
+                        <li class="nav-item w-100">
+    <a class="nav-link" id="PostulacionesR" runat="server">
+        <i class="fe fe-users fe-16"></i>
+        <span class="ml-3 item-text">Postulaciones</span>
+    </a>
+</li>
         
 </ul>
 

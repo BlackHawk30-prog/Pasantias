@@ -11,12 +11,16 @@ namespace Pasantias
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Asegurarte de inicializar el objeto Postulacion en cada carga de la página
-            Postulacion = new Postulacion();
+            // Inicialización del objeto Postulacion
+            if (Postulacion == null)
+            {
+                Postulacion = new Postulacion();
+            }
 
             if (!IsPostBack)
             {
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionrecursos = "u.RHConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionrecursos);
             }
         }
 
@@ -27,8 +31,8 @@ namespace Pasantias
                 int idUsuario = Convert.ToInt32(e.CommandArgument);
                 // Llamar al método para aceptar la postulación
                 Postulacion.AceptarPostulacion(idUsuario);
-
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionrecursos = "u.RHConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionrecursos);
 
             }
             else if (e.CommandName == "Rechazar")
@@ -44,7 +48,8 @@ namespace Pasantias
                 {
                     EnviarCorreoRechazo(correo);
                 }
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionrecursos = "u.RHConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionrecursos);
 
             }
             else if (e.CommandName == "Detalles")
@@ -83,6 +88,13 @@ namespace Pasantias
                 // Manejo de errores en el envío del correo
                 Console.WriteLine($"Error al enviar el correo de rechazo: {ex.Message}");
             }
+        }
+        protected void btnRegresar_Click(object sender, EventArgs e)
+        {
+
+
+            Response.Redirect("Default.aspx");
+
         }
     }
 }
