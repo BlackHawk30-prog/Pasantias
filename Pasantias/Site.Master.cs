@@ -12,6 +12,8 @@ namespace Pasantias
         protected HtmlAnchor PostulacionesNav;
         protected HtmlAnchor RHNav;
         protected HtmlAnchor SeguridadNav;
+        
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,16 +25,18 @@ namespace Pasantias
             RHNav.HRef = ResolveClientUrl("~/RH.aspx");
             SeguridadNav.HRef = ResolveClientUrl("~/Seguridad.aspx");
             HojaGNav.HRef = ResolveClientUrl("~/Hojas_Generales.aspx");
+            ConvenioPersonal.HRef = ResolveClientUrl("~/Convenio_Personal.aspx");
+
 
             // Oculta todos los módulos por defecto
-       
+
             FinanzasNav.Visible = false;
             OficialNav.Visible = false;
             PostulacionesNav.Visible = false;
             RHNav.Visible = false;
             SeguridadNav.Visible = false;
             HojaGNav.Visible = false;
-
+            ConvenioPersonal.Visible= false;
             // Depuración temporal para verificar el rol en sesión
            // if (Session["UserRol"] == null)
           //  {
@@ -55,6 +59,7 @@ namespace Pasantias
                     PostulacionesNav.Visible = true;
                     OficialNav.Visible = true;
                     HojaGNav.Visible= true;
+                    ConvenioPersonal.Visible= true; 
                 }
                 else if (rol == 2)
                 {
