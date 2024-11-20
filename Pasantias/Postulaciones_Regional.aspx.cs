@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -29,27 +30,105 @@ namespace Pasantias
 
         protected void grid_aplicantes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            int idUsuario = Convert.ToInt32(e.CommandArgument);
+
             if (e.CommandName == "Aceptar")
             {
-                int idUsuario = Convert.ToInt32(e.CommandArgument);
                 // Llamar al método para aceptar la postulación
                 Postulacion.AceptarPostulacionRegional(idUsuario);
+
+                // Obtener el correo del usuario por DNI y enviar el correo de agradecimiento
+                string dni = Postulacion.ObtenerDNIporIDUsuario(idUsuario); // Suponiendo que este método existe
+                string correo = Postulacion.ObtenerCorreoPorDNI(dni);
+                if (!string.IsNullOrEmpty(correo))
+                {
+                    EnviarCorreoAgradecimiento(correo);
+                }
+
                 // Volver a cargar la tabla
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionSeguridad = "u.RHConfirmado = 1 AND SConfirmado = 1 AND RConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionSeguridad);
             }
             else if (e.CommandName == "Rechazar")
             {
-                int idUsuario = Convert.ToInt32(e.CommandArgument);
                 // Llamar al método para rechazar la postulación
                 Postulacion.RechazarPostulacion(idUsuario);
+
+                // Obtener el correo del usuario por DNI y enviar el correo de rechazo
+                string dni = Postulacion.ObtenerDNIporIDUsuario(idUsuario); // Suponiendo que este método existe
+                string correo = Postulacion.ObtenerCorreoPorDNI(dni);
+                if (!string.IsNullOrEmpty(correo))
+                {
+                    EnviarCorreoRechazo(correo);
+                }
+
                 // Volver a cargar la tabla
-                Postulacion.grid_aplicantes(grid_aplicantes);
+                string condicionSeguridad = "u.RHConfirmado = 1 AND SConfirmado = 1 AND RConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionSeguridad);
             }
             else if (e.CommandName == "Detalles")
             {
-                int idUsuario = Convert.ToInt32(e.CommandArgument);
                 // Redirigir a la vista Detalle_Postulante con el IDUsuario como parámetro en la URL
                 Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idUsuario}");
+            }
+        }
+        private void EnviarCorreoAgradecimiento(string destinatario)
+        {
+            try
+            {
+                using (MailMessage mensaje = new MailMessage())
+                {
+                    mensaje.From = new MailAddress("hreyesfotos@gmail.com");
+                    mensaje.To.Add(destinatario);
+                    mensaje.Subject = "Notificación de Aceptacion de pasantía";
+                    mensaje.Body = "Estimado(a) postulante,\n\nGracias por aplicar a nuestra pasantía. Su solicitud ha sido aceptada exitosamente. Nos pondremos en contacto con usted en breve.\n\nSaludos cordiales,\nEl equipo de Pasantías";
+                    mensaje.IsBodyHtml = false;
+
+                    using (SmtpClient clienteSmtp = new SmtpClient())
+                    {
+                        clienteSmtp.Host = "smtp.gmail.com";
+                        clienteSmtp.Port = 587;
+                        clienteSmtp.Credentials = new System.Net.NetworkCredential("hreyesfotos@gmail.com", "ovqx ypvm vtbt fttp");
+                        clienteSmtp.EnableSsl = true;
+
+                        clienteSmtp.Send(mensaje);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+              //  lbl_Error.Text = $"Error al enviar el correo de agradecimiento: {ex.Message}";
+               // lbl_Error.Visible = true;
+            }
+        }
+
+        private void EnviarCorreoRechazo(string destinatario)
+        {
+            try
+            {
+                using (MailMessage mensaje = new MailMessage())
+                {
+                    mensaje.From = new MailAddress("hreyesfotos@gmail.com");
+                    mensaje.To.Add(destinatario);
+                    mensaje.Subject = "Notificación de rechazo de pasantía";
+                    mensaje.Body = "Estimado(a) postulante,\n\nLamentamos informarle que su solicitud para nuestra pasantía no ha sido aceptada. Le agradecemos por su interés y le deseamos éxito en sus futuros proyectos.\n\nSaludos cordiales,\nEl equipo de Pasantías";
+                    mensaje.IsBodyHtml = false;
+
+                    using (SmtpClient clienteSmtp = new SmtpClient())
+                    {
+                        clienteSmtp.Host = "smtp.gmail.com";
+                        clienteSmtp.Port = 587;
+                        clienteSmtp.Credentials = new System.Net.NetworkCredential("hreyesfotos@gmail.com", "ovqx ypvm vtbt fttp");
+                        clienteSmtp.EnableSsl = true;
+
+                        clienteSmtp.Send(mensaje);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               // lbl_Error.Text = $"Error al enviar el correo de rechazo: {ex.Message}";
+               // lbl_Error.Visible = true;
             }
         }
     }

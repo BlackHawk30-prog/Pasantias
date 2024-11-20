@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
 using System.Web.UI.WebControls;
 
@@ -88,6 +89,76 @@ namespace Modelo
             comando.ExecuteNonQuery();
 
             conectar.CerrarConexion();
+        }
+        public string ObtenerDNIporIDUsuario(int idUsuario)
+        {
+            string dni = null;
+            conectar = new ConexionBD();
+
+            try
+            {
+                conectar.AbrirConexion();
+
+                string consulta = "SELECT DNI FROM usuarios WHERE IDUsuario = @IDUsuario LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@IDUsuario", idUsuario);
+
+                    object resultado = cmd.ExecuteScalar();
+                    if (resultado != null && resultado != DBNull.Value)
+                    {
+                        dni = resultado.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return dni;
+        }
+        // Método para obtener el correo basado en el DNI usando el procedimiento almacenado
+        public string ObtenerCorreoPorDNI(string dni)
+        {
+            string correo = null;
+            conectar = new ConexionBD();
+
+            try
+            {
+                conectar.AbrirConexion();
+
+                // Consulta SQL directa para obtener el correo basado en el DNI
+                string consulta = "SELECT correo FROM usuarios WHERE DNI = @DNI LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@DNI", dni);
+
+                    object resultado = cmd.ExecuteScalar();
+                    if (resultado != null && resultado != DBNull.Value)
+                    {
+                        correo = resultado.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return correo;
         }
     }
 }
