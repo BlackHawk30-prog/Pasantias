@@ -81,13 +81,17 @@ namespace Pasantias
                     OficialNav.Visible = true;
                     
                 }
-                else if (rol == 6)
+                else if (rol == 4)
                 {
                     RHNav.Visible = true;
                 }
-                else if (rol == 9)
+                else if (rol == 5)
                 {
                     SeguridadNav.Visible = true;
+                }
+                else if (rol == 6)
+                {
+                    FinanzasNav.Visible = true;
                 }
             }
         }
