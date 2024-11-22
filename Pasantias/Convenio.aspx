@@ -54,7 +54,14 @@
                                 <asp:Label ID="lbl_FechaFinal" runat="server" Text="Fecha de Finalización de la pasantía:" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="txt_FechaFinal" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                             </div>
+                                    
+                                 <div class="container" align="center">
+     
+                       <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" OnClick="btnAceptar_Click" CssClass="btn btn-success" />
+                    <asp:Button ID="btnRechazar" runat="server" Text="Rechazar" OnClick="btnRechazar_Click" CssClass="btn btn-danger" />
 
+                    </div>
+                         </div>
                     </div>
                 </div>
             </div>
