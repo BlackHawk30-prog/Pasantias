@@ -15,6 +15,7 @@ namespace Modelo
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
+
             string consulta = "select IDUsuario as id, Primer_Nombre, Segundo_Nombre, DNI from usuarios;";
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
