@@ -36,7 +36,7 @@
         </div>
     </form>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- para el icono de ojo -->
+    
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
         function togglePasswordVisibility() {

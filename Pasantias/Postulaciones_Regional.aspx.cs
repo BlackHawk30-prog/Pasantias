@@ -42,7 +42,8 @@ namespace Pasantias
                 string correo = Postulacion.ObtenerCorreoPorDNI(dni);
                 if (!string.IsNullOrEmpty(correo))
                 {
-                    EnviarCorreoAgradecimiento(correo);
+                    EnviarCorreoAgradecimiento(correo, idUsuario);
+
                 }
 
                 // Volver a cargar la tabla
@@ -72,7 +73,7 @@ namespace Pasantias
                 Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idUsuario}");
             }
         }
-        private void EnviarCorreoAgradecimiento(string destinatario)
+        private void EnviarCorreoAgradecimiento(string destinatario, int idUsuario)
         {
             try
             {
@@ -80,8 +81,18 @@ namespace Pasantias
                 {
                     mensaje.From = new MailAddress("hreyesfotos@gmail.com");
                     mensaje.To.Add(destinatario);
-                    mensaje.Subject = "Notificación de Aceptacion de pasantía";
-                    mensaje.Body = "Estimado(a) postulante,\n\nGracias por aplicar a nuestra pasantía. Su solicitud ha sido aceptada exitosamente. Nos pondremos en contacto con usted en breve.\n\nSaludos cordiales,\nEl equipo de Pasantías";
+                    mensaje.Subject = "Notificación de Aceptación de Pasantía";
+
+                    // Construir el enlace al formulario Convenio.aspx con el IDUsuario como parámetro
+                    string urlConvenio = $"https://localhost:44316/Convenio.aspx?IDUsuario={idUsuario}";
+
+                    // Crear el cuerpo del mensaje
+                    mensaje.Body = $"Estimado(a) postulante,\n\n" +
+                                   "Gracias por aplicar a nuestra pasantía. Su solicitud ha sido aceptada exitosamente. Nos pondremos en contacto con usted en breve.\n\n" +
+                                   "Para continuar con el proceso, por favor leer el convenio en el siguiente enlace:\n" +
+                                   $"{urlConvenio}\n\n" +
+                                   "Saludos cordiales,\nEl equipo de Pasantías";
+
                     mensaje.IsBodyHtml = false;
 
                     using (SmtpClient clienteSmtp = new SmtpClient())
@@ -97,10 +108,10 @@ namespace Pasantias
             }
             catch (Exception ex)
             {
-              //  lbl_Error.Text = $"Error al enviar el correo de agradecimiento: {ex.Message}";
-               // lbl_Error.Visible = true;
+                // Manejar el error si ocurre
             }
         }
+
 
         private void EnviarCorreoRechazo(string destinatario)
         {
