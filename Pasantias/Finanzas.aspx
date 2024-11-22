@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Finanzas.aspx.cs" Inherits="Pasantias.Finanzas" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <h1 class="text-center"> Finanzas </h1> <!-- Título centrado -->
+    <h1 class="text-center"> Finanzass </h1> <!-- Título centrado -->
 
     <!-- Div contenedor centrado -->
     <div class="container d-flex justify-content-center mt-4"> <!-- Contenedor centralizado y margen superior -->
