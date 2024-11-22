@@ -1,6 +1,7 @@
 ﻿using Modelo;
 using MySql.Data.MySqlClient;
 using System;
+using System.Net.Mail;
 
 namespace Pasantias
 {
@@ -35,8 +36,6 @@ namespace Pasantias
                 txt_FechaFinal.ReadOnly = true;
             }
         }
-
-
 
         protected void btnAceptar_Click(object sender, EventArgs e)
         {
@@ -99,6 +98,13 @@ VALUES (@FechaInicio, @FechaFinal, @Aceptado, @Rechazado, @IDUsuario)";
                     int filasAfectadas = cmd.ExecuteNonQuery();
                     if (filasAfectadas > 0)
                     {
+                        if (aceptado == 1)
+                        {
+                            // Actualizar el rol y credenciales
+                            string correo = ObtenerCorreoPorIDUsuario(idUsuario, conectar);
+                            ActualizarRolYCredenciales(conectar, idUsuario, correo);
+                        }
+
                         string mensaje = aceptado == 1 ? "Convenio aceptado exitosamente." : "Convenio rechazado exitosamente.";
                         // Mostrar el mensaje y cerrar la ventana
                         Response.Write($"<script>alert('{mensaje}'); window.close();</script>");
@@ -123,8 +129,141 @@ VALUES (@FechaInicio, @FechaFinal, @Aceptado, @Rechazado, @IDUsuario)";
             }
         }
 
+        private void ActualizarRolYCredenciales(ConexionBD conectar, int idUsuario, string correo)
+        {
+            try
+            {
+                // Obtener el primer nombre, primer apellido y DNI del usuario
+                string consultaUsuario = "SELECT Primer_Nombre, Primer_Apellido, DNI FROM usuarios WHERE IDUsuario = @IDUsuario";
+                using (MySqlCommand cmdUsuario = new MySqlCommand(consultaUsuario, conectar.conectar))
+                {
+                    cmdUsuario.Parameters.AddWithValue("@IDUsuario", idUsuario);
 
+                    using (MySqlDataReader reader = cmdUsuario.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string primerNombre = reader["Primer_Nombre"].ToString();
+                            string primerApellido = reader["Primer_Apellido"].ToString();
+                            string dni = reader["DNI"].ToString();
 
+                            // Generar credenciales
+                            string usuario = primerNombre.Substring(0, 1) + primerApellido;
+                            string password = dni;
 
+                            reader.Close(); // Importante cerrar el lector antes de ejecutar otro comando
+
+                            // Actualizar el rol del usuario a IDRol = 2
+                            string consultaRol = "SELECT COUNT(*) FROM roles_usuarios WHERE IDUsuario = @IDUsuario";
+                            using (MySqlCommand cmdExistenciaRol = new MySqlCommand(consultaRol, conectar.conectar))
+                            {
+                                cmdExistenciaRol.Parameters.AddWithValue("@IDUsuario", idUsuario);
+                                int existeRol = Convert.ToInt32(cmdExistenciaRol.ExecuteScalar());
+
+                                if (existeRol > 0)
+                                {
+                                    // Actualizar el rol existente
+                                    string actualizarRol = @"
+                            UPDATE roles_usuarios
+                            SET IDRol = 2
+                            WHERE IDUsuario = @IDUsuario";
+                                    using (MySqlCommand cmdActualizarRol = new MySqlCommand(actualizarRol, conectar.conectar))
+                                    {
+                                        cmdActualizarRol.Parameters.AddWithValue("@IDUsuario", idUsuario);
+                                        cmdActualizarRol.ExecuteNonQuery();
+                                    }
+                                }
+                                else
+                                {
+                                    Response.Write("<script>alert('El usuario no tiene un rol registrado previamente.');</script>");
+                                    return;
+                                }
+                            }
+
+                            // Actualizar credenciales en la tabla usuarios
+                            string updateUsuario = @"
+                    UPDATE usuarios 
+                    SET Usuario = @Usuario, Password = @Password 
+                    WHERE IDUsuario = @IDUsuario";
+                            using (MySqlCommand cmdUpdateUsuario = new MySqlCommand(updateUsuario, conectar.conectar))
+                            {
+                                cmdUpdateUsuario.Parameters.AddWithValue("@Usuario", usuario);
+                                cmdUpdateUsuario.Parameters.AddWithValue("@Password", password);
+                                cmdUpdateUsuario.Parameters.AddWithValue("@IDUsuario", idUsuario);
+                                cmdUpdateUsuario.ExecuteNonQuery();
+                            }
+
+                            // Enviar correo con las credenciales
+                            EnviarCorreoCredenciales(correo, usuario, password);
+                        }
+                        else
+                        {
+                            Response.Write("<script>alert('Usuario no encontrado en la base de datos.');</script>");
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                Response.Write($"<script>alert('Error al actualizar rol o credenciales: {ex.Message}');</script>");
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error inesperado: {ex.Message}');</script>");
+            }
+        }
+
+        private string ObtenerCorreoPorIDUsuario(int idUsuario, ConexionBD conectar)
+        {
+            string correo = null;
+
+            try
+            {
+                // Consulta SQL para obtener el correo basado en el IDUsuario
+                string consulta = "SELECT Correo FROM usuarios WHERE IDUsuario = @IDUsuario LIMIT 1";
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@IDUsuario", idUsuario);
+                    object resultado = cmd.ExecuteScalar();
+                    if (resultado != null && resultado != DBNull.Value)
+                    {
+                        correo = resultado.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al obtener el correo: {ex.Message}');</script>");
+            }
+
+            return correo;
+        }
+
+        private void EnviarCorreoCredenciales(string destinatario, string usuario, string password)
+        {
+            try
+            {
+                using (MailMessage mensaje = new MailMessage())
+                {
+                    mensaje.From = new MailAddress("hreyesfotos@gmail.com");
+                    mensaje.To.Add(destinatario);
+                    mensaje.Subject = "Credenciales de acceso";
+                    mensaje.Body = $"Su usuario es: {usuario} \n Su contraseña es: {password}";
+
+                    mensaje.IsBodyHtml = true;
+
+                    using (SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        clienteSmtp.Credentials = new System.Net.NetworkCredential("hreyesfotos@gmail.com", "ovqx ypvm vtbt fttp");
+                        clienteSmtp.EnableSsl = true;
+                        clienteSmtp.Send(mensaje);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al enviar el correo: {ex.Message}');</script>");
+            }
+        }
     }
 }
