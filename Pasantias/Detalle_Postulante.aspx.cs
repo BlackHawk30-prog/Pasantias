@@ -176,8 +176,83 @@ namespace Pasantias
 
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Postulaciones.aspx");
+            if (Request.QueryString["IDUsuario"] != null)
+            {
+                int idUsuario;
+                if (int.TryParse(Request.QueryString["IDUsuario"], out idUsuario))
+                {
+                    ConexionBD conectar = new ConexionBD();
+                    conectar.AbrirConexion();
+
+                    try
+                    {
+                        // Consulta para obtener los valores de los campos relevantes
+                        string consulta = @"
+                    SELECT RHConfirmado, SConfirmado, RConfirmado 
+                    FROM usuarios 
+                    WHERE IDUsuario = @idUsuario";
+
+                        using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                        {
+                            cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    int rhConfirmado = reader.GetInt32("RHConfirmado");
+                                    int sConfirmado = reader.GetInt32("SConfirmado");
+                                    int rConfirmado = reader.GetInt32("RConfirmado");
+
+                                    // Lógica para redirigir dependiendo de los valores (1 o 0)
+                                    if (rhConfirmado == 0)
+                                    {
+                                        Response.Redirect("Postulaciones.aspx");
+                                    }
+                                    else if (rhConfirmado == 1 && sConfirmado == 0)
+                                    {
+                                        Response.Redirect("Postulaciones_Seguridad.aspx");
+                                    }
+                                    else if (rhConfirmado == 1 && sConfirmado == 1 && rConfirmado == 0)
+                                    {
+                                        Response.Redirect("Postulaciones_Regional.aspx");
+                                    }
+                                    else
+                                    {
+                                        // Si todos los valores son 0, redirigir a una página por defecto
+                                        Response.Redirect("Postulaciones.aspx");
+                                    }
+                                }
+                                else
+                                {
+                                    // Si no se encuentra información para el usuario
+                                    MostrarMensaje("No se encontró información del usuario.");
+                                }
+                            }
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al obtener datos: {ex.Message}");
+                        MostrarMensaje("Ocurrió un error al procesar la solicitud.");
+                    }
+                    finally
+                    {
+                        conectar.CerrarConexion();
+                    }
+                }
+                else
+                {
+                    MostrarMensaje("El ID del usuario no es válido.");
+                }
+            }
+            else
+            {
+                MostrarMensaje("No se recibió el ID del usuario.");
+            }
         }
+
+
+
         protected void lnkFoto_Click(object sender, EventArgs e)
         {
             string rutaFoto = ((System.Web.UI.WebControls.LinkButton)sender).CommandArgument;

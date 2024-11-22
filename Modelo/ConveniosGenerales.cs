@@ -19,7 +19,7 @@ namespace Modelo
             conectar = new ConexionBD();
             conectar.AbrirConexion();
             string consulta = string.Format("SELECT ht.IDConvenio, ht.Fecha_Inicio, ht.Fecha_Final, u.IDUsuario, u.Primer_Nombre" +
-                " From convenio ht INNER JOIN usuarios u ON ht.IDUsuario = u.IDUsuario;");
+                " From convenio ht INNER JOIN usuarios u ON ht.IDUsuario = u.IDUsuario WHERE Aceptado = 1;");
             MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
             query.Fill(tabla);
             conectar.CerrarConexion();
