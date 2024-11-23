@@ -226,6 +226,7 @@ namespace Pasantias
             txt_Apellido1.CssClass = txt_Apellido1.CssClass.Replace("error", "").Trim();
             txt_Apellido2.CssClass = txt_Apellido2.CssClass.Replace("error", "").Trim();
             txt_Correo.CssClass = txt_Correo.CssClass.Replace("error", "").Trim();
+           
             txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "").Trim();
 
             // Validación de nombres y apellidos
@@ -253,6 +254,7 @@ namespace Pasantias
                 txt_Apellido2.CssClass += " error";
                 esValido = false;
             }
+            
 
             // Validación del correo
             if (!Utilidades.ValidarCorreo(txt_Correo.Text))
@@ -304,11 +306,16 @@ namespace Pasantias
             try
             {
                 string updateUsuarios = @"
-             UPDATE usuarios SET 
-                 Primer_Nombre = @Nombre1, Segundo_Nombre = @Nombre2, 
-                 Primer_Apellido = @Apellido1, Segundo_Apellido = @Apellido2, 
-                 DNI = @DNI, Correo = @Correo 
-             WHERE IDUsuario = @userId";
+             UPDATE usuarios 
+                    SET 
+                        Primer_Nombre = @Nombre1, 
+                        Segundo_Nombre = @Nombre2, 
+                        Primer_Apellido = @Apellido1, 
+                        Segundo_Apellido = @Apellido2, 
+                        DNI = @DNI, 
+                        Correo = @Correo 
+                    WHERE IDUsuario = @userId
+                    ";
 
                 string updateDatosUsuario = @"
              UPDATE datos_usuario SET 
