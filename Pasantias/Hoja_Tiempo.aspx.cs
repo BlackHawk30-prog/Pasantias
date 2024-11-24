@@ -58,39 +58,77 @@ namespace Pasantias
         {
             if (!IsPostBack)
             {
-                // Obtener el parámetro IDHojaTiempo de la URL (encriptado)
                 string idHojaTiempoEncriptado = Request.QueryString["IDHojaTiempo"];
                 if (!string.IsNullOrWhiteSpace(idHojaTiempoEncriptado))
                 {
                     try
                     {
+                        // Guardar el ID encriptado en la sesión
+                        Session["IDHojaTiempoEncriptado"] = idHojaTiempoEncriptado;
+
                         // Desencriptar el ID
                         string idHojaTiempoDesencriptado = EncriptacionAES.Desencriptar(idHojaTiempoEncriptado);
                         if (int.TryParse(idHojaTiempoDesencriptado, out int idHojaTiempo))
                         {
+                            // Guardar el ID desencriptado en la sesión
+                            SessionStore.HojaID = idHojaTiempo;
+
+                            // Verificar el estado de PConfirmado desde la base de datos
                             hojaTiempo = new HojaTiempo();
-                            SessionStore.HojaID = idHojaTiempo; // Guardar el ID desencriptado en la sesión
-                            grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Llama al método para cargar datos
-                            grid_hojas.DataBind(); // Enlaza los datos al GridView
-                            CalcularTotalHoras(); // Calcula las horas totales
+                            int pConfirmado = hojaTiempo.ObtenerPConfirmado(idHojaTiempo); // Método para obtener PConfirmado
+
+                            // Guardar PConfirmado en la sesión
+                            Session["PConfirmado"] = pConfirmado;
+
+                            // Validar si la hoja ya está confirmada
+                            if (pConfirmado == 1)
+                            {
+                                // Ocultar los botones excepto "Regresar"
+                                Btn_Agregar.Visible = false;
+                                Btn_Actualizar.Visible = false;
+                                Button1.Visible = false;
+                                Btn_Enviar.Visible = false;
+
+                                // Ocultar la tabla
+                                grid_hojas.Visible = false;
+
+                                // Mostrar mensaje de confirmación
+                                lbl_Mensaje.Text = "La hoja de tiempo ya está confirmada y no puede ser modificada.";
+                                lbl_Mensaje.ForeColor = System.Drawing.Color.Green;
+                                return; // Salir del método para evitar cargar datos innecesarios
+                            }
+
+                            // Mostrar la tabla y cargar datos si no está confirmada
+                            grid_hojas.Visible = true;
+                            grid_hojas.DataSource = hojaTiempo.grid_hojas();
+                            grid_hojas.DataBind();
+
+                            // Calcular total de horas
+                            CalcularTotalHoras();
                         }
                         else
                         {
                             lbl_Mensaje.Text = "ID de Hoja de Tiempo no válido.";
+                            lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
                         }
                     }
                     catch (Exception ex)
                     {
                         lbl_Mensaje.Text = "Error al procesar el ID de Hoja de Tiempo.";
-                        // Log de error si es necesario
+                        lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
+                        // Opcional: Registrar el error en el log
+                        // LogError(ex);
                     }
                 }
                 else
                 {
                     lbl_Mensaje.Text = "ID de Hoja de Tiempo no proporcionado.";
+                    lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
                 }
             }
         }
+
+
 
 
         protected void Btn_Agregar_Click(object sender, EventArgs e)
@@ -265,7 +303,6 @@ namespace Pasantias
 
             return true;
         }
-
         protected void Button1_Click(object sender, EventArgs e)
         {
             txt_Fecha.Text = "";
@@ -275,6 +312,93 @@ namespace Pasantias
             Btn_Agregar.Visible = true;
             Button1.Visible = false;
         }
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            // Validar si PConfirmado es 1 y ocultar botones
+            if (Session["PConfirmado"] != null && Convert.ToInt32(Session["PConfirmado"]) == 1)
+            {
+                Btn_Agregar.Visible = false;
+                Btn_Actualizar.Visible = false;
+                Button1.Visible = false;
+                Btn_Enviar.Visible = false;
+                lbl_Mensaje.Text = "La hoja de tiempo ya está confirmada y no puede ser modificada.";
+                lbl_Mensaje.ForeColor = System.Drawing.Color.Green;
+                return;
+            }
+
+            // Limpiar los campos de texto
+            txt_Fecha.Text = "";
+            txt_Horas.Text = "";
+            txt_Actividades.Text = "";
+
+            // Ajustar la visibilidad de los botones
+            Btn_Actualizar.Visible = false;
+            Btn_Agregar.Visible = true;
+            Button1.Visible = false;
+
+            try
+            {
+                // Obtener el ID encriptado desde la sesión
+                string idHojaTiempoEncriptado = Session["IDHojaTiempoEncriptado"] as string;
+
+                if (string.IsNullOrEmpty(idHojaTiempoEncriptado))
+                {
+                    lbl_Mensaje.Text = "ID de Hoja de Tiempo no encontrado en la sesión.";
+                    lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // Desencriptar el ID
+                string idHojaTiempoDesencriptado = EncriptacionAES.Desencriptar(idHojaTiempoEncriptado);
+
+                // Convertir a entero
+                if (int.TryParse(idHojaTiempoDesencriptado, out int idHojaTiempo))
+                {
+                    // Crear una instancia de la clase HojaTiempo
+                    HojaTiempo hoja = new HojaTiempo();
+
+                    // Llamar al método para confirmar la hoja de tiempo
+                    int filasModificadas = hoja.ConfirmarHojaTiempo(idHojaTiempo);
+
+                    // Mostrar un mensaje de confirmación al usuario
+                    if (filasModificadas > 0)
+                    {
+                        lbl_Mensaje.Text = "La hoja de tiempo ha sido confirmada exitosamente.";
+                        lbl_Mensaje.ForeColor = System.Drawing.Color.Green;
+
+                        // Actualizar la variable de sesión para reflejar la confirmación
+                        Session["PConfirmado"] = 1;
+
+                        // Ocultar los botones excepto "Regresar"
+                        Btn_Agregar.Visible = false;
+                        Btn_Actualizar.Visible = false;
+                        Button1.Visible = false;
+                        Btn_Enviar.Visible = false;
+                    }
+                    else
+                    {
+                        lbl_Mensaje.Text = "No se pudo confirmar la hoja de tiempo. Verifique el ID.";
+                        lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
+                    }
+                }
+                else
+                {
+                    lbl_Mensaje.Text = "El ID de Hoja de Tiempo desencriptado no es válido.";
+                    lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lbl_Mensaje.Text = "Ocurrió un error al confirmar la hoja de tiempo.";
+                lbl_Mensaje.ForeColor = System.Drawing.Color.Red;
+
+                // Opcional: Registrar el error en el log
+                // LogError(ex);
+            }
+        }
+
+
+
 
         private void CalcularTotalHoras()
         {
@@ -292,11 +416,10 @@ namespace Pasantias
         }
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
-           
-            
-                Response.Redirect("Hojas_Generales.aspx");
-            
+
+
+            Response.Redirect("Hojas_Generales.aspx");
+
         }
     }
 }
-

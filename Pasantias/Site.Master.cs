@@ -73,7 +73,8 @@ namespace Pasantias
                 }
                 else if (rol == 2)
                 {
-                  
+                    HojaGNav.Visible = true;
+
                     FinanzasNav.Visible = true;
                 }
                 else if (rol == 3)
