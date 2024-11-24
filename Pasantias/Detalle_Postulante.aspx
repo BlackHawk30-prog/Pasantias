@@ -4,7 +4,11 @@
      <!-- Contenedor para centrar el contenido -->
  <div class="container">
      <h1 class="text-center">Postulante</h1>
+                  <div class="container" align="left">
+     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary" OnClick="btnRegresar_Click" />
 
+
+</div>
      <!-- Cuadro blanco para el formulario 1 -->
      <div class="form-container">
          <div class="form-group">
@@ -74,12 +78,7 @@
              <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum:" CssClass="form-label"></asp:Label>
              <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn btn-link mt-2" Text="Descargar Curriculum" Visible="false" Target="_blank" />
          </div>
-             <div class="container" align="center">
-     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-primary" OnClick="btnRegresar_Click" />
-   <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" OnClick="btnAceptar_Click" CssClass="btn btn-success" />
-<asp:Button ID="btnRechazar" runat="server" Text="Rechazar" OnClick="btnRechazar_Click" CssClass="btn btn-danger" />
-
-</div>
+            
      </div>
      
  </div>
