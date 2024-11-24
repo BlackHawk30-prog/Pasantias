@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,6 +14,47 @@ namespace Pasantias
     public partial class Postulaciones_Regional : System.Web.UI.Page
     {
         private Postulacion Postulacion; // Declaración del objeto Postulacion
+        public static class EncriptacionAES
+        {
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
+            {
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+                    return Convert.ToBase64String(encriptado);
+                }
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
+                }
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -70,7 +113,8 @@ namespace Pasantias
             else if (e.CommandName == "Detalles")
             {
                 // Redirigir a la vista Detalle_Postulante con el IDUsuario como parámetro en la URL
-                Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idUsuario}");
+                string idEncriptado = EncriptacionAES.Encriptar(idUsuario.ToString());
+                Response.Redirect($"Detalle_Postulante.aspx?IDUsuario={idEncriptado}");
             }
         }
         private void EnviarCorreoAgradecimiento(string destinatario, int idUsuario)
@@ -84,7 +128,8 @@ namespace Pasantias
                     mensaje.Subject = "Notificación de Aceptación de Pasantía";
 
                     // Construir el enlace al formulario Convenio.aspx con el IDUsuario como parámetro
-                    string urlConvenio = $"https://localhost:44316/Convenio.aspx?IDUsuario={idUsuario}";
+                    string idEncriptado = EncriptacionAES.Encriptar(idUsuario.ToString());
+                    string urlConvenio = $"https://localhost:44316/Convenio.aspx?IDUsuario={idEncriptado}";
 
                     // Crear el cuerpo del mensaje
                     mensaje.Body = $"Estimado(a) postulante,\n\n" +

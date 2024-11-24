@@ -2,6 +2,8 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.UI;
 
 namespace Pasantias
@@ -9,6 +11,47 @@ namespace Pasantias
     public partial class Detalle_Postulante : Page
     {
         Postulacion Postulacion;
+        public static class EncriptacionAES
+        {
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
+            {
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+                    return Convert.ToBase64String(encriptado);
+                }
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
+                }
+            }
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -16,13 +59,19 @@ namespace Pasantias
                 // Verifica si hay un IDUsuario en la cadena de consulta
                 if (Request.QueryString["IDUsuario"] != null)
                 {
-                    int idUsuario;
-                    if (int.TryParse(Request.QueryString["IDUsuario"], out idUsuario))
+                    try
                     {
-                        System.Diagnostics.Debug.WriteLine($"IDUsuario recibido de QueryString: {idUsuario}");
+                        // Desencripta el IDUsuario recibido
+                        string idUsuarioEncriptado = Request.QueryString["IDUsuario"];
+                        string idUsuarioDesencriptado = EncriptacionAES.Desencriptar(idUsuarioEncriptado);
+                        int idUsuario = int.Parse(idUsuarioDesencriptado);
+
+                        System.Diagnostics.Debug.WriteLine($"IDUsuario desencriptado: {idUsuario}");
+
+                        // Cargar datos del usuario
                         CargarDatosUsuario(idUsuario);
 
-                        // Cargar foto
+                        // Cargar foto del usuario
                         string imagePath = ObtenerRutaFotoDesdeBD(idUsuario);
                         if (!string.IsNullOrEmpty(imagePath))
                         {
@@ -31,8 +80,7 @@ namespace Pasantias
                             lnkFoto.CommandArgument = imagePath; // Ruta de la foto como argumento
                         }
 
-
-                        // Cargar curriculum (sin cambios)
+                        // Cargar curriculum del usuario
                         string curriculumPath = ObtenerRutaCurriculumDesdeBD(idUsuario);
                         if (!string.IsNullOrEmpty(curriculumPath))
                         {
@@ -40,9 +88,9 @@ namespace Pasantias
                             lnkCurriculum.Visible = true;
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("El IDUsuario recibido no es válido.");
+                        System.Diagnostics.Debug.WriteLine($"Error al desencriptar IDUsuario o procesar datos: {ex.Message}");
                         Response.Redirect("Postulaciones.aspx");
                     }
                 }
@@ -53,6 +101,7 @@ namespace Pasantias
                 }
             }
         }
+
 
         private void CargarDatosUsuario(int userId)
         {
@@ -178,9 +227,13 @@ namespace Pasantias
         {
             if (Request.QueryString["IDUsuario"] != null)
             {
-                int idUsuario;
-                if (int.TryParse(Request.QueryString["IDUsuario"], out idUsuario))
+                try
                 {
+                    // Desencripta el IDUsuario recibido
+                    string idUsuarioEncriptado = Request.QueryString["IDUsuario"];
+                    string idUsuarioDesencriptado = EncriptacionAES.Desencriptar(idUsuarioEncriptado);
+                    int idUsuario = int.Parse(idUsuarioDesencriptado);
+
                     ConexionBD conectar = new ConexionBD();
                     conectar.AbrirConexion();
 
@@ -240,8 +293,9 @@ namespace Pasantias
                         conectar.CerrarConexion();
                     }
                 }
-                else
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Error al desencriptar IDUsuario o procesar datos: {ex.Message}");
                     MostrarMensaje("El ID del usuario no es válido.");
                 }
             }
@@ -250,6 +304,7 @@ namespace Pasantias
                 MostrarMensaje("No se recibió el ID del usuario.");
             }
         }
+
 
 
 

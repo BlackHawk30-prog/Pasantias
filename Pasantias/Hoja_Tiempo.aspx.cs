@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
 using System;
 using System.Web.UI;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace Pasantias
@@ -10,27 +12,86 @@ namespace Pasantias
     public partial class Hoja_Tiempo : System.Web.UI.Page
     {
         HojaTiempo hojaTiempo;
+        public static class EncriptacionAES
+        {
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
+            {
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+                    return Convert.ToBase64String(encriptado);
+                }
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
+                }
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Obtener el parámetro IDHojaTiempo de la URL
-                int idHojaTiempo;
-                if (int.TryParse(Request.QueryString["IDHojaTiempo"], out idHojaTiempo))
+                // Obtener el parámetro IDHojaTiempo de la URL (encriptado)
+                string idHojaTiempoEncriptado = Request.QueryString["IDHojaTiempo"];
+                if (!string.IsNullOrWhiteSpace(idHojaTiempoEncriptado))
                 {
-                    hojaTiempo = new HojaTiempo();
-                    SessionStore.HojaID = idHojaTiempo; // Guardar el ID de Hoja en la sesión
-                    grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Llama al método para cargar datos
-                    grid_hojas.DataBind(); // Enlaza los datos al GridView
-                    CalcularTotalHoras(); // Calcula las horas totales
+                    try
+                    {
+                        // Desencriptar el ID
+                        string idHojaTiempoDesencriptado = EncriptacionAES.Desencriptar(idHojaTiempoEncriptado);
+                        if (int.TryParse(idHojaTiempoDesencriptado, out int idHojaTiempo))
+                        {
+                            hojaTiempo = new HojaTiempo();
+                            SessionStore.HojaID = idHojaTiempo; // Guardar el ID desencriptado en la sesión
+                            grid_hojas.DataSource = hojaTiempo.grid_hojas(); // Llama al método para cargar datos
+                            grid_hojas.DataBind(); // Enlaza los datos al GridView
+                            CalcularTotalHoras(); // Calcula las horas totales
+                        }
+                        else
+                        {
+                            lbl_Mensaje.Text = "ID de Hoja de Tiempo no válido.";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        lbl_Mensaje.Text = "Error al procesar el ID de Hoja de Tiempo.";
+                        // Log de error si es necesario
+                    }
                 }
                 else
                 {
-                    lbl_Mensaje.Text = "ID de Hoja de Tiempo no válido.";
+                    lbl_Mensaje.Text = "ID de Hoja de Tiempo no proporcionado.";
                 }
             }
         }
+
 
         protected void Btn_Agregar_Click(object sender, EventArgs e)
         {
