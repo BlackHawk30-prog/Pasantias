@@ -96,11 +96,13 @@ namespace Pasantias
         protected void btnAceptar_Click(object sender, EventArgs e)
         {
             InsertarConvenio(1, 0); // Aceptado = 1, Rechazado = 0
+            Response.Write("<script>window.close();</script>");
         }
 
         protected void btnRechazar_Click(object sender, EventArgs e)
         {
             InsertarConvenio(0, 1); // Aceptado = 0, Rechazado = 1
+
         }
 
         private void InsertarConvenio(int aceptado, int rechazado)
