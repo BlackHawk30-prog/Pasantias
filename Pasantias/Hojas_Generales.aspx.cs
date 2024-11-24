@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -34,7 +35,9 @@ namespace Pasantias
                     byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
 
                     byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
-                    return Convert.ToBase64String(encriptado);
+
+                    // Convertimos a Base64 y lo codificamos para la URL
+                    return HttpUtility.UrlEncode(Convert.ToBase64String(encriptado));
                 }
             }
 
@@ -45,14 +48,17 @@ namespace Pasantias
                     aes.Key = ObtenerClave(key);
                     aes.IV = new byte[16];  // Vector de inicialización
 
-                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
-                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+                    // Decodificamos desde la URL antes de convertirlo de Base64
+                    string textoDecodificado = HttpUtility.UrlDecode(textoEncriptado);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoDecodificado);
 
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
                     byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
                     return Encoding.UTF8.GetString(desencriptado);
                 }
             }
         }
+
 
         protected void Page_Load(object sender, EventArgs e)
         {

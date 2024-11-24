@@ -62,7 +62,7 @@
 
                      <asp:TemplateField ShowHeader="True" HeaderText="Accion">
                          <ItemTemplate>
-                             <asp:Button ID="Btn_Eliminar" runat="server" CausesValidation="False" CommandName="Delete" Text="Eliminar" CssClass="btn btn-danger" />
+                             <asp:Button ID="Btn_Eliminar"  runat="server" CausesValidation="False" CommandName="Delete" Text="Eliminar" CssClass="btn btn-danger" />
                          </ItemTemplate>
                      </asp:TemplateField>
                  </Columns>
@@ -72,7 +72,7 @@
 
         <!-- Botón para enviar la hoja de tiempo -->
         <div class="form-group text-center">
-            <asp:Button ID="Btn_Enviar" runat="server" Text="Enviar Hoja de Tiempo" CssClass="btn btn-custom" Visible="True" OnClick="Button1_Click" />
+            <asp:Button ID="Btn_Enviar" runat="server" Text="Enviar Hoja de Tiempo" CssClass="btn btn-custom" Visible="True" OnClick="Button2_Click" />
         </div>
     </div>
 
