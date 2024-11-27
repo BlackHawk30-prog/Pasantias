@@ -4,12 +4,15 @@ using System.Web.UI;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net.Mail;
+using MySql.Data.MySqlClient;
+using System.Web.UI.WebControls;
 
 namespace Pasantias
 {
     public partial class Aplicante_2 : System.Web.UI.Page
     {
         Aplicante2 aplicante2;
+        ConexionBD conectar;
 
         public static class EncriptacionAES
         {
@@ -80,8 +83,11 @@ namespace Pasantias
                     lbl_Error.Text = $"Error de formato: {ex.Message}";
                     lbl_Error.Visible = true;
                 }
+
+                CargarDepartamentos();
             }
         }
+
 
         protected void Enviar_Click(object sender, EventArgs e)
         {
@@ -173,15 +179,24 @@ namespace Pasantias
                 lbl_Error.Text += "El currículum debe estar en formato DOC, DOCX o PDF.<br/>";
             }
 
+            // Validación de municipio
+            string codigoMunSeleccionado = ddl_Municipio.SelectedValue; // Ahora manejamos el valor como cadena
+
+            if (string.IsNullOrEmpty(codigoMunSeleccionado) || codigoMunSeleccionado == "0")
+            {
+                esValido = false;
+                lbl_Error.Text += "Seleccione un municipio válido.<br/>";
+            }
+
+
             // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
             {
                 lbl_Error.Visible = true;
                 return;
             }
-            // Asignar tamaños al Label lbl_salida
-            //lbl_salida.Text = $"Tamaño de Foto: {fotoBytes.Length} bytes\nTamaño de Curriculum: {curriculumBytes.Length} bytes";
-            // Crear el objeto aplicante y almacenar los datos en la base de datos
+
+            // Crear el registro del aplicante
             aplicante2 = new Aplicante2();
             string dni = ViewState["DNI"].ToString();
 
@@ -198,14 +213,24 @@ namespace Pasantias
 
             if (resultado > 0)
             {
-                string correo = aplicante2.ObtenerCorreoPorDNI(dni);
-                if (correo != null)
+                // Asociar residencia con el municipio seleccionado
+                int resultadoResidencia = aplicante2.InsertarResidencia(dni, codigoMunSeleccionado.ToString());
+                if (resultadoResidencia > 0)
                 {
-                    EnviarCorreoAgradecimiento(correo);
+                    string correo = aplicante2.ObtenerCorreoPorDNI(dni);
+                    if (!string.IsNullOrEmpty(correo))
+                    {
+                        EnviarCorreoAgradecimiento(correo);
+                    }
+
+                    lbl_Error.CssClass = "success";
+                    lbl_Error.Text = "Datos enviados correctamente.";
+                    lbl_Error.Visible = true;
                 }
                 else
                 {
-                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Datos enviados exitosamente, pero no se encontró el correo.');", true);
+                    lbl_Error.Text = "No se pudo registrar la residencia.";
+                    lbl_Error.Visible = true;
                 }
             }
             else
@@ -214,6 +239,9 @@ namespace Pasantias
                 lbl_Error.Visible = true;
             }
         }
+
+
+
 
 
         private void EnviarCorreoAgradecimiento(string destinatario)
@@ -245,5 +273,77 @@ namespace Pasantias
                 lbl_Error.Visible = true;
             }
         }
+        protected void ddl_Departamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Obtener el valor seleccionado del Dropdown de Departamentos
+            int codigoDep = int.Parse(ddl_Departamento.SelectedValue);
+
+            // Cargar los municipios basados en el departamento seleccionado
+            CargarMunicipios(codigoDep);
+        }
+
+
+        private void CargarDepartamentos()
+        {
+            try
+            {
+                conectar = new ConexionBD();
+                conectar.AbrirConexion();
+
+                string consulta = "SELECT CodigoDep, Departamento FROM Departamentos";
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        ddl_Departamento.DataSource = reader;
+                        ddl_Departamento.DataTextField = "Departamento"; // Columna que se mostrará en el DropDownList
+                        ddl_Departamento.DataValueField = "CodigoDep";    // Valor asociado al elemento
+                        ddl_Departamento.DataBind();
+                    }
+                }
+                ddl_Departamento.Items.Insert(0, new ListItem("-- Seleccione un Departamento --", "0"));
+            }
+            catch (Exception ex)
+            {
+                lbl_Error.Text = $"Error al cargar los departamentos: {ex.Message}";
+                lbl_Error.Visible = true;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+        }
+        private void CargarMunicipios(int codigoDep)
+        {
+            try
+            {
+                conectar = new ConexionBD();
+                conectar.AbrirConexion();
+
+                string consulta = "SELECT CodigoMun, Municipio FROM Municipios WHERE CodigoDep = @CodigoDep";
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@CodigoDep", codigoDep);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        ddl_Municipio.DataSource = reader;
+                        ddl_Municipio.DataTextField = "Municipio"; // Columna que se mostrará en el DropDownList
+                        ddl_Municipio.DataValueField = "CodigoMun"; // Valor asociado al elemento
+                        ddl_Municipio.DataBind();
+                    }
+                }
+                ddl_Municipio.Items.Insert(0, new ListItem("-- Seleccione un Municipio --", "0"));
+            }
+            catch (Exception ex)
+            {
+                lbl_Error.Text = $"Error al cargar los municipios: {ex.Message}";
+                lbl_Error.Visible = true;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+        }
+
     }
 }

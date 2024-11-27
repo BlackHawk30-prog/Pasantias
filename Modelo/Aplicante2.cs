@@ -20,8 +20,11 @@ namespace Modelo
             {
                 conectar.AbrirConexion();
 
+              
+
                 // Buscar el IDUsuario basado en el DNI
                 int idUsuario = ObtenerIDUsuarioPorDNI(DNI);
+
                 if (idUsuario == 0)
                 {
                     throw new Exception("No se encontró un usuario con el DNI proporcionado.");
@@ -98,6 +101,7 @@ namespace Modelo
         // Método para obtener el IDUsuario usando el DNI
         private int ObtenerIDUsuarioPorDNI(string dni)
         {
+          
             int idUsuario = 0;
             string query = "SELECT IDUsuario FROM usuarios WHERE DNI = @DNI LIMIT 1";
 
@@ -113,9 +117,11 @@ namespace Modelo
                     }
                 }
             }
+           
 
             return idUsuario;
         }
+      
 
         // Método para obtener el correo basado en el DNI usando el procedimiento almacenado
         public string ObtenerCorreoPorDNI(string dni)
@@ -153,5 +159,132 @@ namespace Modelo
 
             return correo;
         }
+
+
+
+        private bool ExisteMunicipio(string codigoMun)
+        {
+            bool existe = false;
+
+            try
+            {
+                conectar = new ConexionBD();
+                conectar.AbrirConexion();
+
+                string consulta = "SELECT COUNT(*) FROM Municipios WHERE CodigoMun = @CodigoMun";
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@CodigoMun", codigoMun);
+                    existe = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return existe;
+        }
+
+        // Método para insertar un registro en la tabla Residencia
+        public int InsertarResidencia(string dni, string municipio)
+        {
+            int filasAfectadas = 0;
+            conectar = new ConexionBD();
+            if (!ExisteMunicipio(municipio))
+            {
+                throw new Exception("El municipio seleccionado no es válido.");
+            }
+
+            try
+            {
+                conectar.AbrirConexion();
+
+                // Obtener el IDUsuario basado en el DNI
+                int idUsuario = ObtenerIDUsuarioPorDNI(dni);
+
+                if (idUsuario == 0)
+                {
+                    throw new Exception("No se encontró un usuario con el DNI proporcionado.");
+                }
+
+                // Consulta SQL para insertar en la tabla Residencia
+                string consulta = "INSERT INTO residencia (IDUsuario, CodigoMun) VALUES (@IDUsuario, @Municipio)";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    // Asignar valores a los parámetros
+                    cmd.Parameters.AddWithValue("@IDUsuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@Municipio", municipio);
+
+
+                    // Ejecutar la consulta
+                    filasAfectadas = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return filasAfectadas;
+        }
+      
+
+        // Método para obtener el IDUsuario usando el DNI
+        private int ObtenerIDUsuarioPordni(string dni)
+        {
+            int idUsuario = 0;
+            conectar = new ConexionBD();
+
+            try
+            {
+                conectar.AbrirConexion();
+
+                // Consulta SQL para obtener el IDUsuario
+                string consulta = "SELECT IDUsuario FROM usuarios WHERE DNI = @DNI LIMIT 1";
+
+                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                {
+                    // Asignar el valor del parámetro
+                    cmd.Parameters.AddWithValue("@DNI", dni);
+
+                    // Ejecutar la consulta y leer el resultado
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            idUsuario = reader.GetInt32("IDUsuario");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            return idUsuario;
+        }
+
+
+
+
+
     }
 }
