@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Pasantias
 {
@@ -56,6 +57,7 @@ namespace Pasantias
         {
             if (!IsPostBack)
             {
+                CargarDepartamentos();
                 // Verifica si hay un IDUsuario en la cadena de consulta
                 if (Request.QueryString["IDUsuario"] != null)
                 {
@@ -101,7 +103,81 @@ namespace Pasantias
                 }
             }
         }
+        private void CargarDepartamentos()
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
 
+            try
+            {
+                string query = "SELECT CodigoDep, Departamento FROM departamentos";
+                using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        ddl_Departamento.DataSource = reader;
+                        ddl_Departamento.DataTextField = "Departamento";
+                        ddl_Departamento.DataValueField = "CodigoDep";
+                        ddl_Departamento.DataBind();
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al cargar departamentos: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            ddl_Departamento.Items.Insert(0, new ListItem());
+        }
+
+        private void CargarMunicipios(string codigoDepartamento)
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+
+            try
+            {
+                string query = "SELECT CodigoMun, Municipio FROM municipios WHERE CodigoDep = @CodigoDep";
+                using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@CodigoDep", codigoDepartamento);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        ddl_Municipio.DataSource = reader;
+                        ddl_Municipio.DataTextField = "Municipio";
+                        ddl_Municipio.DataValueField = "CodigoMun";
+                        ddl_Municipio.DataBind();
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al cargar municipios: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            ddl_Municipio.Items.Insert(0, new ListItem("0"));
+        }
+        protected void ddl_Departamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string codigoDepartamento = ddl_Departamento.SelectedValue;
+            if (!string.IsNullOrEmpty(codigoDepartamento) && codigoDepartamento != "0")
+            {
+                CargarMunicipios(codigoDepartamento);
+            }
+            else
+            {
+                ddl_Municipio.Items.Clear();
+                ddl_Municipio.Items.Insert(0, new ListItem( "0"));
+            }
+        }
 
         private void CargarDatosUsuario(int userId)
         {
@@ -111,13 +187,26 @@ namespace Pasantias
             try
             {
                 string consulta = @"
-                    SELECT 
-                        u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-                        u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-                        du.Grado_academico, du.Sexo 
-                    FROM usuarios u 
-                    JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-                    WHERE u.IDUsuario = @userId";
+                SELECT 
+                    u.Primer_Nombre, 
+                    u.Segundo_Nombre, 
+                    u.Primer_Apellido, 
+                    u.Segundo_Apellido, 
+                    u.DNI, 
+                    u.Correo, 
+                    du.Fecha_Nacimiento, 
+                    du.Telefono, 
+                    du.Direccion, 
+                    du.Grado_academico, 
+                    du.Sexo,
+                    m.CodigoMun, 
+                    d.CodigoDep
+                FROM usuarios u
+                JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario
+                JOIN residencia r ON u.IDUsuario = r.IDUsuario
+                JOIN municipios m ON r.CodigoMun = m.CodigoMun
+                JOIN departamentos d ON m.CodigoDep = d.CodigoDep
+                WHERE u.IDUsuario = @userId";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -127,6 +216,7 @@ namespace Pasantias
                     {
                         if (reader.Read())
                         {
+                            // Asignación de datos al formulario
                             txt_Nombre1.Text = reader["Primer_Nombre"].ToString();
                             txt_Nombre2.Text = reader["Segundo_Nombre"].ToString();
                             txt_Apellido1.Text = reader["Primer_Apellido"].ToString();
@@ -137,21 +227,23 @@ namespace Pasantias
                             txt_Telefono.Text = reader["Telefono"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString();
                             txt_Direccion.Text = reader["Direccion"].ToString();
-                            if (reader["Sexo"].ToString() == "Hombre")
-                            {
-                                txt_Hombre.Checked = true;
-                            }
-                            else if (reader["Sexo"].ToString() == "Mujer")
-                            {
-                                txt_Mujer.Checked = true;
-                            }
+
+                            // Selección del departamento y municipio
+                            ddl_Departamento.SelectedValue = reader["CodigoDep"].ToString(); // Código del departamento
+                            CargarMunicipios(reader["CodigoDep"].ToString()); // Cargar municipios del departamento seleccionado
+                            ddl_Municipio.SelectedValue = reader["CodigoMun"].ToString(); // Código del municipio
+
+                            // Selección de género
+                            string sexo = reader["Sexo"].ToString();
+                            txt_Hombre.Checked = sexo == "Hombre";
+                            txt_Mujer.Checked = sexo == "Mujer";
                         }
                     }
                 }
             }
             catch (MySqlException ex)
             {
-                System.Diagnostics.Debug.WriteLine("Error al cargar los datos del postulante: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error al cargar los datos del usuario: " + ex.Message);
             }
             finally
             {

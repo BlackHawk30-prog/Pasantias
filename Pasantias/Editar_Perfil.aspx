@@ -63,7 +63,7 @@
     </asp:DropDownList>
 </div>
             <div class="form-group">
-                <asp:Label ID="lbl_Direccion" runat="server" Text="Direccion:" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección Exacta:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Direccion" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
