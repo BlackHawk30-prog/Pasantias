@@ -44,7 +44,6 @@
                             </div>
                             <div class="form-group">
                                 <asp:Label ID="lbl_Nombre2" runat="server" Text="Segundo Nombre:" CssClass="form-label"></asp:Label>
-                                <span class="required">*</span>
                                 <asp:TextBox ID="txt_Nombre2" runat="server" placeholder="Escriba su Segundo Nombre" CssClass="form-control" OnKeyUp="clearError(this.id)"></asp:TextBox>
                             </div>
                             <div class="form-group">
@@ -81,5 +80,6 @@
     <!-- Scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

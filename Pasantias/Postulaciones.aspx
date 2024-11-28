@@ -3,12 +3,20 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <h1 class="text-center">Postulantes a Pasantía</h1>
-         <div class="form-group d-flex justify-content-between align-items-center">
-     <!-- Botón Regresar alineado a la izquierda -->
-     <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2"  OnClick="btnRegresar_Click" />
- </div>
+         
+        <div class="form-group d-flex justify-content-between align-items-center">
+    <!-- Botón Regresar alineado a la izquierda -->
+    <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
+
+    <!-- Filtro por Departamento alineado a la derecha -->
+    <div class="d-flex">
+        <asp:DropDownList ID="ddlDepartamentos" runat="server" CssClass="form-control mx-2"></asp:DropDownList>
+        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="btn btn-primary" OnClick="btnFiltrar_Click" />
+    </div>
+</div>
+
         <!-- GridView sin el formulario adicional -->
-        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario"
+        <asp:GridView ID="grid_aplicantes" runat="server" AutoGenerateColumns="False" DataKeyNames="IDUsuario,CodigoMun,CodigoDep"
             CssClass="table table-condensed" OnRowCommand="grid_aplicantes_RowCommand">
             <Columns>
              
@@ -21,6 +29,8 @@
                 <asp:BoundField DataField="Correo" HeaderText="Correo" ItemStyle-CssClass="text-center" />
                 
                 <asp:BoundField DataField="Telefono" HeaderText="Teléfono" ItemStyle-CssClass="text-center" />
+
+                 <asp:BoundField DataField="Departamento" HeaderText="Departamento" ItemStyle-CssClass="text-center"></asp:BoundField>
 
                 <asp:TemplateField HeaderText="Accion">
                     <ItemTemplate>
@@ -44,6 +54,7 @@
                             CommandName="Rechazar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
                     </ItemTemplate>
                 </asp:TemplateField>
+               
             </Columns>
         </asp:GridView>
     </div>

@@ -12,92 +12,96 @@ namespace Pasantias
         
         protected HtmlAnchor RHNav;
         protected HtmlAnchor SeguridadNav;
-        
+
 
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Establecer los href con ResolveClientUrl
-          
-            FinanzasNav.HRef = ResolveClientUrl("~/Finanzas.aspx");
-            OficialNav.HRef = ResolveClientUrl("~/Oficial.aspx");
-           
-            RHNav.HRef = ResolveClientUrl("~/RH.aspx");
-            SeguridadNav.HRef = ResolveClientUrl("~/Seguridad.aspx");
-            HojaGNav.HRef = ResolveClientUrl("~/Hojas_Generales.aspx");
-            ConvenioPersonal.HRef = ResolveClientUrl("~/Convenio_Personal.aspx");
-            ConveniosGenerales.HRef = ResolveClientUrl("~/Convenios_Generales.aspx");
-            PostulacionesRH.HRef = ResolveClientUrl("~/Postulaciones.aspx");
-            PostulacionesS.HRef = ResolveClientUrl("~/Postulaciones_Seguridad.aspx");
-            PostulacionesR.HRef = ResolveClientUrl("~/Postulaciones_Regional.aspx");
-            // Oculta todos los módulos por defecto
+            // Verifica y asigna valores a los controles solo si no son null
+            if (FinanzasNav != null)
+                FinanzasNav.HRef = ResolveClientUrl("~/Finanzas.aspx");
 
-            FinanzasNav.Visible = false;
-            OficialNav.Visible = false;
-            
-            RHNav.Visible = false;
-            SeguridadNav.Visible = false;
-            HojaGNav.Visible = false;
-            ConvenioPersonal.Visible= false;
-            ConveniosGenerales.Visible= false;
-            PostulacionesRH.Visible= false;
-            PostulacionesS.Visible= false;
-            PostulacionesR.Visible = false;
-            // Depuración temporal para verificar el rol en sesión
-            // if (Session["UserRol"] == null)
-            //  {
-            //      Response.Write("No hay rol en la sesión.");
-            //  }
-            //  else
-            //  {
-            //      Response.Write("Rol en sesión: " + Session["UserRol"]);
-            //  }
+            if (OficialNav != null)
+                OficialNav.HRef = ResolveClientUrl("~/Oficial.aspx");
 
-            // Verifica si el rol está en la sesión
+            if (RHNav != null)
+                RHNav.HRef = ResolveClientUrl("~/RH.aspx");
+
+            if (SeguridadNav != null)
+                SeguridadNav.HRef = ResolveClientUrl("~/Seguridad.aspx");
+
+            if (HojaGNav != null)
+                HojaGNav.HRef = ResolveClientUrl("~/Hojas_Generales.aspx");
+
+            if (ConvenioPersonal != null)
+                ConvenioPersonal.HRef = ResolveClientUrl("~/Convenio_Personal.aspx");
+
+            if (ConveniosGenerales != null)
+                ConveniosGenerales.HRef = ResolveClientUrl("~/Convenios_Generales.aspx");
+
+            if (PostulacionesRH != null)
+                PostulacionesRH.HRef = ResolveClientUrl("~/Postulaciones.aspx");
+
+            if (PostulacionesS != null)
+                PostulacionesS.HRef = ResolveClientUrl("~/Postulaciones_Seguridad.aspx");
+
+            if (PostulacionesR != null)
+                PostulacionesR.HRef = ResolveClientUrl("~/Postulaciones_Regional.aspx");
+
+            // Ocultar módulos por defecto
+            SetControlVisibility(FinanzasNav, false);
+            SetControlVisibility(OficialNav, false);
+            SetControlVisibility(RHNav, false);
+            SetControlVisibility(SeguridadNav, false);
+            SetControlVisibility(HojaGNav, false);
+            SetControlVisibility(ConvenioPersonal, false);
+            SetControlVisibility(ConveniosGenerales, false);
+            SetControlVisibility(PostulacionesRH, false);
+            SetControlVisibility(PostulacionesS, false);
+            SetControlVisibility(PostulacionesR, false);
+
+            // Verifica el rol en sesión
             if (Session["UserRol"] != null)
             {
                 int rol = int.Parse(Session["UserRol"].ToString());
 
                 // Controla la visibilidad de cada módulo según el rol
-                if (rol == 1)
+                if (rol == 1 || rol == 2)
                 {
-                    
-                    HojaGNav.Visible = true;
-                    ConvenioPersonal.Visible = true;
-                    ConveniosGenerales.Visible = true;
-                    PostulacionesRH.Visible = true;
-                    PostulacionesS.Visible = true;
-                    PostulacionesR.Visible = true;
-
-
-                }
-                else if (rol == 2)
-                {
-                    HojaGNav.Visible = true;
-                    ConvenioPersonal.Visible = true;
-                    ConveniosGenerales.Visible = true;
-                    PostulacionesRH.Visible = true;
-                    PostulacionesS.Visible = true;
-                    PostulacionesR.Visible = true;
+                    SetControlVisibility(HojaGNav, true);
+                    SetControlVisibility(ConvenioPersonal, true);
+                    SetControlVisibility(ConveniosGenerales, true);
+                    SetControlVisibility(PostulacionesRH, true);
+                    SetControlVisibility(PostulacionesS, true);
+                    SetControlVisibility(PostulacionesR, true);
                 }
                 else if (rol == 3)
                 {
-                    OficialNav.Visible = true;
-                    
+                    SetControlVisibility(OficialNav, true);
                 }
                 else if (rol == 4)
                 {
-                    RHNav.Visible = true;
+                    SetControlVisibility(RHNav, true);
                 }
                 else if (rol == 5)
                 {
-                    SeguridadNav.Visible = true;
+                    SetControlVisibility(SeguridadNav, true);
                 }
                 else if (rol == 6)
                 {
-                    FinanzasNav.Visible = true;
+                    SetControlVisibility(FinanzasNav, true);
                 }
             }
         }
+
+        // Método auxiliar para controlar la visibilidad
+        private void SetControlVisibility(HtmlAnchor control, bool isVisible)
+        {
+            if (control != null)
+            {
+                control.Visible = isVisible;
+            }
+        }
+
     }
 }
