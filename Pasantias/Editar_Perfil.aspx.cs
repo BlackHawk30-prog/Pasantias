@@ -20,20 +20,27 @@ namespace Pasantias
                 {
                     int idUsuario = (int)Session["UserID"];
                     System.Diagnostics.Debug.WriteLine($"IDUsuario recibido de la sesión: {idUsuario}");
+
+                    // Cargar los datos del usuario
                     CargarDatosUsuario(idUsuario);
 
+                    // Cargar foto
                     string imagePath = ObtenerRutaFotoDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(imagePath))
                     {
                         imgFoto.ImageUrl = ResolveUrl("~/" + imagePath);
                     }
 
+                    // Cargar curriculum
                     string curriculumPath = ObtenerRutaCurriculumDesdeBD(idUsuario);
                     if (!string.IsNullOrEmpty(curriculumPath))
                     {
                         lnkCurriculum.NavigateUrl = ResolveUrl("~/" + curriculumPath);
                         lnkCurriculum.Visible = true;
                     }
+
+                    // Cargar departamentos
+                    CargarDepartamentos();
                 }
                 else
                 {
@@ -41,6 +48,69 @@ namespace Pasantias
                     Response.Redirect("Login.aspx");
                 }
             }
+        }
+
+        private void CargarDepartamentos()
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+
+            try
+            {
+                string query = "SELECT CodigoDep, Departamento FROM departamentos";
+                using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        ddl_Departamento.DataSource = reader;
+                        ddl_Departamento.DataTextField = "Departamento";
+                        ddl_Departamento.DataValueField = "CodigoDep";
+                        ddl_Departamento.DataBind();
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al cargar departamentos: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            ddl_Departamento.Items.Insert(0, new ListItem("--Seleccione un Departamento--", "0"));
+        }
+
+        private void CargarMunicipios(string codigoDepartamento)
+        {
+            ConexionBD conectar = new ConexionBD();
+            conectar.AbrirConexion();
+
+            try
+            {
+                string query = "SELECT CodigoMun, Municipio FROM municipios WHERE CodigoDep = @CodigoDep";
+                using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+                {
+                    cmd.Parameters.AddWithValue("@CodigoDep", codigoDepartamento);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        ddl_Municipio.DataSource = reader;
+                        ddl_Municipio.DataTextField = "Municipio";
+                        ddl_Municipio.DataValueField = "CodigoMun";
+                        ddl_Municipio.DataBind();
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al cargar municipios: " + ex.Message);
+            }
+            finally
+            {
+                conectar.CerrarConexion();
+            }
+
+            ddl_Municipio.Items.Insert(0, new ListItem("--Seleccione un Municipio--", "0"));
         }
 
         private void CargarDatosUsuario(int userId)
@@ -51,13 +121,26 @@ namespace Pasantias
             try
             {
                 string consulta = @"
-                    SELECT 
-                        u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-                        u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-                        du.Grado_academico, du.Sexo 
-                    FROM usuarios u 
-                    JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-                    WHERE u.IDUsuario = @userId";
+                SELECT 
+                    u.Primer_Nombre, 
+                    u.Segundo_Nombre, 
+                    u.Primer_Apellido, 
+                    u.Segundo_Apellido, 
+                    u.DNI, 
+                    u.Correo, 
+                    du.Fecha_Nacimiento, 
+                    du.Telefono, 
+                    du.Direccion, 
+                    du.Grado_academico, 
+                    du.Sexo,
+                    m.CodigoMun, 
+                    d.CodigoDep
+                FROM usuarios u
+                JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario
+                JOIN residencia r ON u.IDUsuario = r.IDUsuario
+                JOIN municipios m ON r.CodigoMun = m.CodigoMun
+                JOIN departamentos d ON m.CodigoDep = d.CodigoDep
+                WHERE u.IDUsuario = @userId";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -67,6 +150,7 @@ namespace Pasantias
                     {
                         if (reader.Read())
                         {
+                            // Asignación de datos al formulario
                             txt_Nombre1.Text = reader["Primer_Nombre"].ToString();
                             txt_Nombre2.Text = reader["Segundo_Nombre"].ToString();
                             txt_Apellido1.Text = reader["Primer_Apellido"].ToString();
@@ -77,14 +161,16 @@ namespace Pasantias
                             txt_Telefono.Text = reader["Telefono"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString();
                             txt_Direccion.Text = reader["Direccion"].ToString();
-                            if (reader["Sexo"].ToString() == "Hombre")
-                            {
-                                txt_Hombre.Checked = true;
-                            }
-                            else if (reader["Sexo"].ToString() == "Mujer")
-                            {
-                                txt_Mujer.Checked = true;
-                            }
+
+                            // Selección del departamento y municipio
+                            ddl_Departamento.SelectedValue = reader["CodigoDep"].ToString(); // Código del departamento
+                            CargarMunicipios(reader["CodigoDep"].ToString()); // Cargar municipios del departamento seleccionado
+                            ddl_Municipio.SelectedValue = reader["CodigoMun"].ToString(); // Código del municipio
+
+                            // Selección de género
+                            string sexo = reader["Sexo"].ToString();
+                            txt_Hombre.Checked = sexo == "Hombre";
+                            txt_Mujer.Checked = sexo == "Mujer";
                         }
                     }
                 }
@@ -98,6 +184,22 @@ namespace Pasantias
                 conectar.CerrarConexion();
             }
         }
+
+
+        protected void ddl_Departamento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string codigoDepartamento = ddl_Departamento.SelectedValue;
+            if (!string.IsNullOrEmpty(codigoDepartamento) && codigoDepartamento != "0")
+            {
+                CargarMunicipios(codigoDepartamento);
+            }
+            else
+            {
+                ddl_Municipio.Items.Clear();
+                ddl_Municipio.Items.Insert(0, new ListItem("--Seleccione un Municipio--", "0"));
+            }
+        }
+
 
         private string ObtenerRutaFotoDesdeBD(int userId)
         {
@@ -226,6 +328,7 @@ namespace Pasantias
             txt_Apellido1.CssClass = txt_Apellido1.CssClass.Replace("error", "").Trim();
             txt_Apellido2.CssClass = txt_Apellido2.CssClass.Replace("error", "").Trim();
             txt_Correo.CssClass = txt_Correo.CssClass.Replace("error", "").Trim();
+           
             txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "").Trim();
 
             // Validación de nombres y apellidos
@@ -254,6 +357,8 @@ namespace Pasantias
                 esValido = false;
             }
 
+            
+
             // Validación del correo
             if (!Utilidades.ValidarCorreo(txt_Correo.Text))
             {
@@ -270,7 +375,13 @@ namespace Pasantias
                 txt_Fecha.CssClass += " error";
                 esValido = false;
             }
-
+            // Validación del municipio
+            if (ddl_Municipio.SelectedValue == "0" || string.IsNullOrEmpty(ddl_Municipio.SelectedValue))  // Asumiendo que "0" es el valor por defecto o inválido
+            {
+                lbl_Error.Text += "Debe seleccionar un municipio.<br/>";
+                ddl_Municipio.CssClass += " error";  // Agregar clase de error al ddl
+                esValido = false;
+            }
             return esValido;
         }
 
@@ -304,19 +415,32 @@ namespace Pasantias
             try
             {
                 string updateUsuarios = @"
-             UPDATE usuarios SET 
-                 Primer_Nombre = @Nombre1, Segundo_Nombre = @Nombre2, 
-                 Primer_Apellido = @Apellido1, Segundo_Apellido = @Apellido2, 
-                 DNI = @DNI, Correo = @Correo 
-             WHERE IDUsuario = @userId";
+            UPDATE usuarios 
+            SET 
+                Primer_Nombre = @Nombre1, 
+                Segundo_Nombre = @Nombre2, 
+                Primer_Apellido = @Apellido1, 
+                Segundo_Apellido = @Apellido2, 
+                DNI = @DNI, 
+                Correo = @Correo 
+            WHERE IDUsuario = @userId";
 
                 string updateDatosUsuario = @"
-             UPDATE datos_usuario SET 
-                 Fecha_Nacimiento = @FechaNacimiento, Telefono = @Telefono, 
-                 Direccion = @Direccion, Grado_academico = @Grado, 
-                 Sexo = @Sexo 
-             WHERE IDUsuario = @userId";
+            UPDATE datos_usuario 
+            SET 
+                Fecha_Nacimiento = @FechaNacimiento, 
+                Telefono = @Telefono, 
+                Direccion = @Direccion, 
+                Grado_academico = @Grado, 
+                Sexo = @Sexo 
+            WHERE IDUsuario = @userId";
 
+                string updateResidencia = @"
+            UPDATE residencia 
+            SET CodigoMun = @CodigoMun 
+            WHERE IDUsuario = @userId";
+
+                // Actualizar datos en la tabla `usuarios`
                 using (MySqlCommand cmd1 = new MySqlCommand(updateUsuarios, conectar.conectar))
                 {
                     cmd1.Parameters.AddWithValue("@Nombre1", txt_Nombre1.Text);
@@ -329,6 +453,7 @@ namespace Pasantias
                     cmd1.ExecuteNonQuery();
                 }
 
+                // Actualizar datos en la tabla `datos_usuario`
                 using (MySqlCommand cmd2 = new MySqlCommand(updateDatosUsuario, conectar.conectar))
                 {
                     cmd2.Parameters.AddWithValue("@FechaNacimiento", DateTime.Parse(txt_Fecha.Text));
@@ -339,6 +464,15 @@ namespace Pasantias
                     cmd2.Parameters.AddWithValue("@userId", userId);
                     cmd2.ExecuteNonQuery();
                 }
+
+                // Actualizar datos en la tabla `residencia`
+                using (MySqlCommand cmd3 = new MySqlCommand(updateResidencia, conectar.conectar))
+                {
+                    cmd3.Parameters.AddWithValue("@CodigoMun", ddl_Municipio.SelectedValue); // Código del municipio seleccionado
+                    cmd3.Parameters.AddWithValue("@userId", userId);
+                    cmd3.ExecuteNonQuery();
+                }
+
             }
             catch (MySqlException ex)
             {
@@ -349,6 +483,7 @@ namespace Pasantias
                 conectar.CerrarConexion();
             }
         }
+
 
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
@@ -373,12 +508,13 @@ namespace Pasantias
             try
             {
                 string consulta = @"
-     SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-         u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-         du.Grado_academico, du.Sexo, du.Foto, du.Curriculum 
-     FROM usuarios u 
-     JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-     WHERE u.IDUsuario = @userId";
+SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
+    u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
+    du.Grado_academico, du.Sexo, r.CodigoMun 
+FROM usuarios u 
+JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
+JOIN residencia r ON u.IDUsuario = r.IDUsuario 
+WHERE u.IDUsuario = @userId";
 
                 using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
                 {
@@ -388,7 +524,7 @@ namespace Pasantias
                     {
                         if (reader.Read())
                         {
-                            // Verificar si hay cambios en los campos de texto y en los archivos
+                            // Verificar si hay cambios en los campos de texto
                             modificado = txt_Nombre1.Text != reader["Primer_Nombre"].ToString() ||
                                          txt_Nombre2.Text != reader["Segundo_Nombre"].ToString() ||
                                          txt_Apellido1.Text != reader["Primer_Apellido"].ToString() ||
@@ -401,6 +537,7 @@ namespace Pasantias
                                          txt_Direccion.Text != reader["Direccion"].ToString() ||
                                          (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||
                                          (txt_Mujer.Checked && reader["Sexo"].ToString() != "Mujer") ||
+                                         ddl_Municipio.SelectedValue != reader["CodigoMun"].ToString() || // Verifica cambios en municipio
                                          txt_Foto.HasFile || // Verifica si se seleccionó una nueva foto
                                          txt_Curriculum.HasFile; // Verifica si se seleccionó un nuevo curriculum
                         }
@@ -418,5 +555,8 @@ namespace Pasantias
 
             return modificado;
         }
+
+
+
     }
 }

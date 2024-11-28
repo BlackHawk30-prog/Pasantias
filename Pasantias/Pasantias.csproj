@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aplicante_2.aspx" />
+    <Content Include="Cambio_Password.aspx" />
     <Content Include="CerrarSesion.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -239,6 +240,13 @@
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Cambio_Password.aspx.cs">
+      <DependentUpon>Cambio_Password.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Cambio_Password.aspx.designer.cs">
+      <DependentUpon>Cambio_Password.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CerrarSesion.aspx.cs">
       <DependentUpon>CerrarSesion.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

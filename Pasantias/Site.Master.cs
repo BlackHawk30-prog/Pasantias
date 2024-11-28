@@ -73,8 +73,12 @@ namespace Pasantias
                 }
                 else if (rol == 2)
                 {
-                  
-                    FinanzasNav.Visible = true;
+                    HojaGNav.Visible = true;
+                    ConvenioPersonal.Visible = true;
+                    ConveniosGenerales.Visible = true;
+                    PostulacionesRH.Visible = true;
+                    PostulacionesS.Visible = true;
+                    PostulacionesR.Visible = true;
                 }
                 else if (rol == 3)
                 {

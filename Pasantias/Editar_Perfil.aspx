@@ -11,28 +11,29 @@
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Nombre1" runat="server" Text="Primer Nombre:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Nombre1" runat="server" placeholder="Escriba su Primer Nombre" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Nombre1" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Nombre2" runat="server" Text="Segundo Nombre:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Nombre2" runat="server" placeholder="Escriba su Segundo Nombre" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Nombre2" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Apellido1" runat="server" Text="Primer Apellido:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Apellido1" runat="server" placeholder="Escriba su Primer Apellido" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Apellido1" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Apellido2" runat="server" Text="Segundo Apellido:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Apellido2" runat="server" placeholder="Escriba su Segundo Apellido" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Apellido2" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_DNI" runat="server" Text="DNI:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_DNI" runat="server" placeholder="Escriba su Número de Identidad" CssClass="form-control error-check" ReadOnly></asp:TextBox>
+                <asp:TextBox ID="txt_DNI" runat="server"  CssClass="form-control error-check" ReadOnly></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Correo" runat="server" Text="Correo Electrónico:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Correo" runat="server" placeholder="Escriba su Correo Electrónico" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Correo" runat="server" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
+            
         </div>
 
         <!-- Cuadro blanco para el formulario 2 -->
@@ -43,15 +44,27 @@
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Telefono" runat="server" Text="Número de Teléfono:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Telefono" runat="server" placeholder="Escriba su Número de Teléfono" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Telefono" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Universidad" runat="server" Text="Último Grado Académico Alcanzado:" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Universidad" runat="server" placeholder="Escriba su Universidad" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:TextBox ID="txt_Universidad" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
+                                <div class="form-group">
+    <asp:Label ID="lbl_Departamento" runat="server" Text="Departamento:" CssClass="form-label"></asp:Label>
+    <asp:DropDownList ID="ddl_Departamento" runat="server" AutoPostBack="true" CssClass="form-control" 
+                      OnSelectedIndexChanged="ddl_Departamento_SelectedIndexChanged">
+    </asp:DropDownList>
+</div>
+
+<div class="form-group">
+    <asp:Label ID="lbl_Municipio" runat="server" Text="Municipio:" CssClass="form-label"></asp:Label>
+    <asp:DropDownList ID="ddl_Municipio" runat="server" CssClass="form-control">
+    </asp:DropDownList>
+</div>
             <div class="form-group">
-                <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección (Especificar Departamento):" CssClass="form-label"></asp:Label>
-                <asp:TextBox ID="txt_Direccion" runat="server" placeholder="Escriba su Dirección Exacta" CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
+                <asp:Label ID="lbl_Direccion" runat="server" Text="Direccion:" CssClass="form-label"></asp:Label>
+                <asp:TextBox ID="txt_Direccion" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
                 <asp:Label ID="lbl_Sexo" runat="server" Text="Sexo:" CssClass="form-label"></asp:Label>

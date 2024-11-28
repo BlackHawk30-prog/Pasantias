@@ -1,6 +1,9 @@
 ﻿using Modelo;
 using MySql.Data.MySqlClient;
 using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -9,6 +12,53 @@ namespace Pasantias
     public partial class Hojas_Generales : System.Web.UI.Page
     {
         HojasGenerales Hojas;
+
+        public static class EncriptacionAES
+        {
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
+            {
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+
+                    // Convertimos a Base64 y lo codificamos para la URL
+                    return HttpUtility.UrlEncode(Convert.ToBase64String(encriptado));
+                }
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    // Decodificamos desde la URL antes de convertirlo de Base64
+                    string textoDecodificado = HttpUtility.UrlDecode(textoEncriptado);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoDecodificado);
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
+                }
+            }
+        }
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -42,8 +92,9 @@ namespace Pasantias
                     conectar.CerrarConexion();
                 }
 
-                // Redirige a Hoja_Tiempo.aspx con el IDHojaTiempo recién obtenido
-                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idHojaTiempo}", false);
+                string idEncriptado = EncriptacionAES.Encriptar(idHojaTiempo.ToString());
+                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idEncriptado}");
+              //  Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idHojaTiempo}", false);
 
             }
             else
@@ -62,7 +113,8 @@ namespace Pasantias
                 string idHojaTiempo = e.CommandArgument.ToString();
 
                 // Redirigir a la página Hoja_Tiempo con el IDHojaTiempo como parámetro en la URL
-                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idHojaTiempo}");
+                string idEncriptado = EncriptacionAES.Encriptar(idHojaTiempo.ToString());
+                Response.Redirect($"Hoja_Tiempo.aspx?IDHojaTiempo={idEncriptado}");
             }
         }
         protected void btnRegresar_Click(object sender, EventArgs e)

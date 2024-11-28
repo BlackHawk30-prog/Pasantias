@@ -2,11 +2,54 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Pasantias
 {
     public partial class Convenio : System.Web.UI.Page
     {
+        public static class EncriptacionAES
+        {
+            private static readonly string key = "clave_secreta_123";  // Clave secreta
+
+            private static byte[] ObtenerClave(string clave)
+            {
+                byte[] claveBytes = Encoding.UTF8.GetBytes(clave);
+                Array.Resize(ref claveBytes, 16);  // Ajustar a 16 bytes
+                return claveBytes;
+            }
+
+            public static string Encriptar(string texto)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform encriptador = aes.CreateEncryptor(aes.Key, aes.IV);
+                    byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+
+                    byte[] encriptado = encriptador.TransformFinalBlock(textoBytes, 0, textoBytes.Length);
+                    return Convert.ToBase64String(encriptado);
+                }
+            }
+
+            public static string Desencriptar(string textoEncriptado)
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = ObtenerClave(key);
+                    aes.IV = new byte[16];  // Vector de inicialización
+
+                    ICryptoTransform desencriptador = aes.CreateDecryptor(aes.Key, aes.IV);
+                    byte[] encriptadoBytes = Convert.FromBase64String(textoEncriptado);
+
+                    byte[] desencriptado = desencriptador.TransformFinalBlock(encriptadoBytes, 0, encriptadoBytes.Length);
+                    return Encoding.UTF8.GetString(desencriptado);
+                }
+            }
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -14,8 +57,20 @@ namespace Pasantias
                 // Validar si el IDUsuario viene en la URL
                 if (!string.IsNullOrEmpty(Request.QueryString["IDUsuario"]))
                 {
-                    // Almacenar el IDUsuario en ViewState para usarlo más adelante
-                    ViewState["IDUsuario"] = Convert.ToInt32(Request.QueryString["IDUsuario"]);
+                    try
+                    {
+                        // Desencriptar el IDUsuario
+                        string idUsuarioEncriptado = Request.QueryString["IDUsuario"];
+                        string idUsuarioDesencriptado = EncriptacionAES.Desencriptar(idUsuarioEncriptado);
+
+                        // Almacenar el IDUsuario desencriptado en ViewState
+                        ViewState["IDUsuario"] = Convert.ToInt32(idUsuarioDesencriptado);
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write("<script>alert('Error al desencriptar el IDUsuario: " + ex.Message + "');</script>");
+                        Response.Redirect("Default.aspx");
+                    }
                 }
                 else
                 {
@@ -37,14 +92,17 @@ namespace Pasantias
             }
         }
 
+
         protected void btnAceptar_Click(object sender, EventArgs e)
         {
             InsertarConvenio(1, 0); // Aceptado = 1, Rechazado = 0
+            Response.Write("<script>window.close();</script>");
         }
 
         protected void btnRechazar_Click(object sender, EventArgs e)
         {
             InsertarConvenio(0, 1); // Aceptado = 0, Rechazado = 1
+
         }
 
         private void InsertarConvenio(int aceptado, int rechazado)
