@@ -1,5 +1,6 @@
 ﻿using Modelo;
 using System;
+using System.Data;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
@@ -55,21 +56,81 @@ namespace Pasantias
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Inicialización del objeto Postulacion
+           
+
+            if (!IsPostBack)
+            {
+                // Inicialización del objeto Postulacion
+                if (Postulacion == null)
+                {
+                    Postulacion = new Postulacion();
+                }
+                CargarDepartamentos();
+                string condicionSeguridad = "u.RHConfirmado = 1 AND SConfirmado = 0";
+                Postulacion.grid_aplicantes(grid_aplicantes, condicionSeguridad);
+            }
+           
+           
+        }
+        private void CargarDepartamentos()
+        {
+            try
+            {
+                // Obtener los datos de departamentos
+                DataTable departamentos = Postulacion.ObtenerDepartamentos();
+
+                // Llenar el DropDownList
+                ddlDepartamentos.DataSource = departamentos;
+                ddlDepartamentos.DataTextField = "Departamento"; // Nombre del departamento
+                ddlDepartamentos.DataValueField = "CodigoDep";   // Código del departamento
+                ddlDepartamentos.DataBind();
+
+                // Agregar una opción para "Todos"
+                ddlDepartamentos.Items.Insert(0, new ListItem("Todos", "0"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al cargar los departamentos: " + ex.Message);
+                // Manejo adicional de errores si es necesario
+            }
+        }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
             if (Postulacion == null)
             {
                 Postulacion = new Postulacion();
             }
+            // Condición base de la vista
+            string condicionBase = "u.RHConfirmado = 1 AND SConfirmado = 0"; // Cambiar según la vista (RH, Seguridad, Regional)
 
-            if (!IsPostBack)
+            // Obtener el filtro seleccionado en el DropDownList
+            string departamentoSeleccionado = ddlDepartamentos.SelectedValue;
+
+            // Si hay un departamento seleccionado, agregarlo a la condición
+            string condicionAdicional = string.Empty;
+            if (!string.IsNullOrEmpty(departamentoSeleccionado) && departamentoSeleccionado != "0")
             {
-                string condicionSeguridad = "u.RHConfirmado = 1 AND SConfirmado = 0";
-                Postulacion.grid_aplicantes(grid_aplicantes, condicionSeguridad);
+                condicionAdicional = $"d.CodigoDep = '{departamentoSeleccionado}'";
             }
+
+            // Combinar las condiciones
+            string condicionFinal = condicionBase;
+            if (!string.IsNullOrEmpty(condicionAdicional))
+            {
+                condicionFinal += " AND " + condicionAdicional;
+            }
+
+            // Cargar el GridView con la condición combinada
+            Postulacion.grid_aplicantes(grid_aplicantes, condicionFinal);
         }
 
         protected void grid_aplicantes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            if (Postulacion == null)
+            {
+                Postulacion = new Postulacion();
+            }
             if (e.CommandName == "Aceptar")
             {
                 int idUsuario = Convert.ToInt32(e.CommandArgument);

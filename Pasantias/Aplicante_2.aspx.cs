@@ -91,6 +91,7 @@ namespace Pasantias
 
         protected void Enviar_Click(object sender, EventArgs e)
         {
+            RestablecerClasesError();
             bool esValido = true;
             lbl_Error.Text = string.Empty;
 
@@ -180,14 +181,18 @@ namespace Pasantias
             }
 
             // Validación de municipio
-            string codigoMunSeleccionado = ddl_Municipio.SelectedValue; // Ahora manejamos el valor como cadena
-
+            string codigoMunSeleccionado = ddl_Municipio.SelectedValue; 
             if (string.IsNullOrEmpty(codigoMunSeleccionado) || codigoMunSeleccionado == "0")
             {
                 esValido = false;
-                lbl_Error.Text += "Seleccione un municipio válido.<br/>";
+                ddl_Municipio.CssClass += " error";
+                lbl_Error.Text += "Seleccione un municipio y Departamento válido.<br/>";
             }
-
+            else
+            {
+                ddl_Municipio.CssClass = ddl_Municipio.CssClass.Replace("error", "").Trim();
+            }
+          
 
             // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
@@ -343,6 +348,18 @@ namespace Pasantias
             {
                 conectar.CerrarConexion();
             }
+        }
+        private void RestablecerClasesError()
+        {
+            txt_Fecha.CssClass = txt_Fecha.CssClass.Replace(" error", "").Trim();
+            txt_Telefono.CssClass = txt_Telefono.CssClass.Replace(" error", "").Trim();
+            txt_Universidad.CssClass = txt_Universidad.CssClass.Replace(" error", "").Trim();
+            txt_Direccion.CssClass = txt_Direccion.CssClass.Replace(" error", "").Trim();
+            ddl_Municipio.CssClass = ddl_Municipio.CssClass.Replace(" error", "").Trim();
+            txt_Hombre.CssClass = txt_Hombre.CssClass.Replace(" error", "").Trim();
+            txt_Mujer.CssClass = txt_Mujer.CssClass.Replace(" error", "").Trim();
+            txt_Foto.CssClass = txt_Foto.CssClass.Replace(" error", "").Trim();
+            txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace(" error", "").Trim();
         }
 
     }

@@ -48,13 +48,6 @@ namespace Pasantias
                 txt_Correo.CssClass += " error";
                 hayError = true;
             }
-
-            // Validaciones adicionales para Segundo Nombre y Segundo Apellido
-            if (!Utilidades.ValidarCampoObligatorio(txt_Nombre2.Text))
-            {
-                txt_Nombre2.CssClass += " error";
-                hayError = true;
-            }
             if (!Utilidades.ValidarCampoObligatorio(txt_Apellido2.Text))
             {
                 txt_Apellido2.CssClass += " error";
@@ -86,13 +79,7 @@ namespace Pasantias
                 return;
             }
 
-            if (!Utilidades.ValidarNombreApellido(txt_Nombre2.Text))
-            {
-                txt_Nombre2.CssClass += " error"; // Agregar clase de error
-                lbl_Error.Text = "El segundo nombre no puede contener caracteres especiales ni letras consecutivas.";
-                lbl_Error.Visible = true;
-                return;
-            }
+          
 
             if (!Utilidades.ValidarNombreApellido(txt_Apellido2.Text))
             {

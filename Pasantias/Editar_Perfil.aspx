@@ -83,7 +83,7 @@
                 <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
             </div>
             <div class="form-group">
-                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox):" CssClass="form-label"></asp:Label>
                 <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
                 <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn-custom" Text="Descargar Curriculum" Visible="false" Target="_blank" />
             </div>
