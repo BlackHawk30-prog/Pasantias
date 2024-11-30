@@ -57,29 +57,36 @@ namespace Pasantias
 
             try
             {
-                string query = "SELECT CodigoDep, Departamento FROM departamentos";
+                // Llamar al procedimiento almacenado
+                string query = "CALL CargarDepartamentos()";
                 using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
-                        ddl_Departamento.DataSource = reader;
-                        ddl_Departamento.DataTextField = "Departamento";
-                        ddl_Departamento.DataValueField = "CodigoDep";
-                        ddl_Departamento.DataBind();
+                        if (reader.HasRows)
+                        {
+                            ddl_Departamento.DataSource = reader;
+                            ddl_Departamento.DataTextField = "Departamento";
+                            ddl_Departamento.DataValueField = "CodigoDep";
+                            ddl_Departamento.DataBind();
+                        }
                     }
                 }
             }
-            catch (MySqlException ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al cargar departamentos: " + ex.Message);
+                // Opcional: Mostrar mensaje al usuario en la interfaz
             }
             finally
             {
                 conectar.CerrarConexion();
             }
 
-            ddl_Departamento.Items.Insert(0, new ListItem("--Seleccione un Departamento--", "0"));
+            // Agregar un elemento vacío como opción inicial
+            ddl_Departamento.Items.Insert(0, new ListItem("Seleccione un departamento", ""));
         }
+
 
         private void CargarMunicipios(string codigoDepartamento)
         {
@@ -88,29 +95,36 @@ namespace Pasantias
 
             try
             {
-                string query = "SELECT CodigoMun, Municipio FROM municipios WHERE CodigoDep = @CodigoDep";
+                // Llamar al procedimiento almacenado
+                string query = "CALL CargarMunicipios(@CodigoDep)";
                 using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
                 {
                     cmd.Parameters.AddWithValue("@CodigoDep", codigoDepartamento);
+
                     using (var reader = cmd.ExecuteReader())
                     {
-                        ddl_Municipio.DataSource = reader;
-                        ddl_Municipio.DataTextField = "Municipio";
-                        ddl_Municipio.DataValueField = "CodigoMun";
-                        ddl_Municipio.DataBind();
+                        if (reader.HasRows)
+                        {
+                            ddl_Municipio.DataSource = reader;
+                            ddl_Municipio.DataTextField = "Municipio";
+                            ddl_Municipio.DataValueField = "CodigoMun";
+                            ddl_Municipio.DataBind();
+                        }
                     }
                 }
             }
             catch (MySqlException ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al cargar municipios: " + ex.Message);
+                // Opcional: Mostrar mensaje al usuario en la interfaz
             }
             finally
             {
                 conectar.CerrarConexion();
             }
 
-            ddl_Municipio.Items.Insert(0, new ListItem("--Seleccione un Municipio--", "0"));
+            // Agregar un elemento inicial como opción predeterminada
+            ddl_Municipio.Items.Insert(0, new ListItem("Seleccione un municipio", ""));
         }
 
         private void CargarDatosUsuario(int userId)
@@ -120,31 +134,12 @@ namespace Pasantias
 
             try
             {
-                string consulta = @"
-                SELECT 
-                    u.Primer_Nombre, 
-                    u.Segundo_Nombre, 
-                    u.Primer_Apellido, 
-                    u.Segundo_Apellido, 
-                    u.DNI, 
-                    u.Correo, 
-                    du.Fecha_Nacimiento, 
-                    du.Telefono, 
-                    du.Direccion, 
-                    du.Grado_academico, 
-                    du.Sexo,
-                    m.CodigoMun, 
-                    d.CodigoDep
-                FROM usuarios u
-                JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario
-                JOIN residencia r ON u.IDUsuario = r.IDUsuario
-                JOIN municipios m ON r.CodigoMun = m.CodigoMun
-                JOIN departamentos d ON m.CodigoDep = d.CodigoDep
-                WHERE u.IDUsuario = @userId";
+                string procedimiento = "ObtenerDatosUsuario";
 
-                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_IDUsuario", userId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -159,6 +154,7 @@ namespace Pasantias
                             txt_Correo.Text = reader["Correo"].ToString();
                             txt_Fecha.Text = Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd");
                             txt_Telefono.Text = reader["Telefono"].ToString();
+                            txt_cuenta.Text = reader["Cuenta"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString();
                             txt_Direccion.Text = reader["Direccion"].ToString();
 
@@ -328,7 +324,7 @@ namespace Pasantias
             txt_Apellido1.CssClass = txt_Apellido1.CssClass.Replace("error", "").Trim();
             txt_Apellido2.CssClass = txt_Apellido2.CssClass.Replace("error", "").Trim();
             txt_Correo.CssClass = txt_Correo.CssClass.Replace("error", "").Trim();
-           
+            txt_cuenta.CssClass = txt_cuenta.CssClass.Replace("error", "").Trim();
             txt_Fecha.CssClass = txt_Fecha.CssClass.Replace("error", "").Trim();
 
             // Validación de nombres y apellidos
@@ -356,8 +352,14 @@ namespace Pasantias
                 txt_Apellido2.CssClass += " error";
                 esValido = false;
             }
+            if (!Utilidades.ValidarCampoObligatorio(txt_cuenta.Text) || !Utilidades.ValidarCuenta(txt_cuenta.Text) || !Utilidades.ValidarCuentaTipo(txt_cuenta.Text))
+            {
+                lbl_Error.Text += "Debe ingresar un numero de cuenta BAC valido.<br/>";
+                txt_cuenta.CssClass += " error";
+                esValido = false;
+            }
 
-            
+
 
             // Validación del correo
             if (!Utilidades.ValidarCorreo(txt_Correo.Text))
@@ -414,65 +416,34 @@ namespace Pasantias
 
             try
             {
-                string updateUsuarios = @"
-            UPDATE usuarios 
-            SET 
-                Primer_Nombre = @Nombre1, 
-                Segundo_Nombre = @Nombre2, 
-                Primer_Apellido = @Apellido1, 
-                Segundo_Apellido = @Apellido2, 
-                DNI = @DNI, 
-                Correo = @Correo 
-            WHERE IDUsuario = @userId";
+                string procedimiento = "ActualizarDatosUsuario";
 
-                string updateDatosUsuario = @"
-            UPDATE datos_usuario 
-            SET 
-                Fecha_Nacimiento = @FechaNacimiento, 
-                Telefono = @Telefono, 
-                Direccion = @Direccion, 
-                Grado_academico = @Grado, 
-                Sexo = @Sexo 
-            WHERE IDUsuario = @userId";
-
-                string updateResidencia = @"
-            UPDATE residencia 
-            SET CodigoMun = @CodigoMun 
-            WHERE IDUsuario = @userId";
-
-                // Actualizar datos en la tabla `usuarios`
-                using (MySqlCommand cmd1 = new MySqlCommand(updateUsuarios, conectar.conectar))
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd1.Parameters.AddWithValue("@Nombre1", txt_Nombre1.Text);
-                    cmd1.Parameters.AddWithValue("@Nombre2", txt_Nombre2.Text);
-                    cmd1.Parameters.AddWithValue("@Apellido1", txt_Apellido1.Text);
-                    cmd1.Parameters.AddWithValue("@Apellido2", txt_Apellido2.Text);
-                    cmd1.Parameters.AddWithValue("@DNI", txt_DNI.Text);
-                    cmd1.Parameters.AddWithValue("@Correo", txt_Correo.Text);
-                    cmd1.Parameters.AddWithValue("@userId", userId);
-                    cmd1.ExecuteNonQuery();
-                }
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                // Actualizar datos en la tabla `datos_usuario`
-                using (MySqlCommand cmd2 = new MySqlCommand(updateDatosUsuario, conectar.conectar))
-                {
-                    cmd2.Parameters.AddWithValue("@FechaNacimiento", DateTime.Parse(txt_Fecha.Text));
-                    cmd2.Parameters.AddWithValue("@Telefono", txt_Telefono.Text);
-                    cmd2.Parameters.AddWithValue("@Direccion", txt_Direccion.Text);
-                    cmd2.Parameters.AddWithValue("@Grado", txt_Universidad.Text);
-                    cmd2.Parameters.AddWithValue("@Sexo", txt_Hombre.Checked ? "Hombre" : "Mujer");
-                    cmd2.Parameters.AddWithValue("@userId", userId);
-                    cmd2.ExecuteNonQuery();
-                }
+                    // Parámetros para la tabla `usuarios`
+                    cmd.Parameters.AddWithValue("@p_IDUsuario", userId);
+                    cmd.Parameters.AddWithValue("@p_PrimerNombre", txt_Nombre1.Text);
+                    cmd.Parameters.AddWithValue("@p_SegundoNombre", txt_Nombre2.Text);
+                    cmd.Parameters.AddWithValue("@p_PrimerApellido", txt_Apellido1.Text);
+                    cmd.Parameters.AddWithValue("@p_SegundoApellido", txt_Apellido2.Text);
+                    cmd.Parameters.AddWithValue("@p_DNI", txt_DNI.Text);
+                    cmd.Parameters.AddWithValue("@p_Correo", txt_Correo.Text);
 
-                // Actualizar datos en la tabla `residencia`
-                using (MySqlCommand cmd3 = new MySqlCommand(updateResidencia, conectar.conectar))
-                {
-                    cmd3.Parameters.AddWithValue("@CodigoMun", ddl_Municipio.SelectedValue); // Código del municipio seleccionado
-                    cmd3.Parameters.AddWithValue("@userId", userId);
-                    cmd3.ExecuteNonQuery();
-                }
+                    // Parámetros para la tabla `datos_usuario`
+                    cmd.Parameters.AddWithValue("@p_FechaNacimiento", DateTime.Parse(txt_Fecha.Text));
+                    cmd.Parameters.AddWithValue("@p_Telefono", txt_Telefono.Text);
+                    cmd.Parameters.AddWithValue("@p_Cuenta", txt_cuenta.Text);
+                    cmd.Parameters.AddWithValue("@p_Direccion", txt_Direccion.Text);
+                    cmd.Parameters.AddWithValue("@p_GradoAcademico", txt_Universidad.Text);
+                    cmd.Parameters.AddWithValue("@p_Sexo", txt_Hombre.Checked ? "Hombre" : "Mujer");
 
+                    // Parámetro para la tabla `residencia`
+                    cmd.Parameters.AddWithValue("@p_CodigoMun", ddl_Municipio.SelectedValue); // Código del municipio seleccionado
+
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (MySqlException ex)
             {
@@ -507,18 +478,12 @@ namespace Pasantias
 
             try
             {
-                string consulta = @"
-SELECT u.Primer_Nombre, u.Segundo_Nombre, u.Primer_Apellido, u.Segundo_Apellido, 
-    u.DNI, u.Correo, du.Fecha_Nacimiento, du.Telefono, du.Direccion, 
-    du.Grado_academico, du.Sexo, r.CodigoMun 
-FROM usuarios u 
-JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario 
-JOIN residencia r ON u.IDUsuario = r.IDUsuario 
-WHERE u.IDUsuario = @userId";
+                string procedimiento = "ObtenerDatosActuales";
 
-                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd.Parameters.AddWithValue("@userId", (int)Session["UserID"]);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_IDUsuario", (int)Session["UserID"]);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -533,6 +498,7 @@ WHERE u.IDUsuario = @userId";
                                          txt_Correo.Text != reader["Correo"].ToString() ||
                                          txt_Fecha.Text != Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd") ||
                                          txt_Telefono.Text != reader["Telefono"].ToString() ||
+                                         txt_cuenta.Text != reader["Cuenta"].ToString() ||
                                          txt_Universidad.Text != reader["Grado_academico"].ToString() ||
                                          txt_Direccion.Text != reader["Direccion"].ToString() ||
                                          (txt_Hombre.Checked && reader["Sexo"].ToString() != "Hombre") ||

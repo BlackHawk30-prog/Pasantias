@@ -23,20 +23,13 @@ namespace Modelo
             // Obtener el ID de usuario desde la sesión
             int idUsuario = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
 
-            // Consulta SQL con un parámetro
-            string consulta = @"
-    SELECT ht.IDHojaTiempo, u.Primer_Nombre, u.IDUsuario, ht.Fecha
-    FROM hoja_tiempo ht
-    INNER JOIN usuarios u ON ht.IDUsuario = u.IDUsuario
-    WHERE ht.IDUsuario = @UserID;";
-
-
-            using (MySqlCommand comando = new MySqlCommand(consulta, conectar.conectar))
+            // Llamar al procedimiento almacenado
+            using (MySqlCommand comando = new MySqlCommand("GetHojasGenerales", conectar.conectar))
             {
-                // Agregar parámetro a la consulta
-                comando.Parameters.AddWithValue("@UserID", idUsuario);
+                comando.CommandType = CommandType.StoredProcedure;
+                comando.Parameters.AddWithValue("p_UserID", idUsuario);
 
-                // Ejecutar la consulta con MySqlDataAdapter
+                // Ejecutar el procedimiento con MySqlDataAdapter
                 using (MySqlDataAdapter query = new MySqlDataAdapter(comando))
                 {
                     query.Fill(tabla);
@@ -62,16 +55,16 @@ namespace Modelo
             {
                 conectar.AbrirConexion();
 
-                // Consulta para insertar en la tabla hoja_tiempo con el IDUsuario de la sesión
-                string strConsulta = @"INSERT INTO hoja_tiempo (IDUsuario, PConfirmado, OConfirmado, RHConfirmado, fecha) 
-                               VALUES (@IDUsuario, 0, 0, 0, @Fecha);";
+                // Llamar al procedimiento almacenado para insertar
+                using (MySqlCommand insertar = new MySqlCommand("InsertHojaTiempo", conectar.conectar))
+                {
+                    insertar.CommandType = CommandType.StoredProcedure;
+                    insertar.Parameters.AddWithValue("p_UserID", userID);
+                    insertar.Parameters.AddWithValue("p_Fecha", DateTime.Now);
 
-                MySqlCommand insertar = new MySqlCommand(strConsulta, conectar.conectar);
-                insertar.Parameters.AddWithValue("@IDUsuario", userID);
-                insertar.Parameters.AddWithValue("@Fecha", DateTime.Now);
-
-                // Ejecuta la consulta
-                no_ingreso = insertar.ExecuteNonQuery();
+                    // Ejecuta el procedimiento
+                    no_ingreso = insertar.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -84,7 +77,7 @@ namespace Modelo
 
             return no_ingreso;
         }
-       
+
 
 
     }

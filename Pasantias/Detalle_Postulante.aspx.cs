@@ -1,6 +1,7 @@
 ﻿using Modelo;
 using MySql.Data.MySqlClient;
 using System;
+using System.Data;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -110,29 +111,36 @@ namespace Pasantias
 
             try
             {
-                string query = "SELECT CodigoDep, Departamento FROM departamentos";
+                // Llamar al procedimiento almacenado
+                string query = "CALL CargarDepartamentos()";
                 using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
-                        ddl_Departamento.DataSource = reader;
-                        ddl_Departamento.DataTextField = "Departamento";
-                        ddl_Departamento.DataValueField = "CodigoDep";
-                        ddl_Departamento.DataBind();
+                        if (reader.HasRows)
+                        {
+                            ddl_Departamento.DataSource = reader;
+                            ddl_Departamento.DataTextField = "Departamento";
+                            ddl_Departamento.DataValueField = "CodigoDep";
+                            ddl_Departamento.DataBind();
+                        }
                     }
                 }
             }
-            catch (MySqlException ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al cargar departamentos: " + ex.Message);
+                // Opcional: Mostrar mensaje al usuario en la interfaz
             }
             finally
             {
                 conectar.CerrarConexion();
             }
 
-            ddl_Departamento.Items.Insert(0, new ListItem());
+            // Agregar un elemento vacío como opción inicial
+            ddl_Departamento.Items.Insert(0, new ListItem("Seleccione un departamento", ""));
         }
+
 
         private void CargarMunicipios(string codigoDepartamento)
         {
@@ -141,30 +149,38 @@ namespace Pasantias
 
             try
             {
-                string query = "SELECT CodigoMun, Municipio FROM municipios WHERE CodigoDep = @CodigoDep";
+                // Llamar al procedimiento almacenado
+                string query = "CALL CargarMunicipios(@CodigoDep)";
                 using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
                 {
                     cmd.Parameters.AddWithValue("@CodigoDep", codigoDepartamento);
+
                     using (var reader = cmd.ExecuteReader())
                     {
-                        ddl_Municipio.DataSource = reader;
-                        ddl_Municipio.DataTextField = "Municipio";
-                        ddl_Municipio.DataValueField = "CodigoMun";
-                        ddl_Municipio.DataBind();
+                        if (reader.HasRows)
+                        {
+                            ddl_Municipio.DataSource = reader;
+                            ddl_Municipio.DataTextField = "Municipio";
+                            ddl_Municipio.DataValueField = "CodigoMun";
+                            ddl_Municipio.DataBind();
+                        }
                     }
                 }
             }
             catch (MySqlException ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al cargar municipios: " + ex.Message);
+                // Opcional: Mostrar mensaje al usuario en la interfaz
             }
             finally
             {
                 conectar.CerrarConexion();
             }
 
-            ddl_Municipio.Items.Insert(0, new ListItem("0"));
+            // Agregar un elemento inicial como opción predeterminada
+            ddl_Municipio.Items.Insert(0, new ListItem("Seleccione un municipio", ""));
         }
+
         protected void ddl_Departamento_SelectedIndexChanged(object sender, EventArgs e)
         {
             string codigoDepartamento = ddl_Departamento.SelectedValue;
@@ -186,31 +202,12 @@ namespace Pasantias
 
             try
             {
-                string consulta = @"
-                SELECT 
-                    u.Primer_Nombre, 
-                    u.Segundo_Nombre, 
-                    u.Primer_Apellido, 
-                    u.Segundo_Apellido, 
-                    u.DNI, 
-                    u.Correo, 
-                    du.Fecha_Nacimiento, 
-                    du.Telefono, 
-                    du.Direccion, 
-                    du.Grado_academico, 
-                    du.Sexo,
-                    m.CodigoMun, 
-                    d.CodigoDep
-                FROM usuarios u
-                JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario
-                JOIN residencia r ON u.IDUsuario = r.IDUsuario
-                JOIN municipios m ON r.CodigoMun = m.CodigoMun
-                JOIN departamentos d ON m.CodigoDep = d.CodigoDep
-                WHERE u.IDUsuario = @userId";
+                string procedimiento = "ObtenerDatosUsuario";
 
-                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_IDUsuario", userId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -225,6 +222,7 @@ namespace Pasantias
                             txt_Correo.Text = reader["Correo"].ToString();
                             txt_Fecha.Text = Convert.ToDateTime(reader["Fecha_Nacimiento"]).ToString("yyyy-MM-dd");
                             txt_Telefono.Text = reader["Telefono"].ToString();
+                            txt_cuenta.Text = reader["Cuenta"].ToString();
                             txt_Universidad.Text = reader["Grado_academico"].ToString();
                             txt_Direccion.Text = reader["Direccion"].ToString();
 
@@ -250,6 +248,7 @@ namespace Pasantias
                 conectar.CerrarConexion();
             }
         }
+
 
         private string ObtenerRutaFotoDesdeBD(int userId)
         {

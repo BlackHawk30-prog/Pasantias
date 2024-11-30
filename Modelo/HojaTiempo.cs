@@ -17,16 +17,23 @@ namespace Modelo
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            // Obtener el ID de Hoja de Tiempo desde la sesión
             int idHojaTiempo = SessionStore.HojaID;
 
-            string consulta = $"SELECT * FROM detalle_hoja_tiempo WHERE IDHojaTiempo = {idHojaTiempo}";
+            using (MySqlCommand cmd = new MySqlCommand("GetDetalleHojaTiempo", conectar.conectar))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", idHojaTiempo);
 
-            MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
-            query.Fill(tabla);
+                using (MySqlDataAdapter query = new MySqlDataAdapter(cmd))
+                {
+                    query.Fill(tabla);
+                }
+            }
+
             conectar.CerrarConexion();
             return tabla;
         }
+
 
         // Método para llenar el GridView con los datos de las hojas de tiempo
         public void grid_hojas(GridView grid)
@@ -38,29 +45,25 @@ namespace Modelo
         // Método para crear una nueva hoja de tiempo
         public int crear(string Fecha, string Actividades, int Horas, int IDHojaTiempo)
         {
-            int no = 0;  // Esta variable almacenará el número de filas afectadas
+            int no = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "INSERT INTO detalle_hoja_tiempo (Fecha, Actividades, Horas, IDHojaTiempo) " +
-                              "VALUES (@Fecha, @Actividades, @Horas, @IDHojaTiempo)";
-
-            // Crear el comando SQL
-            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            using (MySqlCommand cmd = new MySqlCommand("InsertDetalleHojaTiempo", conectar.conectar))
             {
-                // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("@Fecha", Fecha);
-                cmd.Parameters.AddWithValue("@Actividades", Actividades);
-                cmd.Parameters.AddWithValue("@Horas", Horas);
-                cmd.Parameters.AddWithValue("@IDHojaTiempo", IDHojaTiempo);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_Fecha", Fecha);
+                cmd.Parameters.AddWithValue("p_Actividades", Actividades);
+                cmd.Parameters.AddWithValue("p_Horas", Horas);
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", IDHojaTiempo);
 
-                // Ejecutar el comando SQL
-                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+                no = cmd.ExecuteNonQuery();
             }
 
             conectar.CerrarConexion();
-            return no;  // Devolver el número de filas afectadas
+            return no;
         }
+
 
         // Método para actualizar una hoja de tiempo existente
         public int actualizar(int IDHoja, string Fecha, string Actividades, int Horas, int IDHojaTiempo)
@@ -69,26 +72,22 @@ namespace Modelo
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "UPDATE detalle_hoja_tiempo SET Fecha = @Fecha, Actividades = @Actividades, " +
-                              "Horas = @Horas, IDHojaTiempo = @IDHojaTiempo WHERE ID_Detalle = @IDHoja";
-
-            // Crear el comando SQL
-            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            using (MySqlCommand cmd = new MySqlCommand("UpdateDetalleHojaTiempo", conectar.conectar))
             {
-                // Agregar los parámetros al comando
-                cmd.Parameters.AddWithValue("@IDHoja", IDHoja);
-                cmd.Parameters.AddWithValue("@Fecha", Fecha);
-                cmd.Parameters.AddWithValue("@Actividades", Actividades);
-                cmd.Parameters.AddWithValue("@Horas", Horas);
-                cmd.Parameters.AddWithValue("@IDHojaTiempo", IDHojaTiempo);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
+                cmd.Parameters.AddWithValue("p_Fecha", Fecha);
+                cmd.Parameters.AddWithValue("p_Actividades", Actividades);
+                cmd.Parameters.AddWithValue("p_Horas", Horas);
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", IDHojaTiempo);
 
-                // Ejecutar el comando SQL
-                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+                no = cmd.ExecuteNonQuery();
             }
 
             conectar.CerrarConexion();
-            return no;  // Devolver el número de filas afectadas
+            return no;
         }
+
 
         // Método para eliminar una hoja de tiempo
         public int eliminar(int IDHoja)
@@ -97,94 +96,59 @@ namespace Modelo
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            string consulta = "DELETE FROM detalle_hoja_tiempo WHERE ID_Detalle = @IDHoja";
-
-            // Crear el comando SQL
-            using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
+            using (MySqlCommand cmd = new MySqlCommand("DeleteDetalleHojaTiempo", conectar.conectar))
             {
-                // Agregar el parámetro al comando
-                cmd.Parameters.AddWithValue("@IDHoja", IDHoja);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHoja", IDHoja);
 
-                // Ejecutar el comando SQL
-                no = cmd.ExecuteNonQuery();  // Devuelve el número de filas afectadas
+                no = cmd.ExecuteNonQuery();
             }
 
             conectar.CerrarConexion();
-            return no;  // Devolver el número de filas afectadas
+            return no;
         }
+
 
         public int ConfirmarHojaTiempo(int IDHojaTiempo)
         {
-            int filasAfectadas = 0; // Variable para almacenar el número de filas afectadas
+            int filasAfectadas = 0;
             conectar = new ConexionBD();
             conectar.AbrirConexion();
 
-            try
+            using (MySqlCommand cmd = new MySqlCommand("ConfirmHojaTiempo", conectar.conectar))
             {
-                // Consulta para actualizar el campo PConfirmado a 1 basado en el IDHojaTiempo
-                string consulta = "UPDATE hoja_tiempo SET PConfirmado = 1 WHERE IDHojaTiempo = @IDHojaTiempo";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", IDHojaTiempo);
 
-                // Crear el comando SQL
-                using (MySqlCommand cmd = new MySqlCommand(consulta, conectar.conectar))
-                {
-                    // Agregar el parámetro para evitar inyección SQL
-                    cmd.Parameters.AddWithValue("@IDHojaTiempo", IDHojaTiempo);
-
-                    // Ejecutar el comando y obtener el número de filas afectadas
-                    filasAfectadas = cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Manejar cualquier error que ocurra
-                Console.WriteLine("Error al confirmar la hoja de tiempo: " + ex.Message);
-            }
-            finally
-            {
-                // Asegurarse de cerrar la conexión a la base de datos
-                conectar.CerrarConexion();
+                filasAfectadas = cmd.ExecuteNonQuery();
             }
 
-            return filasAfectadas; // Retornar el número de filas afectadas
+            conectar.CerrarConexion();
+            return filasAfectadas;
         }
+
         public int ObtenerPConfirmado(int idHojaTiempo)
         {
-            int pConfirmado = 0; // Inicializar la variable de estado
-            conectar = new ConexionBD(); // Crear instancia de conexión
-            conectar.AbrirConexion(); // Abrir conexión a la base de datos
+            int pConfirmado = 0;
+            conectar = new ConexionBD();
+            conectar.AbrirConexion();
 
-            try
+            using (MySqlCommand cmd = new MySqlCommand("GetPConfirmado", conectar.conectar))
             {
-                // Consulta para obtener el estado de PConfirmado basado en el IDHojaTiempo
-                string query = "SELECT PConfirmado FROM hoja_tiempo WHERE IDHojaTiempo = @IDHojaTiempo";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", idHojaTiempo);
 
-                // Crear el comando SQL
-                using (MySqlCommand cmd = new MySqlCommand(query, conectar.conectar))
+                object resultado = cmd.ExecuteScalar();
+                if (resultado != null)
                 {
-                    // Agregar parámetro al comando para evitar inyección SQL
-                    cmd.Parameters.AddWithValue("@IDHojaTiempo", idHojaTiempo);
-
-                    // Ejecutar la consulta y leer el valor de PConfirmado
-                    object resultado = cmd.ExecuteScalar();
-                    if (resultado != null)
-                    {
-                        pConfirmado = Convert.ToInt32(resultado); // Convertir el resultado a entero
-                    }
+                    pConfirmado = Convert.ToInt32(resultado);
                 }
             }
-            catch (Exception ex)
-            {
-                // Manejar errores
-                Console.WriteLine("Error al obtener el estado de PConfirmado: " + ex.Message);
-            }
-            finally
-            {
-                // Asegurarse de cerrar la conexión a la base de datos
-                conectar.CerrarConexion();
-            }
 
-            return pConfirmado; // Retornar el estado de PConfirmado
+            conectar.CerrarConexion();
+            return pConfirmado;
         }
+
 
 
     }

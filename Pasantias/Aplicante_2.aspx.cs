@@ -192,7 +192,12 @@ namespace Pasantias
             {
                 ddl_Municipio.CssClass = ddl_Municipio.CssClass.Replace("error", "").Trim();
             }
-          
+            if ( !Utilidades.ValidarCuentaTipo(txt_cuenta.Text) || !Utilidades.ValidarCuenta(txt_cuenta.Text))
+            {
+                lbl_Error.Text += "Debe ingresar un numero de cuenta BAC valido.<br/>";
+                txt_cuenta.CssClass += " error";
+                esValido = false;
+            }
 
             // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
@@ -208,6 +213,7 @@ namespace Pasantias
             int resultado = aplicante2.Crear(
                 fechaNacimiento,
                 txt_Telefono.Text,
+                txt_cuenta.Text,
                 txt_Direccion.Text,
                 txt_Universidad.Text,
                 sexo,
@@ -228,9 +234,9 @@ namespace Pasantias
                         EnviarCorreoAgradecimiento(correo);
                     }
 
-                    lbl_Error.CssClass = "success";
-                    lbl_Error.Text = "Datos enviados correctamente.";
-                    lbl_Error.Visible = true;
+                    // Mostrar el popup y redirigir después de aceptar
+                    string script = "alert('Datos enviados correctamente.'); window.location='Redireccion.aspx';";
+                    ClientScript.RegisterStartupScript(this.GetType(), "PopupRedireccion", script, true);
                 }
                 else
                 {
@@ -243,6 +249,8 @@ namespace Pasantias
                 lbl_Error.Text = "Hubo un problema al enviar los datos.";
                 lbl_Error.Visible = true;
             }
+
+
         }
 
 

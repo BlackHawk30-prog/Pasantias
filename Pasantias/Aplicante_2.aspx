@@ -49,6 +49,10 @@
                                   <span class="required">*</span>
                                 <asp:TextBox ID="txt_Telefono" runat="server" placeholder="Escriba su Número de Teléfono" CssClass="form-control"></asp:TextBox>
                             </div>
+                                <div class="form-group">
+                                <asp:Label ID="lbl_cuenta" runat="server" Text="Numero de cuenta BAC:" CssClass="form-label"></asp:Label>
+                                <asp:TextBox ID="txt_cuenta" runat="server" placeholder="Escriba su Número de cuenta BAC" CssClass="form-control"></asp:TextBox>
+                            </div>
 
                             <div class="form-group">
                                 <asp:Label ID="lbl_Universidad" runat="server" Text="Último Grado Académico Alcanzado:" CssClass="form-label"></asp:Label>
