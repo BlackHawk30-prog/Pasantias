@@ -109,11 +109,11 @@ namespace Pasantias
 
             try
             {
-                string updateQuery = "UPDATE usuarios SET Password = @newPassword WHERE IDUsuario = @userId";
-                using (MySqlCommand cmd = new MySqlCommand(updateQuery, conectar.conectar))
+                string procedimiento = "CALL ActualizarPassword(@userId, @newPassword)";
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
                     cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
@@ -128,6 +128,7 @@ namespace Pasantias
 
             return false;
         }
+
 
         private bool ValidarNuevaPassword(string password)
         {

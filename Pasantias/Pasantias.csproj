@@ -185,6 +185,7 @@
     <Content Include="Postulaciones.aspx" />
     <Content Include="Postulaciones_Regional.aspx" />
     <Content Include="Postulaciones_Seguridad.aspx" />
+    <Content Include="Redireccion.aspx" />
     <Content Include="ResetPassword.aspx" />
     <Content Include="Aplicante_1.aspx" />
     <Content Include="Oficial.aspx" />
@@ -356,6 +357,13 @@
       <DependentUpon>Postulaciones_Seguridad.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redireccion.aspx.cs">
+      <DependentUpon>Redireccion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Redireccion.aspx.designer.cs">
+      <DependentUpon>Redireccion.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ResetPassword.aspx.cs">
       <DependentUpon>ResetPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
