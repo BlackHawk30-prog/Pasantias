@@ -47,12 +47,29 @@
              <asp:Label ID="lbl_Telefono" runat="server" Text="Número de Teléfono:" CssClass="form-label"></asp:Label>
              <asp:TextBox ID="txt_Telefono" runat="server" placeholder="Escriba su Número de Teléfono" CssClass="form-control" ReadOnly></asp:TextBox>
          </div>
+             <div class="form-group">
+    <asp:Label ID="lbl_cuenta" runat="server" Text="Numero de cuenta BAC:" CssClass="form-label"></asp:Label>
+    <asp:TextBox ID="txt_cuenta" runat="server" placeholder="Esta persona no posee numero de cuenta BAC" CssClass="form-control" ReadOnly></asp:TextBox>
+            </div>
          <div class="form-group">
              <asp:Label ID="lbl_Universidad" runat="server" Text="Último Grado Académico Alcanzado:" CssClass="form-label"></asp:Label>
              <asp:TextBox ID="txt_Universidad" runat="server" placeholder="Escriba su Universidad" CssClass="form-control" ReadOnly></asp:TextBox>
          </div>
+                                        <div class="form-group">
+    <asp:Label ID="lbl_Departamento" runat="server" Text="Departamento:" CssClass="form-label"></asp:Label>
+    <asp:DropDownList ID="ddl_Departamento" runat="server" AutoPostBack="true" CssClass="form-control" 
+                      OnSelectedIndexChanged="ddl_Departamento_SelectedIndexChanged" Enabled="false">
+    </asp:DropDownList>
+</div>
+
+<div class="form-group">
+    <asp:Label ID="lbl_Municipio" runat="server" Text="Municipio:" CssClass="form-label"></asp:Label>
+    <asp:DropDownList ID="ddl_Municipio" runat="server" CssClass="form-control" Enabled="false">
+    </asp:DropDownList>
+</div>
+
          <div class="form-group">
-             <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección (Especificar Departamento):" CssClass="form-label"></asp:Label>
+             <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección Exacta:" CssClass="form-label"></asp:Label>
              <asp:TextBox ID="txt_Direccion" runat="server" placeholder="Escriba su Dirección Exacta" CssClass="form-control" ReadOnly></asp:TextBox>
          </div>
         <div class="form-group">

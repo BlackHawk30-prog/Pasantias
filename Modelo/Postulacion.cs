@@ -16,12 +16,33 @@ namespace Modelo
             conectar.AbrirConexion();
 
             // Construcción de la consulta con una posible condición adicional
-            string consulta = "SELECT u.IDUsuario, u.Primer_Nombre, u.Primer_Apellido, u.DNI, u.Correo, du.Telefono " +
-                              "FROM usuarios u " +
-                              "JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario " +
-                              "JOIN roles_usuarios ru ON u.IDUsuario = ru.IDUsuario " +
-                              "JOIN roles r ON ru.IDRol = r.IDRol " +
-                              "WHERE r.IDRol = 1 AND u.Eliminado = 0 ";
+            string consulta = @"
+                            SELECT 
+                                u.IDUsuario, 
+                                u.Primer_Nombre, 
+                                u.Segundo_Nombre, 
+                                u.Primer_Apellido, 
+                                u.Segundo_Apellido, 
+                                u.DNI, 
+                                u.Correo, 
+                                du.Telefono, 
+                                du.Fecha_Nacimiento, 
+                                du.Direccion, 
+                                du.Grado_academico, 
+                                du.Sexo, 
+                                m.CodigoMun,
+                                d.CodigoDep,
+                                d.Departamento
+                            FROM usuarios u
+                            JOIN datos_usuario du ON u.IDUsuario = du.IDUsuario
+                            JOIN roles_usuarios ru ON u.IDUsuario = ru.IDUsuario
+                            JOIN roles r ON ru.IDRol = r.IDRol
+                            JOIN residencia res ON u.IDUsuario = res.IDUsuario
+                            JOIN municipios m ON res.CodigoMun = m.CodigoMun
+                            JOIN departamentos d ON m.CodigoDep = d.CodigoDep
+                            WHERE r.IDRol = 1 
+                              AND u.Eliminado = 0";
+
 
             if (!string.IsNullOrWhiteSpace(condicionAdicional))
             {
@@ -34,6 +55,35 @@ namespace Modelo
 
             return tabla;
         }
+        public DataTable ObtenerDepartamentos()
+{
+    DataTable tablaDepartamentos = new DataTable();
+    conectar = new ConexionBD();
+
+    try
+    {
+        conectar.AbrirConexion();
+
+        // Consulta para obtener los departamentos
+        string consulta = "SELECT CodigoDep, Departamento FROM departamentos";
+
+        using (MySqlDataAdapter adapter = new MySqlDataAdapter(consulta, conectar.conectar))
+        {
+            adapter.Fill(tablaDepartamentos);
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error al obtener los departamentos: " + ex.Message);
+        throw;
+    }
+    finally
+    {
+        conectar.CerrarConexion();
+    }
+
+    return tablaDepartamentos;
+}
 
         public void grid_aplicantes(GridView grid, string condicionAdicional = "")
         {

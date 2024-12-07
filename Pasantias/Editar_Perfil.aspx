@@ -46,7 +46,11 @@
                 <asp:Label ID="lbl_Telefono" runat="server" Text="Número de Teléfono:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Telefono" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
-            <div class="form-group">
+                <div class="form-group">
+                <asp:Label ID="lbl_cuenta" runat="server" Text="Numero de cuenta BAC:" CssClass="form-label"></asp:Label>
+                <asp:TextBox ID="txt_cuenta" runat="server" placeholder="Escriba su Número de cuenta BAC" CssClass="form-control"></asp:TextBox>
+            </div>
+                        <div class="form-group">
                 <asp:Label ID="lbl_Universidad" runat="server" Text="Último Grado Académico Alcanzado:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Universidad" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
@@ -63,7 +67,7 @@
     </asp:DropDownList>
 </div>
             <div class="form-group">
-                <asp:Label ID="lbl_Direccion" runat="server" Text="Direccion:" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lbl_Direccion" runat="server" Text="Dirección Exacta:" CssClass="form-label"></asp:Label>
                 <asp:TextBox ID="txt_Direccion" runat="server"  CssClass="form-control error-check" OnKeyUp="clearError(this.id)"></asp:TextBox>
             </div>
             <div class="form-group">
@@ -83,7 +87,7 @@
                 <asp:Image ID="imgFoto" runat="server" CssClass="img-thumbnail mt-2" />
             </div>
             <div class="form-group">
-                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox, .360):" CssClass="form-label"></asp:Label>
+                <asp:Label ID="lbl_Curriculum" runat="server" Text="Curriculum (Solo se aceptan formatos .doc, .docx, .pdf, .dox):" CssClass="form-label"></asp:Label>
                 <asp:FileUpload ID="txt_Curriculum" runat="server" CssClass="form-control" />
                 <asp:HyperLink ID="lnkCurriculum" runat="server" CssClass="btn-custom" Text="Descargar Curriculum" Visible="false" Target="_blank" />
             </div>

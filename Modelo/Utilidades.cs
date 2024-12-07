@@ -68,8 +68,20 @@ namespace Modelo
         public static bool ValidarTipoArchivoCurriculum(string nombreArchivo)
         {
             string extension = System.IO.Path.GetExtension(nombreArchivo).ToLower();
-            return extension == ".doc" || extension == ".docx" || extension == ".pdf" || extension == ".dox" || extension == ".360";
+            return extension == ".doc" || extension == ".docx" || extension == ".pdf" || extension == ".dox";
         }
+        // Método para validar que un número de cuenta tiene exactamente 9 dígitos
+        public static bool ValidarCuenta(string numeroCuenta)
+        {
+            return numeroCuenta.Length == 9 && Regex.IsMatch(numeroCuenta, @"^\d+$");
+        }
+
+        // Método para validar que el campo solo acepte números
+        public static bool ValidarCuentaTipo(string numeroCuenta)
+        {
+            return Regex.IsMatch(numeroCuenta, @"^\d+$");
+        }
+
 
     }
 }

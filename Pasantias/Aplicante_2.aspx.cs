@@ -91,6 +91,7 @@ namespace Pasantias
 
         protected void Enviar_Click(object sender, EventArgs e)
         {
+            RestablecerClasesError();
             bool esValido = true;
             lbl_Error.Text = string.Empty;
 
@@ -180,14 +181,23 @@ namespace Pasantias
             }
 
             // Validación de municipio
-            string codigoMunSeleccionado = ddl_Municipio.SelectedValue; // Ahora manejamos el valor como cadena
-
+            string codigoMunSeleccionado = ddl_Municipio.SelectedValue; 
             if (string.IsNullOrEmpty(codigoMunSeleccionado) || codigoMunSeleccionado == "0")
             {
                 esValido = false;
-                lbl_Error.Text += "Seleccione un municipio válido.<br/>";
+                ddl_Municipio.CssClass += " error";
+                lbl_Error.Text += "Seleccione un municipio y Departamento válido.<br/>";
             }
-
+            else
+            {
+                ddl_Municipio.CssClass = ddl_Municipio.CssClass.Replace("error", "").Trim();
+            }
+            if ( !Utilidades.ValidarCuentaTipo(txt_cuenta.Text) || !Utilidades.ValidarCuenta(txt_cuenta.Text))
+            {
+                lbl_Error.Text += "Debe ingresar un numero de cuenta BAC valido.<br/>";
+                txt_cuenta.CssClass += " error";
+                esValido = false;
+            }
 
             // Mostrar mensaje de error si alguna validación falla
             if (!esValido)
@@ -203,6 +213,7 @@ namespace Pasantias
             int resultado = aplicante2.Crear(
                 fechaNacimiento,
                 txt_Telefono.Text,
+                txt_cuenta.Text,
                 txt_Direccion.Text,
                 txt_Universidad.Text,
                 sexo,
@@ -223,9 +234,9 @@ namespace Pasantias
                         EnviarCorreoAgradecimiento(correo);
                     }
 
-                    lbl_Error.CssClass = "success";
-                    lbl_Error.Text = "Datos enviados correctamente.";
-                    lbl_Error.Visible = true;
+                    // Mostrar el popup y redirigir después de aceptar
+                    string script = "alert('Datos enviados correctamente.'); window.location='Redireccion.aspx';";
+                    ClientScript.RegisterStartupScript(this.GetType(), "PopupRedireccion", script, true);
                 }
                 else
                 {
@@ -238,6 +249,8 @@ namespace Pasantias
                 lbl_Error.Text = "Hubo un problema al enviar los datos.";
                 lbl_Error.Visible = true;
             }
+
+
         }
 
 
@@ -343,6 +356,18 @@ namespace Pasantias
             {
                 conectar.CerrarConexion();
             }
+        }
+        private void RestablecerClasesError()
+        {
+            txt_Fecha.CssClass = txt_Fecha.CssClass.Replace(" error", "").Trim();
+            txt_Telefono.CssClass = txt_Telefono.CssClass.Replace(" error", "").Trim();
+            txt_Universidad.CssClass = txt_Universidad.CssClass.Replace(" error", "").Trim();
+            txt_Direccion.CssClass = txt_Direccion.CssClass.Replace(" error", "").Trim();
+            ddl_Municipio.CssClass = ddl_Municipio.CssClass.Replace(" error", "").Trim();
+            txt_Hombre.CssClass = txt_Hombre.CssClass.Replace(" error", "").Trim();
+            txt_Mujer.CssClass = txt_Mujer.CssClass.Replace(" error", "").Trim();
+            txt_Foto.CssClass = txt_Foto.CssClass.Replace(" error", "").Trim();
+            txt_Curriculum.CssClass = txt_Curriculum.CssClass.Replace(" error", "").Trim();
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using Modelo;
 using MySql.Data.MySqlClient;
 using System;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 
 namespace Pasantias
@@ -23,6 +24,10 @@ namespace Pasantias
         {
             lbl_Error.Visible = false;
 
+            // Reiniciar clases CSS de los campos
+            txt_NewPassword.CssClass = "form-control";
+            txt_ConfirmPassword.CssClass = "form-control";
+
             string oldPassword = txt_OldPassword.Text.Trim();
             string newPassword = txt_NewPassword.Text.Trim();
             string confirmPassword = txt_ConfirmPassword.Text.Trim();
@@ -36,6 +41,15 @@ namespace Pasantias
             if (newPassword != confirmPassword)
             {
                 MostrarError("La nueva contraseña y su confirmación no coinciden.");
+                MarcarCampoConError(txt_NewPassword);
+                MarcarCampoConError(txt_ConfirmPassword);
+                return;
+            }
+
+            if (!ValidarNuevaPassword(newPassword))
+            {
+                MostrarError("La nueva contraseña debe tener al menos 12 caracteres, incluir una letra mayúscula, una letra minúscula, un número y un carácter especial.");
+                MarcarCampoConError(txt_NewPassword);
                 return;
             }
 
@@ -95,11 +109,11 @@ namespace Pasantias
 
             try
             {
-                string updateQuery = "UPDATE usuarios SET Password = @newPassword WHERE IDUsuario = @userId";
-                using (MySqlCommand cmd = new MySqlCommand(updateQuery, conectar.conectar))
+                string procedimiento = "CALL ActualizarPassword(@userId, @newPassword)";
+                using (MySqlCommand cmd = new MySqlCommand(procedimiento, conectar.conectar))
                 {
-                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
                     cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
@@ -115,17 +129,28 @@ namespace Pasantias
             return false;
         }
 
+
+        private bool ValidarNuevaPassword(string password)
+        {
+            // Regex para validar la contraseña
+            string pattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{12,}$";
+            return Regex.IsMatch(password, pattern);
+        }
+
         private void MostrarError(string mensaje)
         {
             lbl_Error.Text = mensaje;
             lbl_Error.Visible = true;
         }
+
+        private void MarcarCampoConError(System.Web.UI.WebControls.TextBox campo)
+        {
+            campo.CssClass += " is-invalid";
+        }
+
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
-
-
             Response.Redirect("Default.aspx");
-
         }
     }
 }
