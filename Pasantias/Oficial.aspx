@@ -29,6 +29,14 @@
                                         CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
                         </ItemTemplate>
                     </asp:TemplateField>
+
+                     <asp:TemplateField HeaderText="Accion">
+                         <ItemTemplate>
+                             <asp:LinkButton ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" 
+                                 CommandName="Aceptar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
+                         </ItemTemplate>
+                     </asp:TemplateField>
+
                 </Columns>
             </asp:GridView>
         </div>
@@ -36,7 +44,7 @@
 
     <!-- Div contenedor para alinear los botones horizontalmente -->
     <div class="d-flex justify-content-center mt-3">
-        <asp:Button ID="btn_acept" runat="server" Text="Aceptar" CssClass="btn btn-success mx-2" Visible="True" OnClick="Button1_Click" />
+   <!--  <asp:Button ID="btn_acept" runat="server" Text="Aceptar" CommandName="Aceptar" CssClass="btn btn-success mx-2" Visible="True" OnClick="Button1_Click" /> -->
         <asp:Button ID="btn_rech" runat="server" Text="Rechazar" CssClass="btn btn-danger mx-2" Visible="True" OnClick="btn_rech_Click" />
     </div>
 </asp:Content>
