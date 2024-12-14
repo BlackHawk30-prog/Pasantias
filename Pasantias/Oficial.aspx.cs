@@ -11,12 +11,18 @@ namespace Pasantias
     public partial class WebForm1 : System.Web.UI.Page
     {
         Oficial oficial;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+
+            if (oficial == null)
             {
                 oficial = new Oficial();
-                oficial.grid_oficial(GridView1);
+            }
+            if (!IsPostBack)
+            {
+                string condicionrecursos = "OConfirmado = 0";
+                oficial.grid_oficial(GridView1, condicionrecursos);
             }
 
         }
@@ -45,6 +51,8 @@ namespace Pasantias
                     // Aquí puedes agregar la lógica que desees para los elementos seleccionados
                 }
             }
+
+ 
         }
 
         protected void btn_rech_Click(object sender, EventArgs e)
@@ -70,6 +78,16 @@ namespace Pasantias
 
                 // Redirigir a la página deseada, puedes pasar datos en la URL si lo necesitas
                 Response.Redirect($"VistaHJ.aspx");
+            }
+
+            if (e.CommandName == "Aceptar")
+            {
+                int idUsuario = Convert.ToInt32(e.CommandArgument);
+                // Llamar al método para aceptar la postulación
+                oficial.AceptarOficial(idUsuario);
+                string condicionrecursos = "OConfirmado = 0";
+                oficial.grid_oficial(GridView1, condicionrecursos);
+
             }
         }
     }
