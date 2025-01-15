@@ -11,23 +11,39 @@
                 CssClass="table table-striped table-bordered table-hover mx-auto text-center" 
                 OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
+
+                    <asp:TemplateField HeaderText="">
+                        <ItemTemplate>
+                            <asp:CheckBox ID="CheckBoxSelect" runat="server" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    
+
                     <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
                     <asp:BoundField DataField="DNI" HeaderText="DNI" />
-                    <asp:BoundField DataField="Segundo_Nombre" HeaderText="Supervisor" />
-                    <asp:BoundField DataField="id" HeaderText="Recursos Humanos" />
+
 
                     <asp:TemplateField ShowHeader="False">
                         <ItemTemplate>
                             <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" 
-                                CommandName="Select" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
+                                        CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField ShowHeader="False">
-                        <ItemTemplate>
-                            <asp:Button ID="btn_borrar" runat="server" CausesValidation="False" CommandName="Delete" Text="Borrar" CssClass="btn btn-danger" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                     <asp:TemplateField HeaderText="Accion">
+                         <ItemTemplate>
+                             <asp:LinkButton ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" 
+                                 CommandName="Aceptar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
+                         </ItemTemplate>
+                     </asp:TemplateField>
+
+                     <asp:TemplateField HeaderText="Accion">
+                         <ItemTemplate>
+                             <asp:LinkButton ID="Btn_Rechazar" runat="server" Text="Rechazar" CssClass="btn btn-success" 
+                                 CommandName="Rechazar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
+                         </ItemTemplate>
+                     </asp:TemplateField>
+
                 </Columns>
             </asp:GridView>
         </div>

@@ -80,15 +80,57 @@ namespace Pasantias
                 Response.Redirect($"VistaHJ.aspx");
             }
 
-            if (e.CommandName == "Aceptar")
-            {
-                int idUsuario = Convert.ToInt32(e.CommandArgument);
-                // Llamar al método para aceptar la postulación
-                oficial.AceptarOficial(idUsuario);
-                string condicionrecursos = "OConfirmado = 0";
-                oficial.grid_oficial(GridView1, condicionrecursos);
+          
+        }
 
+        protected void btnAceptarSeleccionados_Click(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GridView1.Rows)
+            {
+                // Busca el CheckBox y el HiddenField de la fila actual
+                CheckBox chkSelect = (CheckBox)row.FindControl("CheckBoxSelect");
+                HiddenField hiddenIdHojaTiempo = (HiddenField)row.FindControl("HiddenFieldIDHojaTiempo");
+
+                // Verifica si el CheckBox está seleccionado
+                if (chkSelect != null && chkSelect.Checked)
+                {
+                    // Verifica que el HiddenField tenga un valor válido
+                    if (hiddenIdHojaTiempo != null && int.TryParse(hiddenIdHojaTiempo.Value, out int idHojaTiempo))
+                    {
+                        // Llama al método para aceptar la hoja de tiempo específica
+                        oficial.AceptarHojaDeTiempo(idHojaTiempo);
+                    }
+                }
             }
+
+            // Refresca el GridView
+            string condicionrecursos = "OConfirmado = 0";
+            oficial.grid_oficial(GridView1, condicionrecursos);
+        }
+
+        protected void btnRechazarSeleccionados_Click(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GridView1.Rows)
+            {
+                // Busca el CheckBox y el HiddenField de la fila actual
+                CheckBox chkSelect = (CheckBox)row.FindControl("CheckBoxSelect");
+                HiddenField hiddenIdHojaTiempo = (HiddenField)row.FindControl("HiddenFieldIDHojaTiempo");
+
+                // Verifica si el CheckBox está seleccionado
+                if (chkSelect != null && chkSelect.Checked)
+                {
+                    // Verifica que el HiddenField tenga un valor válido
+                    if (hiddenIdHojaTiempo != null && int.TryParse(hiddenIdHojaTiempo.Value, out int idHojaTiempo))
+                    {
+                        // Llama al método para rechazar la hoja de tiempo específica
+                        oficial.RechazarHojaDeTiempo(idHojaTiempo);
+                    }
+                }
+            }
+
+            // Refresca el GridView
+            string condicionrecursos = "OConfirmado = 0";
+            oficial.grid_oficial(GridView1, condicionrecursos);
         }
     }
 }
