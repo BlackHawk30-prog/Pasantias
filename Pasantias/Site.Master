@@ -94,6 +94,11 @@
                         <span class="ml-3 item-text">Postulaciones (Regional)</span>
                     </a>
                 </li>
+                <li class="nav-item w-100">
+                    <a class="nav-link" id="OficialNav" runat="server">
+                        <span class="ml-3 item-text">Oficiales</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>
