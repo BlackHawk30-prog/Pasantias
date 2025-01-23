@@ -10,41 +10,38 @@
             <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto text-center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
 
-                    <asp:TemplateField HeaderText="">
-                        <ItemTemplate>
-                            <asp:CheckBox ID="CheckBoxSelect" runat="server" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    
+               
+                   
+                   <asp:TemplateField HeaderText="Seleccionar">
+                       <ItemTemplate>
+                           <asp:CheckBox ID="CheckBoxSelect" runat="server" />
+                           <asp:HiddenField ID="HiddenFieldIDHojaTiempo" runat="server" Value='<%# Eval("IDHojaTiempo") %>' />
+                       </ItemTemplate>
+                   </asp:TemplateField>
 
-                    <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
-                    <asp:BoundField DataField="DNI" HeaderText="DNI" />
 
 
-                    <asp:TemplateField ShowHeader="False">
-                        <ItemTemplate>
-                            <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" 
-                                        CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                   
+                   <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
+                   <asp:BoundField DataField="DNI" HeaderText="DNI" />
 
-                     <asp:TemplateField HeaderText="Accion">
-                         <ItemTemplate>
-                             <asp:LinkButton ID="Btn_Aceptar" runat="server" Text="Aceptar" CssClass="btn btn-success" 
-                                 CommandName="Aceptar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
-                         </ItemTemplate>
-                     </asp:TemplateField>
-
-                     <asp:TemplateField HeaderText="Accion">
-                         <ItemTemplate>
-                             <asp:LinkButton ID="Btn_Rechazar" runat="server" Text="Rechazar" CssClass="btn btn-success" 
-                                 CommandName="Rechazar" CommandArgument='<%# Eval("IDUsuario") %>'></asp:LinkButton>
-                         </ItemTemplate>
-                     </asp:TemplateField>
+                   
+                   <asp:TemplateField ShowHeader="False">
+                       <ItemTemplate>
+                           <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" 
+                               CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
+                       </ItemTemplate>
+                   </asp:TemplateField>
+              
 
                 </Columns>
             </asp:GridView>
         </div>
     </div>
+
+     <div class="d-flex justify-content-center mt-3">
+        <asp:Button ID="btnAceptarSeleccionados" runat="server" Text="Aceptar seleccionados" CssClass="btn btn-success mx-2" OnClick="btnAceptarSeleccionados_Click" />
+        <asp:Button ID="btnRechazarSeleccionados" runat="server" Text="Rechazar seleccionados" CssClass="btn btn-danger mx-2" OnClick="btnRechazarSeleccionados_Click" />
+     </div>
 </asp:Content>
 
