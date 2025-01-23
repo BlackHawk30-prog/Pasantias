@@ -11,12 +11,18 @@ namespace Pasantias
     public partial class WebForm1 : System.Web.UI.Page
     {
         Oficial oficial;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+
+            if (oficial == null)
             {
                 oficial = new Oficial();
-                oficial.grid_oficial(GridView1);
+            }
+            if (!IsPostBack)
+            {
+                string condicionrecursos = "OConfirmado = 0";
+                oficial.grid_oficial(GridView1, condicionrecursos);
             }
 
         }
@@ -45,6 +51,8 @@ namespace Pasantias
                     // Aquí puedes agregar la lógica que desees para los elementos seleccionados
                 }
             }
+
+ 
         }
 
         protected void btn_rech_Click(object sender, EventArgs e)
@@ -71,6 +79,58 @@ namespace Pasantias
                 // Redirigir a la página deseada, puedes pasar datos en la URL si lo necesitas
                 Response.Redirect($"VistaHJ.aspx");
             }
+
+          
+        }
+
+        protected void btnAceptarSeleccionados_Click(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GridView1.Rows)
+            {
+                // Busca el CheckBox y el HiddenField de la fila actual
+                CheckBox chkSelect = (CheckBox)row.FindControl("CheckBoxSelect");
+                HiddenField hiddenIdHojaTiempo = (HiddenField)row.FindControl("HiddenFieldIDHojaTiempo");
+
+                // Verifica si el CheckBox está seleccionado
+                if (chkSelect != null && chkSelect.Checked)
+                {
+                    // Verifica que el HiddenField tenga un valor válido
+                    if (hiddenIdHojaTiempo != null && int.TryParse(hiddenIdHojaTiempo.Value, out int idHojaTiempo))
+                    {
+                        // Llama al método para aceptar la hoja de tiempo específica
+                        oficial.AceptarHojaDeTiempo(idHojaTiempo);
+                    }
+                }
+            }
+
+            // Refresca el GridView
+            string condicionrecursos = "OConfirmado = 0";
+            oficial.grid_oficial(GridView1, condicionrecursos);
+        }
+
+        protected void btnRechazarSeleccionados_Click(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GridView1.Rows)
+            {
+                // Busca el CheckBox y el HiddenField de la fila actual
+                CheckBox chkSelect = (CheckBox)row.FindControl("CheckBoxSelect");
+                HiddenField hiddenIdHojaTiempo = (HiddenField)row.FindControl("HiddenFieldIDHojaTiempo");
+
+                // Verifica si el CheckBox está seleccionado
+                if (chkSelect != null && chkSelect.Checked)
+                {
+                    // Verifica que el HiddenField tenga un valor válido
+                    if (hiddenIdHojaTiempo != null && int.TryParse(hiddenIdHojaTiempo.Value, out int idHojaTiempo))
+                    {
+                        // Llama al método para rechazar la hoja de tiempo específica
+                        oficial.RechazarHojaDeTiempo(idHojaTiempo);
+                    }
+                }
+            }
+
+            // Refresca el GridView
+            string condicionrecursos = "OConfirmado = 0";
+            oficial.grid_oficial(GridView1, condicionrecursos);
         }
     }
 }
