@@ -24,6 +24,7 @@
                    
                    <asp:BoundField DataField="Primer_Nombre" HeaderText="Nombre" />
                    <asp:BoundField DataField="DNI" HeaderText="DNI" />
+                   <asp:BoundField DataField="Supervisor" HeaderText="Supervisor" />
 
                    
                    <asp:TemplateField ShowHeader="False">

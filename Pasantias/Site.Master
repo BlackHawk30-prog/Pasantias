@@ -99,6 +99,13 @@
                         <span class="ml-3 item-text">Oficiales</span>
                     </a>
                 </li>
+
+               <li class="nav-item w-100">
+                    <a class="nav-link" id="RHNav" runat="server">
+                        <span class="ml-3 item-text">Recursos Humanos</span>
+                    </a>
+                </li>
+
             </ul>
         </nav>
     </aside>
