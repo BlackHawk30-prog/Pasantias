@@ -106,6 +106,12 @@
                     </a>
                 </li>
 
+               <li class="nav-item w-100">
+                    <a class="nav-link" id="FinanzasNav" runat="server">
+                        <span class="ml-3 item-text">Finanzas</span>
+                    </a>
+                </li>
+
             </ul>
         </nav>
     </aside>
