@@ -9,7 +9,7 @@
             <!-- Tabla con el GridView -->
             <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False"
                 CssClass="table table-striped table-bordered table-hover mx-auto text-center"
-                OnRowCommand="GridView1_RowCommand">
+                OnRowCommand="GridView1_RowCommand" OnSelectedIndexChanged="GridView1_SelectedIndexChanged2">
                 <Columns>
                     
                     <asp:TemplateField HeaderText="Seleccionar">
@@ -28,10 +28,12 @@
                     
                     <asp:TemplateField ShowHeader="False">
                         <ItemTemplate>
-                            <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" 
-                                CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
+                            <asp:Button ID="btnHojaTiempo" runat="server" CausesValidation="False"
+                            CommandName="IrHoja" CommandArgument='<%# Eval("IDHojaTiempo") %>' 
+                            Text="Hoja de Tiempo" CssClass="btn btn-primary" />
                         </ItemTemplate>
                     </asp:TemplateField>
+
                 </Columns>
             </asp:GridView>
         </div>
