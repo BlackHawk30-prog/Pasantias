@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+﻿using System.Data;
 using System.Web.UI.WebControls;
-using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace Modelo
 {
@@ -18,17 +13,23 @@ namespace Modelo
             DataTable tabla = new DataTable();
             conectar = new ConexionBD();
             conectar.AbrirConexion();
-            int mesActual = DateTime.Now.Month;
-            int anioActual = DateTime.Now.Year;
 
-            string consulta = $"SELECT * FROM hoja_tiempo WHERE Eliminado = 0 AND MONTH(fecha) = {mesActual} AND YEAR(fecha) = {anioActual}";
+            int idHojaTiempo = SessionStore.HojaID; // Recuperar el ID desde la sesión
 
-            MySqlDataAdapter query = new MySqlDataAdapter(consulta, conectar.conectar);
-            query.Fill(tabla);
+            using (MySqlCommand cmd = new MySqlCommand("GetDetalleHojaTiempo", conectar.conectar))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_IDHojaTiempo", idHojaTiempo);
+
+                using (MySqlDataAdapter query = new MySqlDataAdapter(cmd))
+                {
+                    query.Fill(tabla);
+                }
+            }
+
             conectar.CerrarConexion();
             return tabla;
         }
-
 
         public void grid_hojas(GridView grid)
         {
@@ -37,3 +38,4 @@ namespace Modelo
         }
     }
 }
+

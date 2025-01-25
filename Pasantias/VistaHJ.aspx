@@ -4,12 +4,14 @@
     <!-- Contenedor para centrar el contenido -->
     <div class="container">
         <h1 class="text-center">Hoja de Tiempo</h1>
-        
-        <!-- Campo para el total de horas -->
-        <div class="form-group d-flex justify-content-end">
-            <asp:Label ID="lbl_HorasTotales" runat="server" Text="Total de Horas: 0" CssClass="form-label"></asp:Label>
-        </div>
-        
+          <!-- Contenedor flex para alinear el botón y el campo de horas -->
+<div class="form-group d-flex justify-content-between align-items-center">
+    <!-- Botón Regresar alineado a la izquierda -->
+    <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary mx-2" OnClick="btnRegresar_Click" />
+    
+    <!-- Campo para el total de horas alineado a la derecha -->
+    <asp:Label ID="lbl_HorasTotales" runat="server" Text="Total de Horas: 0" CssClass="form-label"></asp:Label>
+</div>
 
         
         <!-- Mensaje de actividad -->
@@ -20,18 +22,18 @@
         <!-- Contenedor centrado para la tabla -->
         <div class="form-container">
             <div class="form-group text-center">
-                <asp:GridView ID="grid_hoja" runat="server" AutoGenerateColumns="False" DataKeyNames="IDHoja" 
-                 CssClass="table table-condensed" OnSelectedIndexChanged="grid_hojas_SelectedIndexChanged">
+                <asp:GridView ID="grid_hojas" runat="server" AutoGenerateColumns="False" DataKeyNames="ID_Detalle" 
+                 CssClass="table table-condensed" >
                  <Columns>
                      <asp:BoundField DataField="Fecha" HeaderText="Fecha" SortExpression="Fecha" DataFormatString="{0:dd/MM/yyyy}" ItemStyle-CssClass="fecha" />
                      <asp:BoundField DataField="Actividades" HeaderText="Actividades" SortExpression="Actividades" ItemStyle-CssClass="actividades" />
                      <asp:BoundField DataField="Horas" HeaderText="Horas Trabajadas" SortExpression="Horas" ItemStyle-CssClass="horas" ItemStyle-Width="100px" />
 
-
                  </Columns>
                 </asp:GridView>
             </div>
         </div>
+
 
 
     <!-- Estilos adicionales -->
@@ -49,3 +51,4 @@
         .btn-custom:hover { background-color: #36648B; }
     </style>
 </asp:Content>
+

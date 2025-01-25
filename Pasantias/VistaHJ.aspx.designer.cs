@@ -15,6 +15,15 @@ namespace Pasantias
     {
 
         /// <summary>
+        /// Control btnRegresar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRegresar;
+
+        /// <summary>
         /// Control lbl_HorasTotales.
         /// </summary>
         /// <remarks>
@@ -33,12 +42,12 @@ namespace Pasantias
         protected global::System.Web.UI.WebControls.Label lbl_Mensaje;
 
         /// <summary>
-        /// Control grid_hoja.
+        /// Control grid_hojas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grid_hoja;
+        protected global::System.Web.UI.WebControls.GridView grid_hojas;
     }
 }

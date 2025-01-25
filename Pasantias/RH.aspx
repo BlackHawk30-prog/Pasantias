@@ -7,7 +7,7 @@
     <div class="container d-flex justify-content-center mt-4"> <!-- Contenedor centralizado y margen superior -->
         <div class="table-responsive" style="max-width: 800px;"> <!-- Ancho máximo ajustado -->
             <!-- Centrar la tabla y agregar estilo con Bootstrap -->
-            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto text-center" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
+            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered table-hover mx-auto text-center" OnRowCommand="GridView1_RowCommand" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
 
                
@@ -27,13 +27,13 @@
                    <asp:BoundField DataField="Supervisor" HeaderText="Supervisor" />
 
                    
-                   <asp:TemplateField ShowHeader="False">
-                       <ItemTemplate>
-                           <asp:Button ID="btn_hoja" runat="server" CausesValidation="False" 
-                               CommandName="IrHoja" Text="Hoja de Tiempo" CssClass="btn btn-primary" />
-                       </ItemTemplate>
-                   </asp:TemplateField>
-              
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:Button ID="btnHojaTiempo" runat="server" CausesValidation="False"
+                            CommandName="IrHoja" CommandArgument='<%# Eval("IDHojaTiempo") %>' 
+                            Text="Hoja de Tiempo" CssClass="btn btn-primary" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
 
                 </Columns>
             </asp:GridView>

@@ -24,20 +24,31 @@ namespace Pasantias
             }
         }
 
+        protected void GridView1_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "IrHoja")
+            {
+                // Obtén el IDHojaTiempo desde el CommandArgument
+                int idHojaTiempo = Convert.ToInt32(e.CommandArgument);
+
+                // Redirige a la página de detalles, pasando el ID como parámetro en la Query String
+                Response.Redirect($"VistaHJ.aspx?IDHojaTiempo={idHojaTiempo}");
+
+            }
+
+
+        }
         protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //  if (e.CommandName == "IrHoja")
-            {
-                // Obtener el índice de la fila seleccionada
-                //int index = Convert.ToInt32(e.CommandArgument);
-                //GridViewRow selectedRow = GridView1.Rows[index];
+           // if (e.CommandName == "IrHoja")
+         //   {
+                // Obtén el IDHojaTiempo desde el CommandArgument
+              //  int idHojaTiempo = Convert.ToInt32(e.CommandArgument);
 
-                // Aquí puedes obtener algún dato de la fila, si es necesario
-                //string dni = selectedRow.Cells[1].Text; // Ejemplo: obtener el DNI
+                // Redirige a la página de detalles, pasando el ID como parámetro en la Query String
+              //  Response.Redirect($"VistaHJ.aspx?IDHojaTiempo={idHojaTiempo}");
 
-                // Redirigir a la página deseada, puedes pasar datos en la URL si lo necesitas
-                Response.Redirect($"VistaHJ.aspx");
-            }
+           // }
         }
 
         protected void btnAceptarSeleccionados_Click(object sender, EventArgs e)
